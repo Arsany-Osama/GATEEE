@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GATE Admin | Exams Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0b1e;
+            color: #e1e0fb;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(50, 51, 72, 0) 0%, rgba(50, 51, 72, 0.5) 50%, rgba(50, 51, 72, 0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .primary-glow:hover {
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.3);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0c1f; }
+        ::-webkit-scrollbar-thumb { background: #323348; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe7; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#27283d",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#2e2f43",
+                      "on-surface": "#e1e0fb",
+                      "surface-container-low": "#191a2d",
+                      "on-primary-fixed": "#002022",
+                      "surface-container-highest": "#323348",
+                      "on-secondary": "#002a78",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#6f3cd8",
+                      "on-primary": "#00363a",
+                      "surface-container": "#1d1e32",
+                      "inverse-surface": "#e1e0fb",
+                      "background": "#111225",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "on-primary-container": "#006a71",
+                      "secondary-container": "#0053db",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "surface": "#111225",
+                      "on-secondary-container": "#cdd7ff",
+                      "secondary-fixed": "#dbe1ff",
+                      "surface-container-lowest": "#0b0c1f",
+                      "surface-dim": "#111225",
+                      "primary-fixed-dim": "#00dbe7",
+                      "primary": "#e1fdff",
+                      "outline": "#849495",
+                      "tertiary": "#fcf5ff",
+                      "primary-container": "#00f2ff",
+                      "surface-bright": "#37374d",
+                      "on-secondary-fixed": "#00174b",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-primary-fixed-variant": "#004f54",
+                      "inverse-primary": "#00696f",
+                      "outline-variant": "#3a494b",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "tertiary-container": "#e2d4ff",
+                      "surface-variant": "#323348",
+                      "secondary": "#b4c5ff",
+                      "on-tertiary": "#3c0091",
+                      "tertiary-fixed": "#e9ddff",
+                      "primary-fixed": "#74f5ff",
+                      "surface-tint": "#00dbe7",
+                      "on-surface-variant": "#b9cacb",
+                      "on-error": "#690005",
+                      "on-background": "#e1e0fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "32px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "sm": "8px",
+                      "unit": "4px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Plus Jakarta Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "display-md": ["Plus Jakarta Sans"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "body-md": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "display-md": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["22px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="antialiased overflow-hidden">
+<!-- Sidebar (Shared Component Anchor) -->
+<aside class="fixed h-full w-[280px] left-0 top-0 bg-surface-container-low/70 backdrop-blur-xl border-r border-white/10 shadow-xl flex flex-col gap-sm p-lg overflow-y-auto z-50">
+<div class="flex items-center gap-md mb-xl">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">gate</span>
+</div>
+<div>
+<h1 class="font-display-md text-[20px] font-bold text-primary">GATE Admin</h1>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">Premium Management</p>
+</div>
+</div>
+<nav class="flex flex-col gap-xs flex-1">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-body-md text-body-md">Courses</span>
+</a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-lg font-bold" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">quiz</span>
+<span class="font-body-md text-body-md">Exams</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Students</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</a>
+<div class="mt-auto pt-lg">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest/50 rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[280px] min-h-screen relative">
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 left-[280px] z-40 bg-surface/60 backdrop-blur-md h-20 flex items-center justify-between px-xl shadow-sm border-b border-white/10">
+<div class="flex items-center gap-lg">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full pl-xxl pr-lg py-sm w-80 text-on-surface font-label-lg focus:ring-2 focus:ring-primary-container transition-all" placeholder="Search exams or courses..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<!-- Language Switcher -->
+<button class="flex items-center gap-xs text-on-surface-variant hover:text-primary transition-colors font-label-lg px-md py-sm rounded-lg hover:bg-white/5">
+<span class="material-symbols-outlined text-[18px]">language</span>
+<span>English (US)</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<div class="flex items-center gap-md">
+<button class="p-sm text-on-surface-variant hover:text-primary transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-sm right-sm w-2 h-2 bg-error rounded-full border border-surface"></span>
+</button>
+<div class="h-8 w-[1px] bg-white/10 mx-sm"></div>
+<div class="flex items-center gap-md pl-sm cursor-pointer group">
+<div class="text-right">
+<p class="font-label-lg text-on-surface group-hover:text-primary transition-colors">Admin User</p>
+<p class="text-[10px] text-on-surface-variant uppercase">Gate Authority</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a corporate administrator, high-end studio lighting, minimalist dark background, wearing a modern charcoal suit, neutral expression, sharp focus, consistent with a premium cybersecurity and educational management brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0L-dxbYuRu6L8BnCTQTVVYttOI29ve9xtrg487hnGeVT880FQBspdSf5AEEN-b--AX8ZZNak1omKRW1jW9ovSMic-BwrVUU7VF-bFz6DxkE3dJC_EBjGqHWddLTh7IcKW4Za5qgHibXEibOwZz4k5siNLwcwakeGpz2UN0eHlIzvCr-GkmhXbCRyOoKiZmemTySLDUwju403pWyRExFMoWZ8ZlSzNu4yxM-lqigzXLo_r_36vycQLn4J9rl7_NxmefIvRn05_ywLY"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="pt-24 px-xl pb-xl">
+<!-- Header Section -->
+<div class="flex items-end justify-between mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-xs">Exams Management</h2>
+<p class="font-body-md text-on-surface-variant">Configure and monitor safety assessment performance.</p>
+</div>
+<button class="flex items-center gap-md px-lg py-md bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-fixed font-bold rounded-xl primary-glow transition-all active:scale-95 group" onclick="toggleStates()">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+<span class="font-label-lg uppercase tracking-wider">Create Exam</span>
+</button>
+</div>
+<!-- Dashboard Stats -->
+<div class="grid grid-cols-4 gap-lg mb-xl">
+<div class="glass-card p-lg rounded-xl">
+<p class="text-on-surface-variant font-label-md uppercase mb-sm">Total Exams</p>
+<div class="flex items-end justify-between">
+<h3 class="text-display-md font-bold text-primary">128</h3>
+<span class="text-primary-container bg-primary-container/10 px-sm py-xs rounded text-[12px] font-bold">+12%</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-xl border-l-4 border-l-secondary">
+<p class="text-on-surface-variant font-label-md uppercase mb-sm">Avg. Pass Rate</p>
+<div class="flex items-end justify-between">
+<h3 class="text-display-md font-bold text-secondary">84.2%</h3>
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-xl">
+<p class="text-on-surface-variant font-label-md uppercase mb-sm">Active Students</p>
+<div class="flex items-end justify-between">
+<h3 class="text-display-md font-bold text-on-surface">1,042</h3>
+<span class="text-on-surface-variant text-[12px]">Real-time</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-xl">
+<p class="text-on-surface-variant font-label-md uppercase mb-sm">Certificates Issued</p>
+<div class="flex items-end justify-between">
+<h3 class="text-display-md font-bold text-tertiary-fixed-dim">912</h3>
+<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+</div>
+<!-- State: Loading Skeleton (Hidden by default) -->
+<div class="hidden glass-card rounded-xl overflow-hidden border border-white/5" id="loading-state">
+<div class="p-lg bg-surface-container-low flex gap-lg">
+<div class="h-6 w-32 shimmer rounded"></div>
+<div class="h-6 w-48 shimmer rounded"></div>
+<div class="h-6 w-24 shimmer rounded"></div>
+</div>
+<div class="p-lg space-y-lg">
+<div class="flex items-center gap-lg border-b border-white/5 pb-lg">
+<div class="w-12 h-12 shimmer rounded-lg"></div>
+<div class="flex-1 space-y-sm">
+<div class="h-4 w-1/3 shimmer rounded"></div>
+<div class="h-3 w-1/4 shimmer rounded opacity-50"></div>
+</div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+</div>
+<div class="flex items-center gap-lg border-b border-white/5 pb-lg">
+<div class="w-12 h-12 shimmer rounded-lg"></div>
+<div class="flex-1 space-y-sm">
+<div class="h-4 w-1/2 shimmer rounded"></div>
+<div class="h-3 w-1/5 shimmer rounded opacity-50"></div>
+</div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+</div>
+<div class="flex items-center gap-lg border-b border-white/5 pb-lg">
+<div class="w-12 h-12 shimmer rounded-lg"></div>
+<div class="flex-1 space-y-sm">
+<div class="h-4 w-1/4 shimmer rounded"></div>
+<div class="h-3 w-1/3 shimmer rounded opacity-50"></div>
+</div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+<div class="w-24 h-4 shimmer rounded"></div>
+</div>
+</div>
+</div>
+<!-- State: Empty State (Hidden by default) -->
+<div class="hidden glass-card rounded-xl p-xxl flex flex-col items-center justify-center text-center min-h-[400px]" id="empty-state">
+<div class="w-24 h-24 rounded-full bg-surface-container-high flex items-center justify-center mb-lg relative">
+<span class="material-symbols-outlined text-[48px] text-on-surface-variant opacity-30">quiz</span>
+<div class="absolute -bottom-2 -right-2 bg-primary-container/20 p-sm rounded-lg backdrop-blur">
+<span class="material-symbols-outlined text-primary-container">search_off</span>
+</div>
+</div>
+<h4 class="font-headline-md text-on-surface mb-sm">No Exams Found</h4>
+<p class="text-on-surface-variant max-w-sm mb-xl">Get started by creating your first safety assessment. You can add questions, set time limits, and define passing criteria.</p>
+<button class="px-xl py-md bg-surface-container-highest hover:bg-surface-bright transition-colors rounded-lg font-bold text-primary flex items-center gap-sm">
+<span class="material-symbols-outlined">add_circle</span>
+                    Create First Exam
+                </button>
+</div>
+<!-- State: Main Table (Default) -->
+<div class="glass-card rounded-xl overflow-hidden shadow-2xl relative" id="main-table">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-white/10">
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px]">Exam Title</th>
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px]">Related Course</th>
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px]">Duration</th>
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px]">Pass Mark</th>
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px]">Status</th>
+<th class="px-lg py-md font-label-lg text-on-surface-variant uppercase tracking-widest text-[11px] text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-primary-container/5 transition-all group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">engineering</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Industrial Safety Level 1</p>
+<p class="text-[12px] text-on-surface-variant">ID: EXM-2024-001</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-white/5 rounded text-[13px] text-on-surface">Basics of Industrial Work</span>
+</td>
+<td class="px-lg py-lg text-on-surface font-body-md">45 Mins</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<span class="font-bold text-primary">75%</span>
+<div class="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 75%"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="flex items-center gap-xs text-[12px] text-primary-container font-bold uppercase">
+<span class="w-1.5 h-1.5 bg-primary-container rounded-full animate-pulse"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">analytics</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary-container/5 transition-all group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">fire_extinguisher</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Fire Hazard Prevention</p>
+<p class="text-[12px] text-on-surface-variant">ID: EXM-2024-002</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-white/5 rounded text-[13px] text-on-surface">Workplace Hazards</span>
+</td>
+<td class="px-lg py-lg text-on-surface font-body-md">60 Mins</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<span class="font-bold text-primary">80%</span>
+<div class="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 80%"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="flex items-center gap-xs text-[12px] text-primary-container font-bold uppercase">
+<span class="w-1.5 h-1.5 bg-primary-container rounded-full"></span>
+                                        Active
+                                    </span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">analytics</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary-container/5 transition-all group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-tertiary-fixed-dim">
+<span class="material-symbols-outlined">health_and_safety</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface">Chemical Handling Safety</p>
+<p class="text-[12px] text-on-surface-variant">ID: EXM-2024-003</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="px-sm py-xs bg-white/5 rounded text-[13px] text-on-surface">Advanced Materials</span>
+</td>
+<td class="px-lg py-lg text-on-surface font-body-md">30 Mins</td>
+<td class="px-lg py-lg">
+<div class="flex items-center gap-sm">
+<span class="font-bold text-primary">90%</span>
+<div class="w-16 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-primary" style="width: 90%"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<span class="flex items-center gap-xs text-[12px] text-on-surface-variant font-bold uppercase">
+<span class="w-1.5 h-1.5 bg-on-surface-variant rounded-full"></span>
+                                        Draft
+                                    </span>
+</td>
+<td class="px-lg py-lg text-right">
+<div class="flex items-center justify-end gap-sm opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">analytics</span></button>
+<button class="p-sm hover:bg-white/10 rounded text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-lg bg-surface-container-low/50 flex items-center justify-between border-t border-white/5">
+<p class="text-on-surface-variant text-[13px]">Showing 1-3 of 128 exams</p>
+<div class="flex items-center gap-xs">
+<button class="p-sm text-on-surface-variant hover:text-primary disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-secondary-container text-on-secondary-container font-bold text-[13px]">1</button>
+<button class="w-8 h-8 rounded hover:bg-white/5 text-on-surface-variant text-[13px]">2</button>
+<button class="w-8 h-8 rounded hover:bg-white/5 text-on-surface-variant text-[13px]">3</button>
+<span class="mx-xs text-on-surface-variant opacity-30">...</span>
+<button class="w-8 h-8 rounded hover:bg-white/5 text-on-surface-variant text-[13px]">42</button>
+<button class="p-sm text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Info Bar -->
+<div class="mt-xl flex items-center gap-lg">
+<div class="flex-1 flex items-center gap-md glass-card p-md rounded-lg">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]">info</span>
+</div>
+<p class="text-[13px] text-on-surface-variant">Exam results are automatically synced with student transcripts every 5 minutes.</p>
+</div>
+<div class="flex items-center gap-md glass-card p-md rounded-lg">
+<p class="text-[13px] text-on-surface-variant">System Status:</p>
+<div class="flex items-center gap-xs px-sm py-xs bg-primary-container/10 rounded">
+<span class="w-2 h-2 bg-primary-container rounded-full animate-pulse"></span>
+<span class="text-[11px] font-bold text-primary-container uppercase">Optimal</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- State Switcher Micro-tool (For Demonstration) -->
+<div class="fixed bottom-lg right-lg z-50 flex flex-col gap-sm">
+<div class="hidden glass-card p-sm rounded-lg border-primary-container shadow-2xl flex flex-col gap-xs" id="state-controls">
+<button class="text-[10px] uppercase font-bold px-md py-xs bg-white/5 rounded hover:bg-primary-container/20 text-on-surface" onclick="showState('main-table')">Default Table</button>
+<button class="text-[10px] uppercase font-bold px-md py-xs bg-white/5 rounded hover:bg-primary-container/20 text-on-surface" onclick="showState('loading-state')">Loading State</button>
+<button class="text-[10px] uppercase font-bold px-md py-xs bg-white/5 rounded hover:bg-primary-container/20 text-on-surface" onclick="showState('empty-state')">Empty State</button>
+</div>
+<button class="w-10 h-10 bg-surface-container-high border border-white/10 rounded-full flex items-center justify-center shadow-lg text-primary hover:rotate-180 transition-transform" onclick="document.getElementById('state-controls').classList.toggle('hidden')">
+<span class="material-symbols-outlined">settings_suggest</span>
+</button>
+</div>
+<script>
+        function showState(stateId) {
+            const states = ['main-table', 'loading-state', 'empty-state'];
+            states.forEach(s => {
+                const el = document.getElementById(s);
+                if (s === stateId) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
+        // Simulating interactive language switcher
+        const langButton = document.querySelector('button span:nth-child(2)');
+        langButton.parentElement.addEventListener('click', () => {
+            const current = langButton.innerText;
+            langButton.innerText = current === 'English (US)' ? 'Arabic (RTL)' : 'English (US)';
+        });
+
+        // Initialize with default state
+        showState('main-table');
+    </script>
+</body></html>

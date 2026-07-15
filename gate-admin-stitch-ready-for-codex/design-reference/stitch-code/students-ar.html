@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .glow-cyan {
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0b0c1f; }
+        ::-webkit-scrollbar-thumb { background: #3a494b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe7; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#27283d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2e2f43",
+                        "on-surface": "#e1e0fb",
+                        "surface-container-low": "#191a2d",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#323348",
+                        "on-secondary": "#002a78",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#6f3cd8",
+                        "on-primary": "#00363a",
+                        "surface-container": "#1d1e32",
+                        "inverse-surface": "#e1e0fb",
+                        "background": "#111225",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-primary-container": "#006a71",
+                        "secondary-container": "#0053db",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface": "#111225",
+                        "on-secondary-container": "#cdd7ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-container-lowest": "#0b0c1f",
+                        "surface-dim": "#111225",
+                        "primary-fixed-dim": "#00dbe7",
+                        "primary": "#e1fdff",
+                        "outline": "#849495",
+                        "tertiary": "#fcf5ff",
+                        "primary-container": "#00f2ff",
+                        "surface-bright": "#37374d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-primary": "#00696f",
+                        "outline-variant": "#3a494b",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "tertiary-container": "#e2d4ff",
+                        "surface-variant": "#323348",
+                        "secondary": "#b4c5ff",
+                        "on-tertiary": "#3c0091",
+                        "tertiary-fixed": "#e9ddff",
+                        "primary-fixed": "#74f5ff",
+                        "surface-tint": "#00dbe7",
+                        "on-surface-variant": "#b9cacb",
+                        "on-error": "#690005",
+                        "on-background": "#e1e0fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "32px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "md": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen overflow-x-hidden">
+<!-- Sidebar Shell -->
+<aside class="fixed inset-y-0 right-0 z-40 flex flex-col p-lg rtl bg-surface-container-low dark:bg-surface-container-low border-l border-outline-variant dark:border-outline-variant shadow-sm w-[280px]">
+<div class="flex items-center gap-4 mb-xl">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center glow-cyan">
+<span class="material-symbols-outlined text-on-primary-container font-bold" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<h1 class="font-display-lg text-[24px] font-extrabold text-primary dark:text-primary-fixed-dim leading-none">GATE</h1>
+<p class="text-label-md text-on-surface-variant opacity-70">Educational Platform</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 overflow-y-auto">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md">الرئيسية</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md">الكورسات</span>
+</a>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 border-r-4 border-primary transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-md">الطلاب</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">person_celebrate</span>
+<span class="font-label-md">المدرسين</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-md">الاختبارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">subscriptions</span>
+<span class="font-label-md">الاشتراكات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-label-md">التقارير</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md">الإعدادات</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg">
+<button class="w-full bg-primary-container text-on-primary-container font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:brightness-110 active:scale-95 transition-all glow-cyan">
+<span class="material-symbols-outlined">add</span>
+<span>إضافة كورس جديد</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="mr-[280px] min-h-screen relative">
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 right-[280px] h-20 z-30 flex justify-between items-center px-margin-desktop bg-surface/80 backdrop-blur-md border-b border-outline-variant rtl">
+<div class="flex items-center gap-4 flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-full py-2.5 pr-12 pl-4 text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="البحث عن الطلاب، الأرقام التعريفية..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Language Switcher -->
+<button class="flex items-center gap-2 px-3 py-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">language</span>
+<span class="text-label-md font-bold uppercase">EN</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">help</button>
+</div>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-left rtl:text-right">
+<p class="text-label-md font-bold text-on-surface">أحمد المدير</p>
+<p class="text-[10px] text-on-surface-variant">المشرف العام</p>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5 overflow-hidden">
+<img class="w-full h-full object-cover rounded-full" data-alt="A professional headshot of a Middle Eastern male administrator in a high-tech office environment. He has a confident expression and is wearing a sleek dark suit. The background features blurred digital screens with data visualizations in cyan and navy blue, matching the GATE platform aesthetic. The lighting is crisp and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTADyzubh0lgnlWaYRl1EnziNahUkQyObhDMeDJCXqvm9Xb9xGFqDMFQ4hOLGcX3Rv8nJ562MVKfkOKtaFaYUhCRNPqrcgTPspRXB7zjOljt533hiXUig68J2TmZp8SF8W-uqH6gyS_CAfu4weIeJo_-3s-_WuBOFF9Ll-sqWQHizI5xBNwvJvRDxm5N_SaUbkajbMJvvvjTNcGPHdxF5ghBuvvMf1m-SW3B5UkXai3-rYN4S_vvOnjthjouRfdWpL8SQaBB8MJNQo"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<div class="pt-24 pb-lg px-margin-desktop rtl">
+<!-- Breadcrumbs / Header Section -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="text-[32px] font-bold text-primary-fixed-dim mb-1">إدارة الطلاب</h2>
+<p class="text-on-surface-variant">إدارة ومراقبة أداء الطلاب المسجلين في المنصة التعليمية</p>
+</div>
+<div class="flex gap-3">
+<button class="glass-card px-6 py-3 rounded-xl text-primary border border-primary/20 flex items-center gap-2 hover:bg-primary/10 transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                        تصدير البيانات
+                    </button>
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all glow-cyan">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+                        إضافة طالب
+                    </button>
+</div>
+</div>
+<!-- Dashboard Stats Summary -->
+<div class="grid grid-cols-4 gap-gutter mb-xl">
+<div class="glass-card p-lg rounded-2xl border-r-4 border-primary">
+<p class="text-on-surface-variant text-label-md mb-2">إجمالي الطلاب</p>
+<div class="flex items-baseline gap-2">
+<span class="text-display-md text-primary">1,284</span>
+<span class="text-primary/60 text-label-md">↑ 12%</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl border-r-4 border-secondary">
+<p class="text-on-surface-variant text-label-md mb-2">الطلاب النشطون</p>
+<div class="flex items-baseline gap-2">
+<span class="text-display-md text-secondary">942</span>
+<span class="text-secondary/60 text-label-md">↑ 5%</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl border-r-4 border-tertiary-container">
+<p class="text-on-surface-variant text-label-md mb-2">متوسط الإكمال</p>
+<div class="flex items-baseline gap-2">
+<span class="text-display-md text-tertiary-container">74%</span>
+<span class="text-tertiary-container/60 text-label-md">↑ 3%</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl border-r-4 border-error">
+<p class="text-on-surface-variant text-label-md mb-2">طلاب متعثرون</p>
+<div class="flex items-baseline gap-2">
+<span class="text-display-md text-error">12</span>
+<span class="text-error/60 text-label-md">↓ 2%</span>
+</div>
+</div>
+</div>
+<!-- Students Table Section -->
+<section class="glass-card rounded-3xl overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-high/30">
+<div class="flex items-center gap-4">
+<h3 class="font-headline-md text-on-surface">قائمة الطلاب</h3>
+<div class="flex gap-1">
+<span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold">نشط (840)</span>
+<span class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full text-[10px] font-bold">غير نشط (44)</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">sort</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead>
+<tr class="bg-surface-container-low/50 text-on-surface-variant border-b border-outline-variant">
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">الطالب</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">البريد الإلكتروني</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider text-center">الكورسات</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">معدل التقدم</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">الحالة</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="Close up avatar of a young female student with glasses, smiling warmly. Professional studio lighting with a soft blue rim light. The style is hyper-realistic digital portraiture, maintaining a clean and premium aesthetic consistent with the dark corporate theme of the GATE platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkF-ncPgoZs-Q11mVJ7EAFYpY1Z5wpO5dbqM7x2L2kjWSONLKMkoJD2jZDRyhVqq-slWrzvg4CMoqq8PlS19nBL2paJQmoF8NVe8FEW--tGnjbyMbnzIh3sudcLnN8q0XMecLUBJgulsNAicexjiw6e6PGUcipysSd-Rl3Dszxa7E5ySmH1X7alpjNhNgy5ZDyZ7W09c0XpnKtbxGiFypB0jyWS2xrpky4XyObwxohWWGS9BZ7Sagq5-STd28h4TXdtLBZEfYOa2SH"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">ليلى محمد العتيبي</p>
+<p class="text-label-md text-on-surface-variant">ID: #ST-9021</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5 text-on-surface-variant">laila.m@gate.edu.sa</td>
+<td class="px-lg py-5 text-center">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">12 كورس</span>
+</td>
+<td class="px-lg py-5 w-64">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-l from-primary to-secondary glow-cyan" style="width: 85%"></div>
+</div>
+<span class="text-label-md font-bold text-primary">85%</span>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="flex items-center gap-1.5 text-primary text-[12px] font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                        متصل الآن
+                                    </span>
+</td>
+<td class="px-lg py-5">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-label-md font-bold hover:bg-primary hover:text-on-primary transition-all active:scale-95">عرض التفاصيل</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="A focused male student in his early 20s, looking at a digital screen off-camera. His face is lit by the blue glow of a computer monitor. The image is a sharp, modern photographic style with deep shadows and vibrant blue highlights, perfectly suited for a premium dark-themed educational dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-96r5CbClYFrTJSzE7kLEFrnNoOtHYFj93ZLahNGfKJlQrJTEPCSkqIUuJ39NdKrQbKU7Q4NIHRVzB-2W67PIj6jZ-2WVKdXD31Y6ChFT9tjH-MeTqB0GZhCKhPwpls9wMJeCUCU0YhWDpOQhtAd59C4ZLpOms_GAPffwCDQefAL5EOIxDnv2l7J-8RPRwfi2-1RJgIIkTzgqXiblQ9YP41XhX11PucJYgpLvzcE-f-G0pFdjShNsGwuMGzbX0c2-SZgEja-O1Dto"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">ياسر فهد الشمري</p>
+<p class="text-label-md text-on-surface-variant">ID: #ST-8842</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5 text-on-surface-variant">yasser.f@gate.edu.sa</td>
+<td class="px-lg py-5 text-center">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">8 كورسات</span>
+</td>
+<td class="px-lg py-5 w-64">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-l from-primary to-secondary glow-cyan" style="width: 42%"></div>
+</div>
+<span class="text-label-md font-bold text-on-surface-variant">42%</span>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-[12px] font-bold">
+<span class="w-2 h-2 rounded-full bg-on-surface-variant/40"></span>
+                                        منذ ساعتين
+                                    </span>
+</td>
+<td class="px-lg py-5">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-label-md font-bold hover:bg-primary hover:text-on-primary transition-all active:scale-95">عرض التفاصيل</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="A portrait of a confident young woman wearing a modern hijab, standing against a futuristic library background with glowing architectural lines. High-end editorial photography style with cinematic lighting in hues of deep purple and cyan, matching the platform's glassmorphism and modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLr-M_8YQlOuWTt4ijSvWaz5WhO9qoJsnzYnYVaBDWMSx-PwGey3Xq-XcV61Wdoxv_b4AZSn1nsApDWJAmSuj67addbfsTxnLlqf5gUnVy8U_EaU7vXriJXS2NAgvvCvO46d9geLkdvsrwtAGg7DU9t3mwRpCFl209UmccrxmXWI_pr5oJqOG6eAZkIMFXZUD53xcE_rVlCHItaSrjOh3SAn1p9FPZ99QNE60xXFbjWbWdQ6zZtkhUYsfxxBEX6kpcPeTpQwUbla1P"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">سارة خالد الغامدي</p>
+<p class="text-label-md text-on-surface-variant">ID: #ST-7719</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5 text-on-surface-variant">sara.kh@gate.edu.sa</td>
+<td class="px-lg py-5 text-center">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">5 كورسات</span>
+</td>
+<td class="px-lg py-5 w-64">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-l from-primary to-secondary glow-cyan" style="width: 98%"></div>
+</div>
+<span class="text-label-md font-bold text-primary">98%</span>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="flex items-center gap-1.5 text-primary text-[12px] font-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                        متصل الآن
+                                    </span>
+</td>
+<td class="px-lg py-5">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-label-md font-bold hover:bg-primary hover:text-on-primary transition-all active:scale-95">عرض التفاصيل</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl overflow-hidden border border-outline-variant group-hover:border-primary transition-colors">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist portrait of a male student with short dark hair, wearing a high-tech wearable device on his temple. The background is a sophisticated navy blue with a subtle hexagonal pattern. Lighting is high-contrast, professional studio style, reinforcing the futuristic safety and tech theme of the GATE platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMXa8CBzSMmRvNcX907cdDrO1fe6tBzjSYxVvNeyvQPwPr01DFsjaigd8p_hKgpGWylnAEmaP7PyfUcbSMWpcPKhMc60roX3xP_55OJ_JLfWbDkFIGaFRTL4Ji8Uh1dg2-ywZPLnoJC0aOSKBcwMLgwZ_aNGg1i5mpu2Ac7CaN6UdOsZjuhzZ_H5KK6p5Wp5J-EmjdnLucbssVXxJI8mw4Xc1_r8wYNl6rdifqFWyQc-eyyR2abqEkjWokYVBff1zIfKUw4fws_PqF"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">عمر يوسف القحطاني</p>
+<p class="text-label-md text-on-surface-variant">ID: #ST-6625</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5 text-on-surface-variant">omar.y@gate.edu.sa</td>
+<td class="px-lg py-5 text-center">
+<span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">3 كورسات</span>
+</td>
+<td class="px-lg py-5 w-64">
+<div class="flex items-center gap-3">
+<div class="flex-1 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-l from-primary to-secondary glow-cyan" style="width: 25%"></div>
+</div>
+<span class="text-label-md font-bold text-on-surface-variant">25%</span>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-[12px] font-bold">
+<span class="w-2 h-2 rounded-full bg-on-surface-variant/40"></span>
+                                        منذ يومين
+                                    </span>
+</td>
+<td class="px-lg py-5">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-lg text-label-md font-bold hover:bg-primary hover:text-on-primary transition-all active:scale-95">عرض التفاصيل</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-lg flex justify-between items-center bg-surface-container-low/30">
+<p class="text-on-surface-variant text-label-md">عرض 4 من أصل 1,284 طالب</p>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors text-on-surface-variant disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded-lg font-bold text-label-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest rounded-lg text-on-surface-variant font-bold text-label-md">2</button>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest rounded-lg text-on-surface-variant font-bold text-label-md">3</button>
+<span class="text-on-surface-variant">...</span>
+<button class="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest rounded-lg text-on-surface-variant font-bold text-label-md">42</button>
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- Atmospheric Background Element -->
+<div class="fixed top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full pointer-events-none z-0"></div>
+<div class="fixed bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary/10 blur-[100px] rounded-full pointer-events-none z-0"></div>
+</main>
+<script>
+        // Micro-interaction for search bar
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+
+        // Hover effects for table rows
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(-4px)';
+                row.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body></html>

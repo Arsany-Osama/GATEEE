@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Noto+Sans+Arabic', 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0c1f;
+            color: #e1e0fb;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 219, 231, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111225;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #323348;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00dbe7;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#27283d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2e2f43",
+                        "on-surface": "#e1e0fb",
+                        "surface-container-low": "#191a2d",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#323348",
+                        "on-secondary": "#002a78",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#6f3cd8",
+                        "on-primary": "#00363a",
+                        "surface-container": "#1d1e32",
+                        "inverse-surface": "#e1e0fb",
+                        "background": "#111225",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-primary-container": "#006a71",
+                        "secondary-container": "#0053db",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface": "#111225",
+                        "on-secondary-container": "#cdd7ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-container-lowest": "#0b0c1f",
+                        "surface-dim": "#111225",
+                        "primary-fixed-dim": "#00dbe7",
+                        "primary": "#e1fdff",
+                        "outline": "#849495",
+                        "tertiary": "#fcf5ff",
+                        "primary-container": "#00f2ff",
+                        "surface-bright": "#37374d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-primary": "#00696f",
+                        "outline-variant": "#3a494b",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "tertiary-container": "#e2d4ff",
+                        "surface-variant": "#323348",
+                        "secondary": "#b4c5ff",
+                        "on-tertiary": "#3c0091",
+                        "tertiary-fixed": "#e9ddff",
+                        "primary-fixed": "#74f5ff",
+                        "surface-tint": "#00dbe7",
+                        "on-surface-variant": "#b9cacb",
+                        "on-error": "#690005",
+                        "on-background": "#e1e0fb"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "body-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "display-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "display-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "label-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "headline-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "headline-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "body-md": ["Plus Jakarta Sans", "Noto Sans Arabic"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background">
+<!-- Sidebar Shell -->
+<aside class="fixed inset-y-0 right-0 z-40 flex flex-col p-lg rtl bg-surface-container-low dark:bg-surface-container-low docked h-screen w-[280px] border-l border-outline-variant dark:border-outline-variant shadow-sm overflow-y-auto">
+<div class="flex items-center gap-4 mb-10 px-4">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">gate</span>
+</div>
+<div>
+<h1 class="font-display-lg text-[24px] font-extrabold text-primary dark:text-primary-fixed-dim leading-none">GATE</h1>
+<p class="text-label-md text-on-surface-variant opacity-70">Educational Platform</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">الرئيسية</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md">الكورسات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">الطلاب</span>
+</a>
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assessment</span>
+<span class="font-label-md text-label-md font-bold">التقارير</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">subscriptions</span>
+<span class="font-label-md text-label-md">الاشتراكات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">local_offer</span>
+<span class="font-label-md text-label-md">الكوبونات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">الإعدادات</span>
+</a>
+</nav>
+<div class="mt-auto pt-6">
+<button class="w-full flex items-center justify-center gap-2 bg-primary-container text-on-primary-container font-bold py-3 rounded-xl active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md">إضافة كورس جديد</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="mr-[280px] min-h-screen">
+<!-- Top Navigation -->
+<header class="fixed top-0 left-0 right-[280px] h-20 z-30 flex justify-between items-center px-lg rtl bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-full pr-10 pl-4 py-2 text-on-surface focus:ring-2 focus:ring-primary transition-all" placeholder="بحث في التقارير..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<!-- Language Switcher -->
+<button class="flex items-center gap-2 px-3 py-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">language</span>
+<span class="text-label-md font-bold">EN</span>
+</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-high rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined p-2 hover:bg-surface-container-high rounded-full transition-colors">help</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3 pl-2">
+<div class="text-left">
+<p class="text-label-md font-bold leading-tight">أحمد علي</p>
+<p class="text-[10px] text-on-surface-variant">مدير النظام</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a middle-aged male administrator in a high-tech office environment. He is wearing a dark charcoal suit with a subtle pattern. The background features blurred digital screens displaying complex data analytics and global maps. The lighting is crisp and cool-toned, reflecting a premium corporate atmosphere with cyan highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp-mpaT5VTXtA43JTdR_94P5i2OVDc9LeqRoCXc14ZqwIXHGi4HtVNtxv0MEwsdamPDQjduXnSVHeye-IT-T1wmv_R0fLw4EPMwISpAfQTt1sKLstRZGCrq9Pa6s8o6KGVeqz_fgxw5DomKigM1TO13xajn5_zmY2oRWJc7pfRKIAV-HsFS_OS5_LEgKhSJb--Y9XBHi0yPZArzEUc7cVWc3QyZBNgRuuqfuURpt3ncx08pPUQJclSKuilOWtWhyviXnf5k9Unll5s"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="pt-28 pb-12 px-lg">
+<!-- Dashboard Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary mb-2">التقارير والتحليلات</h2>
+<p class="text-body-md text-on-surface-variant">نظرة شاملة على أداء المنصة التعليمية للفترة الحالية</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 glass-card rounded-lg text-label-md font-bold hover:bg-surface-container-highest transition-all">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+                        آخر 30 يوم
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg text-label-md font-bold active:scale-95 transition-transform">
+<span class="material-symbols-outlined">download</span>
+                        تصدير التقرير
+                    </button>
+</div>
+</div>
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- Total Revenue -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full -mr-12 -mt-12 blur-3xl transition-all group-hover:bg-primary/20"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary/10 rounded-xl">
+<span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<span class="text-primary text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            12%+
+                        </span>
+</div>
+<p class="text-on-surface-variant text-label-md mb-1">إجمالي الإيرادات</p>
+<h3 class="font-display-md text-display-md font-bold text-on-surface">$124,500</h3>
+</div>
+<!-- Active Users -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-secondary/10 rounded-full -mr-12 -mt-12 blur-3xl transition-all group-hover:bg-secondary/20"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-secondary/10 rounded-xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<span class="text-primary text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            8%+
+                        </span>
+</div>
+<p class="text-on-surface-variant text-label-md mb-1">المستخدمين النشطين</p>
+<h3 class="font-display-md text-display-md font-bold text-on-surface">12,840</h3>
+</div>
+<!-- Course Completions -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-tertiary/10 rounded-full -mr-12 -mt-12 blur-3xl transition-all group-hover:bg-tertiary/20"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-tertiary/10 rounded-xl">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<span class="text-error text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+                            3%-
+                        </span>
+</div>
+<p class="text-on-surface-variant text-label-md mb-1">الدورات المكتملة</p>
+<h3 class="font-display-md text-display-md font-bold text-on-surface">1,250</h3>
+</div>
+<!-- Conversion Rate -->
+<div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full -mr-12 -mt-12 blur-3xl transition-all group-hover:bg-primary/20"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 bg-primary/10 rounded-xl">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+</div>
+<span class="text-primary text-label-md font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+                            5%+
+                        </span>
+</div>
+<p class="text-on-surface-variant text-label-md mb-1">معدل التحويل</p>
+<h3 class="font-display-md text-display-md font-bold text-on-surface">64.2%</h3>
+</div>
+</div>
+<!-- Main Charts Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Revenue Line Chart -->
+<div class="lg:col-span-2 glass-card p-8 rounded-3xl">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface">نمو الإيرادات</h4>
+<p class="text-label-md text-on-surface-variant">تحليل الإيرادات الشهرية لعام 2024</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-label-md text-on-surface-variant">الإيرادات المحققة</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="text-label-md text-on-surface-variant">المستهدفة</span>
+</div>
+</div>
+</div>
+<div class="chart-container flex items-end justify-between gap-2 px-2 relative">
+<!-- Simplified Visual Chart Elements -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
+<div class="border-b border-outline-variant w-full opacity-20"></div>
+<div class="border-b border-outline-variant w-full opacity-20"></div>
+<div class="border-b border-outline-variant w-full opacity-20"></div>
+<div class="border-b border-outline-variant w-full opacity-20"></div>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[40%] rounded-t-lg relative group transition-all hover:h-[45%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$40k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">يناير</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[60%] rounded-t-lg relative group transition-all hover:h-[65%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$62k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">فبراير</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[55%] rounded-t-lg relative group transition-all hover:h-[60%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$58k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">مارس</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[85%] rounded-t-lg relative group transition-all hover:h-[90%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$94k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">أبريل</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[70%] rounded-t-lg relative group transition-all hover:h-[75%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$78k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">مايو</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-end h-full">
+<div class="w-full bg-gradient-to-t from-primary/10 to-primary h-[95%] rounded-t-lg relative group transition-all hover:h-[100%] cursor-pointer">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface px-2 py-1 rounded border border-primary scale-0 group-hover:scale-100 transition-all text-xs font-bold">$112k</div>
+</div>
+<span class="mt-4 text-label-md text-on-surface-variant">يونيو</span>
+</div>
+</div>
+</div>
+<!-- Registration Bar Chart -->
+<div class="glass-card p-8 rounded-3xl flex flex-col">
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface mb-2">تسجيل الطلاب</h4>
+<p class="text-label-md text-on-surface-variant mb-8">التوزيع حسب الأقسام الأكثر طلباً</p>
+<div class="flex-1 flex flex-col justify-around">
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-bold">
+<span>الذكاء الاصطناعي</span>
+<span>85%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[85%] rounded-full shadow-[0_0_10px_rgba(0,219,231,0.5)]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-bold">
+<span>تطوير الويب</span>
+<span>72%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[72%] rounded-full opacity-80"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-bold">
+<span>الأمن السيبراني</span>
+<span>58%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[58%] rounded-full opacity-60"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-label-md font-bold">
+<span>علوم البيانات</span>
+<span>45%</span>
+</div>
+<div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[45%] rounded-full opacity-40"></div>
+</div>
+</div>
+</div>
+<button class="mt-8 text-primary font-bold text-label-md flex items-center gap-2 hover:gap-4 transition-all w-fit">
+                        عرض كافة التفاصيل
+                        <span class="material-symbols-outlined text-sm">arrow_back</span>
+</button>
+</div>
+</div>
+<!-- Recent Activity Table Section -->
+<div class="mt-12">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-headline-md text-headline-md font-bold text-on-surface">آخر عمليات التسجيل</h4>
+<button class="text-on-surface-variant hover:text-primary transition-colors text-label-md font-medium">عرض الكل</button>
+</div>
+<div class="glass-card rounded-3xl overflow-hidden">
+<table class="w-full text-right">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-6 py-4 font-bold text-label-lg text-primary">الطالب</th>
+<th class="px-6 py-4 font-bold text-label-lg text-primary">الدورة</th>
+<th class="px-6 py-4 font-bold text-label-lg text-primary">التاريخ</th>
+<th class="px-6 py-4 font-bold text-label-lg text-primary">المبلغ</th>
+<th class="px-6 py-4 font-bold text-label-lg text-primary">الحالة</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-variant/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center font-bold text-xs">MA</div>
+<div>
+<p class="font-bold text-on-surface">محمد العبدالله</p>
+<p class="text-[10px] text-on-surface-variant">m.abdullah@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">مقدمة في الذكاء الاصطناعي</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">12 أكتوبر 2024</td>
+<td class="px-6 py-4 font-bold text-on-surface">$120.00</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-primary/10 text-primary-fixed-dim rounded-full text-[10px] font-bold">مكتمل</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center font-bold text-xs text-on-primary-container">SN</div>
+<div>
+<p class="font-bold text-on-surface">سارة ناصر</p>
+<p class="text-[10px] text-on-surface-variant">sara.n@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">هندسة الواجهات المتقدمة</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">11 أكتوبر 2024</td>
+<td class="px-6 py-4 font-bold text-on-surface">$199.00</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-primary/10 text-primary-fixed-dim rounded-full text-[10px] font-bold">مكتمل</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-variant/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center font-bold text-xs">RK</div>
+<div>
+<p class="font-bold text-on-surface">رائد خالد</p>
+<p class="text-[10px] text-on-surface-variant">raed.k@example.com</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">أساسيات الأمن السيبراني</td>
+<td class="px-6 py-4 font-label-md text-on-surface-variant">10 أكتوبر 2024</td>
+<td class="px-6 py-4 font-bold text-on-surface">$85.00</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary rounded-full text-[10px] font-bold">قيد المراجعة</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interaction for sidebar links
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // If it were a real app, logic would go here
+            });
+        });
+
+        // Search bar interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+    </script>
+</body></html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GATE Admin - Categories Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-high": "#27283d",
+                    "on-error-container": "#ffdad6",
+                    "inverse-on-surface": "#2e2f43",
+                    "on-surface": "#e1e0fb",
+                    "surface-container-low": "#191a2d",
+                    "on-primary-fixed": "#002022",
+                    "surface-container-highest": "#323348",
+                    "on-secondary": "#002a78",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#6f3cd8",
+                    "on-primary": "#00363a",
+                    "surface-container": "#1d1e32",
+                    "inverse-surface": "#e1e0fb",
+                    "background": "#111225",
+                    "on-secondary-fixed-variant": "#003ea8",
+                    "on-primary-container": "#006a71",
+                    "secondary-container": "#0053db",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "on-tertiary-fixed-variant": "#5516be",
+                    "surface": "#111225",
+                    "on-secondary-container": "#cdd7ff",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface-container-lowest": "#0b0c1f",
+                    "surface-dim": "#111225",
+                    "primary-fixed-dim": "#00dbe7",
+                    "primary": "#e1fdff",
+                    "outline": "#849495",
+                    "tertiary": "#fcf5ff",
+                    "primary-container": "#00f2ff",
+                    "surface-bright": "#37374d",
+                    "on-secondary-fixed": "#00174b",
+                    "on-tertiary-fixed": "#23005c",
+                    "on-primary-fixed-variant": "#004f54",
+                    "inverse-primary": "#00696f",
+                    "outline-variant": "#3a494b",
+                    "error-container": "#93000a",
+                    "tertiary-fixed-dim": "#d0bcff",
+                    "tertiary-container": "#e2d4ff",
+                    "surface-variant": "#323348",
+                    "secondary": "#b4c5ff",
+                    "on-tertiary": "#3c0091",
+                    "tertiary-fixed": "#e9ddff",
+                    "primary-fixed": "#74f5ff",
+                    "surface-tint": "#00dbe7",
+                    "on-surface-variant": "#b9cacb",
+                    "on-error": "#690005",
+                    "on-background": "#e1e0fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xxl": "48px",
+                    "margin-desktop": "32px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "sm": "8px",
+                    "unit": "4px",
+                    "xs": "4px",
+                    "xl": "32px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "display-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "display-md": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["22px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #0a0b1e;
+            color: #e1e0fb;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .cyan-glow {
+            box-shadow: 0 0 15px rgba(0, 219, 231, 0.3);
+        }
+        .cyan-glow-hover:hover {
+            box-shadow: 0 0 25px rgba(0, 219, 231, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 219, 231, 0.3);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="dark bg-background min-h-screen">
+<aside class="fixed h-full w-[280px] left-0 top-0 bg-surface-container-low/70 backdrop-blur-xl border-r border-white/10 shadow-xl z-50 flex flex-col gap-sm p-lg overflow-y-auto custom-scrollbar">
+<div class="flex items-center gap-md mb-lg">
+<div class="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center cyan-glow">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">gate</span>
+</div>
+<div>
+<h1 class="font-display-md text-headline-md font-bold text-primary leading-tight">GATE Admin</h1>
+<p class="font-body-md text-label-md text-on-surface-variant opacity-70 uppercase tracking-widest">Premium Dashboard</p>
+</div>
+</div>
+<nav class="space-y-xs">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">school</span>
+<span class="font-body-md text-body-md">Courses</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm bg-secondary-container text-on-secondary-container rounded-lg font-bold shadow-lg transition-transform active:scale-95 group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">category</span>
+<span class="font-body-md text-body-md">Categories</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-body-md text-body-md">Students</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">record_voice_over</span>
+<span class="font-body-md text-body-md">Instructors</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Payments</span>
+</a>
+<div class="pt-lg pb-sm px-md">
+<p class="text-label-md font-bold text-on-surface-variant opacity-40 uppercase tracking-widest">System</p>
+</div>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Notifications</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto p-md glass-card rounded-xl border-primary/20">
+<p class="text-label-md text-primary font-bold mb-xs">New Content?</p>
+<button class="w-full py-sm bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-container font-bold rounded-lg text-label-lg active:scale-95 transition-all flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                Add New Course
+            </button>
+</div>
+</aside>
+<header class="fixed top-0 left-[280px] right-0 h-20 bg-surface/60 backdrop-blur-md border-b border-white/10 z-40 flex items-center justify-between px-xl shadow-sm">
+<div class="flex items-center gap-lg flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-lowest border border-white/5 rounded-full py-2.5 pl-12 pr-4 text-body-md focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all" placeholder="Search categories..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center bg-surface-container rounded-full p-1 border border-white/5 mr-4">
+<button class="px-4 py-1.5 rounded-full text-label-md font-bold bg-primary-container text-on-primary-container shadow-sm">EN</button>
+<button class="px-4 py-1.5 rounded-full text-label-md font-bold text-on-surface-variant hover:text-on-surface transition-colors">AR</button>
+</div>
+<button class="p-2.5 text-on-surface-variant hover:bg-white/5 rounded-full transition-all relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2.5 text-on-surface-variant hover:bg-white/5 rounded-full transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-white/10 mx-2"></div>
+<div class="flex items-center gap-md">
+<div class="text-right hidden xl:block">
+<p class="font-label-lg text-on-surface">Alex Rivera</p>
+<p class="text-[10px] text-primary uppercase font-black tracking-tighter">Senior Administrator</p>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary/30 overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a senior administrator for a high-tech corporate dashboard, set against a blurred dark blue industrial background with subtle cyan lighting highlights on the side of the face, capturing a sense of authority and modernity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhc5GLOt9KO441H6m17EDsWEb1uNWplbpm733LcIguZG0RaOyJ3au1fUSVS1mC-EC7RVfvZY66i67XML2tY0Ch5TLh3rYirMbu_S9U6jcaESDfsp8q2OenGnIQb7HOeZ024GOYubk6SBPYCmC25R8u1neNWEUStmWNxie3mO9wsllZDGKNZDoX27jxW274YtuCYD-m75P0ejcgxCzDOGav08JVpvjkCmyqQ3zS0NY8RVt2zX9LVwnMNKfBPuZEIvl0yHNwC-82ZJRW"/>
+</div>
+</div>
+</div>
+</header>
+<main class="ml-[280px] pt-32 p-xl pb-24 relative">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-lg mb-xxl">
+<div>
+<h2 class="font-display-md text-display-md text-primary leading-none mb-2">Categories</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Organize and manage your safety training curriculum tiers.</p>
+</div>
+<button class="px-xl py-lg bg-gradient-to-br from-primary-container to-secondary-container text-on-primary-container font-extrabold rounded-xl shadow-lg hover:shadow-primary/20 flex items-center gap-md transition-all active:scale-95 group cyan-glow-hover">
+<span class="material-symbols-outlined group-hover:rotate-90 transition-transform">add</span>
+<span>Add New Category</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-lg mb-xl">
+<div class="glass-card p-xl rounded-2xl flex items-center gap-xl">
+<div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-3xl">category</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-widest opacity-60">Total Categories</p>
+<p class="text-headline-lg text-primary font-black">24</p>
+</div>
+</div>
+<div class="glass-card p-xl rounded-2xl flex items-center gap-xl">
+<div class="w-14 h-14 rounded-2xl bg-secondary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-3xl">school</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-widest opacity-60">Active Courses</p>
+<p class="text-headline-lg text-secondary font-black">156</p>
+</div>
+</div>
+<div class="glass-card p-xl rounded-2xl flex items-center gap-xl">
+<div class="w-14 h-14 rounded-2xl bg-tertiary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl">visibility</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-widest opacity-60">Avg. Engagement</p>
+<p class="text-headline-lg text-tertiary font-black">88%</p>
+</div>
+</div>
+<div class="glass-card p-xl rounded-2xl flex items-center gap-xl">
+<div class="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error text-3xl">emergency</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-widest opacity-60">Safety Alerts</p>
+<p class="text-headline-lg text-error font-black">02</p>
+</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl overflow-hidden">
+<div class="p-lg border-b border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-md bg-surface-container-low/40">
+<div class="flex items-center gap-md">
+<button class="bg-surface-container-high px-4 py-2 rounded-lg text-label-md font-bold text-primary border border-primary/20 flex items-center gap-xs">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                        Filter
+                    </button>
+<button class="text-on-surface-variant hover:text-on-surface text-label-md font-bold px-4 py-2 transition-colors">Export CSV</button>
+</div>
+<div class="flex items-center gap-xs text-on-surface-variant text-label-md">
+<span>Showing 1-8 of 24 results</span>
+<div class="flex gap-1 ml-4">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-high text-on-surface-variant cursor-not-allowed"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant border-b border-white/5">
+<th class="px-xl py-lg font-label-lg text-label-lg uppercase tracking-widest">Category</th>
+<th class="px-xl py-lg font-label-lg text-label-lg uppercase tracking-widest text-center">Courses</th>
+<th class="px-xl py-lg font-label-lg text-label-lg uppercase tracking-widest">Latest Update</th>
+<th class="px-xl py-lg font-label-lg text-label-lg uppercase tracking-widest">Status</th>
+<th class="px-xl py-lg font-label-lg text-label-lg uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-12 rounded-lg bg-surface-container-high overflow-hidden border border-white/10 group-hover:border-primary/40 transition-colors">
+<img class="w-full h-full object-cover" data-alt="A cinematic conceptual 3D render representing 'Industrial Safety' for a professional e-learning category, featuring a glowing cyan hard hat and architectural blueprints floating in a dark, high-contrast digital space with particles and blue light trails, emphasizing precision and security." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBON3hOuEeSCrNCKjxV2tzR3bR3ykcu7h4v7HceTYbUxjzJ96mC2ukfKEVF6zCe315LW9jWimgXNFMjRgXfaoJBHWMeff5TP0oveKrMqTNY8iSv1ZUNIIVhR68TDBP36oknO3V0zzo5W6CMUf2a16JRNE5V3W4ySxjM3rwfAdc_dX4vO_kY2q_cUuFKlvdxmN1VnB8yKj7JLUzi19yLACk33Wmr5Gleglx3UXeai6wGGVRKLZmHIy1fQrLmghXZIS-Y2qHFYQ1SiLhL"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-body-md">Industrial Safety</p>
+<p class="text-label-md text-on-surface-variant opacity-60">High-risk environment training</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg text-center">
+<span class="px-4 py-1 rounded-full bg-primary/10 text-primary font-bold text-label-md border border-primary/20">42 Courses</span>
+</td>
+<td class="px-xl py-lg font-body-md text-on-surface-variant">Oct 24, 2023</td>
+<td class="px-xl py-lg">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+<span class="ml-3 text-label-md font-bold text-on-surface-variant peer-checked:text-primary">Active</span>
+</label>
+</td>
+<td class="px-xl py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-2 rounded-lg hover:bg-primary/10 text-primary-fixed-dim transition-all group/btn">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error transition-all group/btn">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-12 rounded-lg bg-surface-container-high overflow-hidden border border-white/10 group-hover:border-primary/40 transition-colors">
+<img class="w-full h-full object-cover" data-alt="A high-end digital illustration of 'Corporate Governance' for an educational platform, showcasing minimalist crystal-like geometric icons of scales and documents arranged in a sophisticated dark blue composition with soft volumetric lighting and elegant reflections, following a premium corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWdueg_OyB5PlJqG_A19syp0tp0qsOhXjFpoGD6XMCDhdO1li5lXQabGPQfBMmS8ouaqOl-QHuhjpLRNRSn53gBQPi6ZAyY84JPvqVmXULYJAvSeysHTNFWqG1MXO0Kt-R2IyEZml062MNretmyvvg27YQufRA2Ayxkufb5yRLQ-RgjNTB-NbTwi4tEblGx9M9E8TFqrBujYQ_Vk9fujfLfp-6oSfo6Wp6BWZNUMKvwlnCUfSHK3hh3KYIrIp18kc_P26PDXrvppaH"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-body-md">Corporate Governance</p>
+<p class="text-label-md text-on-surface-variant opacity-60">Legal and ethical compliance</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg text-center">
+<span class="px-4 py-1 rounded-full bg-primary/10 text-primary font-bold text-label-md border border-primary/20">28 Courses</span>
+</td>
+<td class="px-xl py-lg font-body-md text-on-surface-variant">Nov 02, 2023</td>
+<td class="px-xl py-lg">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+<span class="ml-3 text-label-md font-bold text-on-surface-variant peer-checked:text-primary">Active</span>
+</label>
+</td>
+<td class="px-xl py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-2 rounded-lg hover:bg-primary/10 text-primary-fixed-dim transition-all group/btn">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error transition-all group/btn">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-12 rounded-lg bg-surface-container-high overflow-hidden border border-white/10 group-hover:border-primary/40 transition-colors">
+<img class="w-full h-full object-cover" data-alt="An abstract medical and healthcare concept visual with holographic glowing cells and blue DNA helix structures floating in a dark navy blue vacuum, with bright cyan energy pulses and subtle technical grid overlays, designed as a premium header image for a healthcare training category." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKkIO1ufcjKapg9r69vgAFDKn43jI_62CXnaEZXYzFHm1J2HVZ_5z5kS2fDzIOOQLbSWqrWzF_JP_B7Mm0IjE3_9kIpzl1NqHatD5bEb0wzvQO8aIBaI8idVaKJGSQVvlsZFOW5s9Lc6aE6VJWGqkXXCP6cLcPKqI1aK1EVemyL4BQnNl0b9OP58f6BOD53HbyI2JmS_aa4XJR6GIv-nKsiglPUldIIihgoe6bo8nfjVVSFwqYVIx3wqn77AmvSdZXT8QQ6f4Jqqji"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-body-md">Medical & Health</p>
+<p class="text-label-md text-on-surface-variant opacity-60">Healthcare standard protocols</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg text-center">
+<span class="px-4 py-1 rounded-full bg-primary/10 text-primary font-bold text-label-md border border-primary/20">35 Courses</span>
+</td>
+<td class="px-xl py-lg font-body-md text-on-surface-variant">Dec 12, 2023</td>
+<td class="px-xl py-lg">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+<span class="ml-3 text-label-md font-bold text-on-surface-variant peer-checked:text-primary">Inactive</span>
+</label>
+</td>
+<td class="px-xl py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-2 rounded-lg hover:bg-primary/10 text-primary-fixed-dim transition-all group/btn">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error transition-all group/btn">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-xl py-lg">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-12 rounded-lg bg-surface-container-high overflow-hidden border border-white/10 group-hover:border-primary/40 transition-colors">
+<img class="w-full h-full object-cover" data-alt="A futuristic cybersecurity landscape featuring glowing network nodes and complex data matrices in deep indigo and electric cyan, with sharp digital aesthetics and neon accents, illustrating a modern IT security and network defense course category for a professional admin panel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMERKOfQvaTHrel--5Vc45In-_SNX8_e6ZYbGmeZsvEeP21dnismNqxaUugEVrV7wjqVz-UwsQWLE85IOpPVIXl9LWEwFLmg3QeeJdhVij0FvZqd7kta30Lj32v5Sk7O0DjofzoiFzbSSRw4P_74WLOsohufUE4qRvatzfXqS4T-t1y44nHJaTnIezrngKPoqlP99DFxd0Q5lp3g39env416D1_L0YG-nBJyFdcEl1rm_8tPmcTTy9hR7izFBQbLzvWLIuTKR5Z1we"/>
+</div>
+<div>
+<p class="font-bold text-on-surface text-body-md">Cybersecurity</p>
+<p class="text-label-md text-on-surface-variant opacity-60">Digital infrastructure defense</p>
+</div>
+</div>
+</td>
+<td class="px-xl py-lg text-center">
+<span class="px-4 py-1 rounded-full bg-primary/10 text-primary font-bold text-label-md border border-primary/20">19 Courses</span>
+</td>
+<td class="px-xl py-lg font-body-md text-on-surface-variant">Jan 15, 2024</td>
+<td class="px-xl py-lg">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-container"></div>
+<span class="ml-3 text-label-md font-bold text-on-surface-variant peer-checked:text-primary">Active</span>
+</label>
+</td>
+<td class="px-xl py-lg text-right">
+<div class="flex items-center justify-end gap-sm">
+<button class="p-2 rounded-lg hover:bg-primary/10 text-primary-fixed-dim transition-all group/btn">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error transition-all group/btn">
+<span class="material-symbols-outlined">delete</span>
+</button>
+<button class="p-2 rounded-lg hover:bg-white/10 text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-lg bg-surface-container-low/40 border-t border-white/5 flex items-center justify-between">
+<div class="flex items-center gap-md">
+<span class="text-label-md text-on-surface-variant">Rows per page:</span>
+<select class="bg-surface-container border border-white/10 rounded px-2 py-1 text-label-md focus:outline-none">
+<option>10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+<div class="flex items-center gap-xl">
+<div class="flex items-center gap-xs">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-all text-on-surface-variant"><span class="material-symbols-outlined">first_page</span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-all text-on-surface-variant"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-all text-on-surface-variant"><span class="material-symbols-outlined">chevron_right</span></button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-all text-on-surface-variant"><span class="material-symbols-outlined">last_page</span></button>
+</div>
+</div>
+</div>
+</div>
+<div class="fixed bottom-0 left-[280px] right-0 p-lg bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none">
+<div class="max-w-4xl mx-auto glass-card p-4 rounded-full flex items-center justify-between pointer-events-auto border-primary/20 cyan-glow">
+<div class="flex items-center gap-lg ml-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">info</span>
+<p class="text-label-md text-on-surface">You have 2 categories pending review for safety certification.</p>
+</div>
+<button class="px-6 py-2 bg-primary-container text-on-primary-container rounded-full font-bold text-label-md hover:brightness-110 transition-all">Review Now</button>
+</div>
+</div>
+</main>
+<div class="fixed pointer-events-none w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] -z-10 transition-all duration-300" id="glow-element"></div>
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('glow-element');
+            const x = e.clientX - 300;
+            const y = e.clientY - 300;
+            glow.style.transform = `translate(${x}px, ${y}px)`;
+        });
+
+        const toggles = document.querySelectorAll('input[type="checkbox"]');
+        toggles.forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const label = this.nextElementSibling.nextElementSibling;
+                if (this.checked) {
+                    label.textContent = 'Active';
+                } else {
+                    label.textContent = 'Inactive';
+                }
+            });
+        });
+    </script>
+</body></html>

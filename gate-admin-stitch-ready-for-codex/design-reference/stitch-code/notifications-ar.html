@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GATE | الرسائل والإشعارات</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Noto+Sans+Arabic', 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0b1e;
+            color: #e1e0fb;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 219, 231, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00dbe7 0%, #0053db 100%);
+        }
+        .primary-glow:hover {
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.4);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3a494b;
+            border-radius: 10px;
+        }
+        .active-nav-border {
+            border-right: 4px solid #00dbe7;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "surface-container-high": "#27283d",
+                "on-error-container": "#ffdad6",
+                "inverse-on-surface": "#2e2f43",
+                "on-surface": "#e1e0fb",
+                "surface-container-low": "#191a2d",
+                "on-primary-fixed": "#002022",
+                "surface-container-highest": "#323348",
+                "on-secondary": "#002a78",
+                "error": "#ffb4ab",
+                "on-tertiary-container": "#6f3cd8",
+                "on-primary": "#00363a",
+                "surface-container": "#1d1e32",
+                "inverse-surface": "#e1e0fb",
+                "background": "#111225",
+                "on-secondary-fixed-variant": "#003ea8",
+                "on-primary-container": "#006a71",
+                "secondary-container": "#0053db",
+                "secondary-fixed-dim": "#b4c5ff",
+                "on-tertiary-fixed-variant": "#5516be",
+                "surface": "#111225",
+                "on-secondary-container": "#cdd7ff",
+                "secondary-fixed": "#dbe1ff",
+                "surface-container-lowest": "#0b0c1f",
+                "surface-dim": "#111225",
+                "primary-fixed-dim": "#00dbe7",
+                "primary": "#e1fdff",
+                "outline": "#849495",
+                "tertiary": "#fcf5ff",
+                "primary-container": "#00f2ff",
+                "surface-bright": "#37374d",
+                "on-secondary-fixed": "#00174b",
+                "on-tertiary-fixed": "#23005c",
+                "on-primary-fixed-variant": "#004f54",
+                "inverse-primary": "#00696f",
+                "outline-variant": "#3a494b",
+                "error-container": "#93000a",
+                "tertiary-fixed-dim": "#d0bcff",
+                "tertiary-container": "#e2d4ff",
+                "surface-variant": "#323348",
+                "secondary": "#b4c5ff",
+                "on-tertiary": "#3c0091",
+                "tertiary-fixed": "#e9ddff",
+                "primary-fixed": "#74f5ff",
+                "surface-tint": "#00dbe7",
+                "on-surface-variant": "#b9cacb",
+                "on-error": "#690005",
+                "on-background": "#e1e0fb"
+              },
+              "spacing": { "lg": "24px", "xxl": "48px", "sm": "8px", "md": "16px", "xl": "32px" },
+              "fontFamily": {
+                "label-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                "body-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                "display-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                "headline-md": ["Plus Jakarta Sans", "Noto Sans Arabic"]
+              },
+              "fontSize": {
+                "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="dark bg-background">
+<!-- WebGL Background Overlay -->
+
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed inset-y-0 right-0 z-40 flex flex-col p-lg rtl bg-surface-container-low dark:bg-surface-container-low w-[280px] border-l border-outline-variant shadow-sm h-screen">
+<div class="flex items-center gap-4 mb-xxl px-2">
+<div class="w-10 h-10 primary-gradient rounded-xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-on-primary font-bold">gate</span>
+</div>
+<div>
+<h1 class="font-display-lg text-[24px] font-extrabold text-primary leading-none">GATE</h1>
+<p class="font-label-md text-[10px] text-on-surface-variant tracking-wider uppercase">Educational Platform</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 custom-scrollbar overflow-y-auto">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">الرئيسية</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md">الكورسات</span>
+</a>
+<!-- Active Item: Notifications -->
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 border-r-4 border-primary transition-all active:scale-95 duration-150 shadow-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-md text-label-md">الإشعارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">الطلاب</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">person_celebrate</span>
+<span class="font-label-md text-label-md">المدرسين</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-label-md text-label-md">الاختبارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-label-md text-label-md">التقارير</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<button class="w-full primary-gradient primary-glow text-on-primary font-label-lg py-4 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
+<span class="material-symbols-outlined">add_circle</span>
+                إضافة كورس جديد
+            </button>
+</div>
+</aside>
+<!-- TopNavBar (Execution from JSON) -->
+<header class="fixed top-0 left-0 right-[280px] h-20 z-30 flex justify-between items-center px-margin-desktop bg-surface/80 backdrop-blur-md border-b border-outline-variant rtl">
+<div class="flex items-center gap-6 w-full max-w-2xl">
+<div class="relative w-full focus-within:ring-2 focus-within:ring-primary rounded-full transition-all">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-full pr-12 py-3 text-on-surface placeholder:text-outline focus:ring-0" placeholder="بحث عن إشعارات أو رسائل..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Language Switcher -->
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors flex items-center gap-2 px-4 border border-outline-variant">
+<span class="material-symbols-outlined text-primary-fixed-dim">language</span>
+<span class="font-label-md">English</span>
+</button>
+<div class="flex items-center gap-3">
+<div class="hover:bg-surface-container-high rounded-full p-2 transition-colors relative cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</div>
+<div class="hover:bg-surface-container-high rounded-full p-2 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">help</span>
+</div>
+<div class="h-10 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-left rtl:text-right">
+<p class="font-label-lg text-on-surface group-hover:text-primary transition-colors">أحمد المسؤول</p>
+<p class="font-label-md text-on-surface-variant leading-none">مدير النظام</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary object-cover" data-alt="A professional headshot of a Middle Eastern male administrator in a high-tech corporate setting, wearing a minimalist dark suit. The lighting is dramatic with soft cyan edge glows reflecting from nearby digital displays. High-end professional portrait photography style with a blurred futuristic office background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLBZbM0qC_6AYaGCoEgFc8iaefeTt0kmsJ1jQrOeF8SGYUS8By5QqriCtIPlF5pJ9SZcs_e5MZUttsqDiHj9-drhMbEuJiunoglrcUPMEa1eU_AP5pG4mNId0nAkXvf61jg_Pxvx_-XAdyIm2a0wT96fQOsBQ89PtHI8vapdr2eTspetixOJhpX1IPxboH9nuIeiVcWJ80gv07gcl8ucTumDtgV1fc0QJA-t-SOTyeSfcoHfcup9JVk1a-nSk9X95BN-nV-WRP5S8P"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="mr-[280px] pt-32 pb-xxl px-margin-desktop relative z-10">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-xl">
+<div>
+<h2 class="font-display-md text-primary mb-2">الرسائل والإشعارات</h2>
+<p class="text-on-surface-variant font-body-md max-w-lg">إدارة وتتبع جميع التنبيهات المرسلة للطلاب والمدرسين عبر المنصة.</p>
+</div>
+<button class="primary-gradient primary-glow px-8 py-4 rounded-2xl flex items-center gap-3 font-label-lg text-on-primary transition-all hover:-translate-y-1" onclick="toggleModal()">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+                إرسال إشعار جديد
+            </button>
+</div>
+<!-- Stats Overview (Asymmetric Layout) -->
+<div class="grid grid-cols-12 gap-gutter mb-xl">
+<div class="col-span-8 glass-card rounded-3xl p-lg flex items-center justify-between">
+<div class="space-y-4">
+<h3 class="font-headline-md text-on-surface">إحصائيات الإشعارات</h3>
+<div class="flex gap-8">
+<div>
+<p class="text-on-surface-variant font-label-md mb-1">إجمالي المرسل</p>
+<p class="text-display-lg text-primary leading-tight">1,284</p>
+</div>
+<div class="w-px h-12 bg-outline-variant my-auto"></div>
+<div>
+<p class="text-on-surface-variant font-label-md mb-1">معدل المشاهدة</p>
+<p class="text-display-lg text-secondary leading-tight">92%</p>
+</div>
+</div>
+</div>
+<div class="w-48 h-32">
+<!-- Simple CSS Graph representation -->
+<div class="flex items-end gap-2 h-full">
+<div class="w-4 bg-primary/20 h-1/2 rounded-t-lg transition-all hover:h-2/3"></div>
+<div class="w-4 bg-primary/40 h-3/4 rounded-t-lg transition-all hover:h-full"></div>
+<div class="w-4 bg-primary/60 h-2/3 rounded-t-lg transition-all hover:h-5/6"></div>
+<div class="w-4 primary-gradient h-full rounded-t-lg shadow-[0_0_15px_rgba(0,219,231,0.5)]"></div>
+<div class="w-4 bg-primary/40 h-1/2 rounded-t-lg"></div>
+</div>
+</div>
+</div>
+<div class="col-span-4 primary-gradient rounded-3xl p-lg relative overflow-hidden group">
+<div class="relative z-10 text-on-primary">
+<span class="material-symbols-outlined text-4xl mb-4 opacity-80">campaign</span>
+<h3 class="font-headline-md mb-2">تنبيه النظام</h3>
+<p class="font-body-md opacity-90">هناك تحديث تقني مجدول الليلة عند الساعة 12:00 صباحاً. سيتم إخطار جميع المستخدمين.</p>
+</div>
+<div class="absolute -bottom-4 -left-4 opacity-10 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[160px]">warning</span>
+</div>
+</div>
+</div>
+<!-- Filter & List Tabs -->
+<div class="mb-lg flex items-center justify-between">
+<div class="flex gap-4 p-1 bg-surface-container-low rounded-2xl border border-outline-variant">
+<button class="px-6 py-2 rounded-xl bg-secondary-container text-on-secondary-container font-label-lg transition-all">الكل</button>
+<button class="px-6 py-2 rounded-xl hover:bg-surface-variant text-on-surface-variant font-label-lg transition-all">الطلاب</button>
+<button class="px-6 py-2 rounded-xl hover:bg-surface-variant text-on-surface-variant font-label-lg transition-all">المدرسين</button>
+<button class="px-6 py-2 rounded-xl hover:bg-surface-variant text-on-surface-variant font-label-lg transition-all">مسودة</button>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md">
+<span>ترتيب حسب:</span>
+<select class="bg-transparent border-none focus:ring-0 text-primary cursor-pointer">
+<option>الأحدث تاريخاً</option>
+<option>الأقدم تاريخاً</option>
+</select>
+</div>
+</div>
+<!-- Notifications Table (Glassmorphism List) -->
+<div class="glass-card rounded-3xl overflow-hidden">
+<table class="w-full text-right">
+<thead class="bg-surface-container-high/50">
+<tr>
+<th class="px-lg py-4 font-label-lg text-on-surface-variant border-b border-outline-variant">الموضوع</th>
+<th class="px-lg py-4 font-label-lg text-on-surface-variant border-b border-outline-variant">الفئة المستهدفة</th>
+<th class="px-lg py-4 font-label-lg text-on-surface-variant border-b border-outline-variant">التاريخ والوقت</th>
+<th class="px-lg py-4 font-label-lg text-on-surface-variant border-b border-outline-variant text-center">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Item 1 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface mb-0.5">موعد بدء امتحانات نهاية الفصل</p>
+<p class="text-on-surface-variant text-xs line-clamp-1">نود إحاطتكم علماً بأن الامتحانات ستبدأ في تمام الساعة التاسعة صباحاً...</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary-fixed-dim text-[11px] font-bold border border-primary/20">الطلاب</span>
+</td>
+<td class="px-lg py-5">
+<div class="text-on-surface-variant font-label-md">
+<p>15 أكتوبر 2023</p>
+<p class="text-[10px] opacity-60">10:30 ص</p>
+</div>
+</td>
+<td class="px-lg py-5">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-primary-fixed-dim"><span class="material-symbols-outlined text-sm">visibility</span></button>
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-on-surface-variant"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Item 2 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">event</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface mb-0.5">اجتماع طاقم التدريس الدوري</p>
+<p class="text-on-surface-variant text-xs line-clamp-1">سيتم عقد الاجتماع الأسبوعي لمناقشة نتائج الطلاب في قاعة الاجتماعات الافتراضية...</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary-fixed-dim text-[11px] font-bold border border-secondary/20">المدرسين</span>
+</td>
+<td class="px-lg py-5">
+<div class="text-on-surface-variant font-label-md">
+<p>14 أكتوبر 2023</p>
+<p class="text-[10px] opacity-60">02:15 م</p>
+</div>
+</td>
+<td class="px-lg py-5">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-primary-fixed-dim"><span class="material-symbols-outlined text-sm">visibility</span></button>
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-on-surface-variant"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Item 3 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">verified</span>
+</div>
+<div>
+<p class="font-label-lg text-on-surface mb-0.5">تهنئة بنجاح الدورة التدريبية</p>
+<p class="text-on-surface-variant text-xs line-clamp-1">نهنئ الطلاب الذين اجتازوا اختبار البرمجة المتقدمة بنسبة نجاح بلغت 95%...</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-5">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary-fixed-dim text-[11px] font-bold border border-primary/20">الطلاب</span>
+</td>
+<td class="px-lg py-5">
+<div class="text-on-surface-variant font-label-md">
+<p>12 أكتوبر 2023</p>
+<p class="text-[10px] opacity-60">09:00 ص</p>
+</div>
+</td>
+<td class="px-lg py-5">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-primary-fixed-dim"><span class="material-symbols-outlined text-sm">visibility</span></button>
+<button class="p-2 rounded-lg hover:bg-surface-container-highest text-on-surface-variant"><span class="material-symbols-outlined text-sm">edit</span></button>
+<button class="p-2 rounded-lg hover:bg-error/10 text-error"><span class="material-symbols-outlined text-sm">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- Pagination -->
+<div class="px-lg py-4 bg-surface-container-low/30 border-t border-outline-variant flex items-center justify-between">
+<span class="text-on-surface-variant font-label-md">عرض 1-3 من أصل 24 إشعار</span>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container-high disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined rotate-180">chevron_right</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-bold text-sm">1</button>
+<button class="w-8 h-8 rounded-lg border border-outline-variant hover:bg-surface-container-high text-on-surface-variant text-sm">2</button>
+<button class="w-8 h-8 rounded-lg border border-outline-variant hover:bg-surface-container-high text-on-surface-variant text-sm">3</button>
+<button class="p-2 rounded-lg border border-outline-variant hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal for Sending Notification -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-md bg-background/60 backdrop-blur-sm hidden" id="notificationModal">
+<div class="glass-card w-full max-w-2xl rounded-[2rem] p-xl shadow-2xl scale-95 transition-transform duration-300" id="modalContainer">
+<div class="flex justify-between items-center mb-xl">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl primary-gradient flex items-center justify-center text-on-primary shadow-lg">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div>
+<h3 class="font-headline-md text-on-surface">إرسال إشعار جديد</h3>
+<p class="text-on-surface-variant font-label-md">سيتم بث هذا الإشعار للفئة المستهدفة فوراً.</p>
+</div>
+</div>
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors" onclick="toggleModal()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="space-y-6">
+<div>
+<label class="block font-label-lg text-primary-fixed-dim mb-2">الفئة المستهدفة</label>
+<div class="grid grid-cols-3 gap-4">
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="audience" type="radio"/>
+<div class="flex flex-col items-center gap-2 p-4 rounded-2xl border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/10 transition-all hover:bg-surface-variant">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">groups</span>
+<span class="font-label-md text-on-surface">الكل</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="audience" type="radio"/>
+<div class="flex flex-col items-center gap-2 p-4 rounded-2xl border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/10 transition-all hover:bg-surface-variant">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">school</span>
+<span class="font-label-md text-on-surface">الطلاب</span>
+</div>
+</label>
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="audience" type="radio"/>
+<div class="flex flex-col items-center gap-2 p-4 rounded-2xl border border-outline-variant bg-surface-container-low peer-checked:border-primary peer-checked:bg-primary/10 transition-all hover:bg-surface-variant">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">person_celebrate</span>
+<span class="font-label-md text-on-surface">المدرسين</span>
+</div>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label-lg text-primary-fixed-dim mb-2">عنوان الإشعار</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all" placeholder="اكتب العنوان هنا..." type="text"/>
+</div>
+<div>
+<label class="block font-label-lg text-primary-fixed-dim mb-2">محتوى الرسالة</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all resize-none" placeholder="اكتب تفاصيل الإشعار هنا..." rows="4"></textarea>
+</div>
+<div class="flex gap-4 pt-4">
+<button class="flex-1 primary-gradient primary-glow text-on-primary font-bold py-4 rounded-2xl flex items-center justify-center gap-3 transition-all hover:-translate-y-1" type="button">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+                        إرسال الآن
+                    </button>
+<button class="px-8 bg-surface-container-high text-on-surface font-bold rounded-2xl hover:bg-surface-variant transition-colors" type="button">
+                        حفظ كمسودة
+                    </button>
+</div>
+</form>
+</div>
+</div>
+<script>
+        function toggleModal() {
+            const modal = document.getElementById('notificationModal');
+            const container = document.getElementById('modalContainer');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    container.classList.remove('scale-95');
+                    container.classList.add('scale-100');
+                }, 10);
+            } else {
+                container.classList.add('scale-95');
+                container.classList.remove('scale-100');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('notificationModal');
+            if (event.target == modal) {
+                toggleModal();
+            }
+        }
+
+        // Active state simulation logic
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                document.querySelectorAll('nav a').forEach(l => {
+                    l.classList.remove('bg-secondary-container', 'text-on-secondary-container', 'border-r-4', 'border-primary', 'shadow-md');
+                    l.classList.add('text-on-surface-variant');
+                });
+                this.classList.add('bg-secondary-container', 'text-on-secondary-container', 'border-r-4', 'border-primary', 'shadow-md');
+                this.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

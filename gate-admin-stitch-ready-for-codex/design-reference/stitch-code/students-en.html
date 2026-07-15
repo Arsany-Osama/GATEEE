@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GATE Admin - Students Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#27283d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2e2f43",
+                        "on-surface": "#e1e0fb",
+                        "surface-container-low": "#191a2d",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#323348",
+                        "on-secondary": "#002a78",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#6f3cd8",
+                        "on-primary": "#00363a",
+                        "surface-container": "#1d1e32",
+                        "inverse-surface": "#e1e0fb",
+                        "background": "#111225",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-primary-container": "#006a71",
+                        "secondary-container": "#0053db",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface": "#111225",
+                        "on-secondary-container": "#cdd7ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-container-lowest": "#0b0c1f",
+                        "surface-dim": "#111225",
+                        "primary-fixed-dim": "#00dbe7",
+                        "primary": "#e1fdff",
+                        "outline": "#849495",
+                        "tertiary": "#fcf5ff",
+                        "primary-container": "#00f2ff",
+                        "surface-bright": "#37374d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-primary": "#00696f",
+                        "outline-variant": "#3a494b",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "tertiary-container": "#e2d4ff",
+                        "surface-variant": "#323348",
+                        "secondary": "#b4c5ff",
+                        "on-tertiary": "#3c0091",
+                        "tertiary-fixed": "#e9ddff",
+                        "primary-fixed": "#74f5ff",
+                        "surface-tint": "#00dbe7",
+                        "on-surface-variant": "#b9cacb",
+                        "on-error": "#690005",
+                        "on-background": "#e1e0fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "32px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "unit": "4px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "display-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "display-md": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["22px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #0a0b1e;
+            color: #e1e0fb;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(0, 219, 231, 0.3);
+            border-radius: 10px;
+        }
+
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.2);
+            border-color: rgba(0, 219, 231, 0.4);
+        }
+    </style>
+</head>
+<body class="dark bg-background text-on-background min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="fixed h-full w-[280px] left-0 top-0 bg-surface-container-low/70 backdrop-blur-xl border-r border-white/10 shadow-xl z-50 flex flex-col gap-sm p-lg overflow-y-auto custom-scrollbar">
+<div class="mb-xxl px-md">
+<h1 class="font-display-md text-display-md font-bold text-primary tracking-tighter">GATE</h1>
+<p class="text-on-surface-variant font-label-md text-label-md opacity-70">Premium Admin Gateway</p>
+</div>
+<nav class="flex flex-col gap-xs flex-1">
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-body-md text-body-md">Courses</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">category</span>
+<span class="font-body-md text-body-md">Departments</span>
+</a>
+<a class="flex items-center gap-md p-md bg-secondary-container text-on-secondary-container rounded-lg font-bold transition-all duration-300 shadow-lg shadow-secondary/10" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-body-md text-body-md">Students</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">record_voice_over</span>
+<span class="font-body-md text-body-md">Instructors</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">video_library</span>
+<span class="font-body-md text-body-md">Lectures</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="font-body-md text-body-md">Exams</span>
+</a>
+<div class="my-md border-t border-white/5"></div>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-body-md text-body-md">Subscriptions</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="font-body-md text-body-md">Coupons</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-body-md text-body-md">Messages</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-body-md text-body-md">Reports</span>
+</a>
+<a class="flex items-center gap-md p-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest/50 transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<button class="mt-auto bg-gradient-to-r from-primary-container to-secondary-container text-on-secondary px-lg py-md rounded-xl font-bold flex items-center justify-center gap-sm active:scale-95 transition-all shadow-lg hover:shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+<span>Add New Course</span>
+</button>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-[280px] right-0 z-40 bg-surface/60 backdrop-blur-md border-b border-white/10 shadow-sm flex items-center justify-between px-xl h-20 transition-all duration-200 ease-in-out">
+<div class="flex items-center gap-xl w-full max-w-3xl">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
+<input class="w-full bg-surface-container-lowest/80 border border-white/10 rounded-full py-2.5 pl-12 pr-4 text-on-surface focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-body-md" placeholder="Search students, courses, or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-lg">
+<div class="flex items-center gap-sm px-md py-1.5 glass-panel rounded-full border border-white/10 cursor-pointer hover:bg-white/5 transition-colors">
+<span class="material-symbols-outlined text-primary-fixed-dim text-[18px]">language</span>
+<span class="font-label-lg text-label-lg text-on-surface uppercase">EN</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span>
+</div>
+<div class="flex items-center gap-md border-l border-white/10 pl-lg">
+<button class="p-2 rounded-full hover:bg-white/5 text-on-surface-variant transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="p-2 rounded-full hover:bg-white/5 text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="flex items-center gap-md ml-md">
+<div class="text-right hidden lg:block">
+<p class="font-label-lg text-label-lg text-on-surface">Alex Thompson</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-60">System Administrator</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary/20 object-cover" data-alt="A professional headshot of a modern executive in a sleek dark environment with cyan lighting accents. The style is cinematic and high-contrast, reflecting a premium corporate tech aesthetic. The lighting is soft but directional, highlighting professional features." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDf7AOFaryWdIHS7YUHudFvhEIDU10IxSG18vHvbGXM51hRmFGEiT5zkdcLOGMYUr8Iz-Ac7QjURankFNEKYtvPuQZWyUv-Meu0J_QhY9GmYHCCHxAzqBHxZTRiUqQCnWdjDrpzbsU-1bBU2TOt_fFAXStcQ-pzWmEcPhJ0_jUMtP9ZCdHH_V867iNmjh8FG-spm5XIr-PNL71aqkd466IRMN4Ds2JbZ7STFUu8MTwDPpdHFdPYSBLfXcXe0fWORj0EdiHtjkUI2POL"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-[280px] pt-32 p-xl relative min-h-screen">
+<!-- Animated Background Decor -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] -z-10 rounded-full"></div>
+<div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-secondary/5 blur-[100px] -z-10 rounded-full"></div>
+<div class="flex items-center justify-between mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Student Management</h2>
+<p class="text-on-surface-variant font-body-md text-body-md">Overview and management of active student enrollment across the GATE ecosystem.</p>
+</div>
+<div class="flex gap-md">
+<button class="glass-panel text-on-surface px-lg py-md rounded-xl font-bold flex items-center gap-sm hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+<span>Filter</span>
+</button>
+<button class="glass-panel text-on-surface px-lg py-md rounded-xl font-bold flex items-center gap-sm hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">download</span>
+<span>Export CSV</span>
+</button>
+</div>
+</div>
+<!-- Student Stats (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg mb-xl">
+<div class="glass-panel p-lg rounded-2xl glow-hover transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-primary text-[32px]">group</span>
+<span class="text-primary-container font-label-md bg-primary-container/10 px-2 py-1 rounded">+12%</span>
+</div>
+<p class="text-on-surface-variant font-label-lg uppercase tracking-wider opacity-60">Total Students</p>
+<h3 class="text-display-md font-bold text-on-surface mt-1">12,482</h3>
+</div>
+<div class="glass-panel p-lg rounded-2xl glow-hover transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-secondary text-[32px]">check_circle</span>
+<span class="text-secondary font-label-md bg-secondary/10 px-2 py-1 rounded">Active</span>
+</div>
+<p class="text-on-surface-variant font-label-lg uppercase tracking-wider opacity-60">Active Now</p>
+<h3 class="text-display-md font-bold text-on-surface mt-1">842</h3>
+</div>
+<div class="glass-panel p-lg rounded-2xl glow-hover transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[32px]">menu_book</span>
+</div>
+<p class="text-on-surface-variant font-label-lg uppercase tracking-wider opacity-60">Avg. Courses</p>
+<h3 class="text-display-md font-bold text-on-surface mt-1">4.2</h3>
+</div>
+<div class="glass-panel p-lg rounded-2xl glow-hover transition-all">
+<div class="flex items-center justify-between mb-sm">
+<span class="material-symbols-outlined text-error text-[32px]">assignment_turned_in</span>
+</div>
+<p class="text-on-surface-variant font-label-lg uppercase tracking-wider opacity-60">Completion Rate</p>
+<h3 class="text-display-md font-bold text-on-surface mt-1">68%</h3>
+</div>
+</div>
+<!-- Students Table -->
+<div class="glass-panel rounded-3xl overflow-hidden shadow-2xl border border-white/5">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high/40 border-b border-white/10">
+<tr>
+<th class="px-lg py-xl font-label-lg text-label-lg text-on-surface-variant/80 uppercase tracking-widest">Student</th>
+<th class="px-lg py-xl font-label-lg text-label-lg text-on-surface-variant/80 uppercase tracking-widest">Enrolled Courses</th>
+<th class="px-lg py-xl font-label-lg text-label-lg text-on-surface-variant/80 uppercase tracking-widest">Overall Progress</th>
+<th class="px-lg py-xl font-label-lg text-label-lg text-on-surface-variant/80 uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-2xl object-cover ring-2 ring-white/10 group-hover:ring-primary/50 transition-all" data-alt="A portrait of a young male student in a futuristic library setting. Soft cyan and deep purple lighting. Digital art style with professional focus. High detail skin textures and expressive eyes." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_X8XZatZG1jUGY48HblZdbovCsUMCMRlMR18ZY-8UjSiAUnkzTHe3J2b2bmvnGW5WhADDZMpH-EyaHT9EtxxSr3zL_OYTfHsQiFcJGsUPFZymVd9XELyLI-lervP_gaI-Ewty7dY4iBB8yNGY2I_p4SsejDaZVhxvisXcpqKhc4YfyUROG98-JD6WvNqRj398N5J7eDfT5oD_4yMwJR1B-2UtjFTBNp_5vgLxqkkJP46cIctNnvMiFt9nLfd76gWTs7gqtwoLfgKw"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full"></div>
+</div>
+<div>
+<p class="font-headline-md text-body-md text-on-surface font-semibold">Julian Casablancas</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-50">julian.c@gate.edu</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded-md bg-primary/10 text-primary-fixed-dim text-[11px] font-bold uppercase">Cloud Architecture</span>
+<span class="px-2 py-1 rounded-md bg-secondary/10 text-secondary-fixed-dim text-[11px] font-bold uppercase">React Masterclass</span>
+<span class="px-2 py-1 rounded-md bg-white/5 text-on-surface-variant text-[11px] font-bold">+2 more</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="w-full max-w-[200px]">
+<div class="flex justify-between mb-1.5">
+<span class="text-[12px] font-bold text-on-surface-variant">78% Complete</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000 ease-out" style="width: 78%;"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="bg-surface-container-highest hover:bg-primary text-on-surface hover:text-background px-lg py-2.5 rounded-xl font-bold transition-all active:scale-95">
+                                    View Details
+                                </button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-2xl object-cover ring-2 ring-white/10 group-hover:ring-primary/50 transition-all" data-alt="A portrait of a young female student with glasses, smiling warmly. Atmospheric office lighting with cool blue tones and warm highlights. Professional, cinematic photography style for a high-end educational platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHb_MVpQ_e2AFFSg_ax30Px6R68GiFxNHuG0dZv5auxsIFEq-YsBLR2hZrj89XvN96s8q5iR-9maZEMWbGalWBmiZhMshFWYq95O2TnswFU347tHhhAqb6XbJ9PNrpztpxIec5ux2hdDVNhJJpIThl_PiL9_FKwS0yak7I76sJJ5kUb-UsCDVJF5VrSDZyp9fxFtg3Ncn1OPVZqBlgOCWYhbZGEhx8_Y1kGp_ux-o2yZvgz8kCWPSPWPX5KqCAz8NnEIbDH-YHNrpq"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-on-surface-variant border-2 border-background rounded-full"></div>
+</div>
+<div>
+<p class="font-headline-md text-body-md text-on-surface font-semibold">Sarah Jenkins</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-50">sarah.j@outlook.com</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded-md bg-primary/10 text-primary-fixed-dim text-[11px] font-bold uppercase">UI Design Ops</span>
+<span class="px-2 py-1 rounded-md bg-white/5 text-on-surface-variant text-[11px] font-bold">+1 more</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="w-full max-w-[200px]">
+<div class="flex justify-between mb-1.5">
+<span class="text-[12px] font-bold text-on-surface-variant">42% Complete</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000 ease-out" style="width: 42%;"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="bg-surface-container-highest hover:bg-primary text-on-surface hover:text-background px-lg py-2.5 rounded-xl font-bold transition-all active:scale-95">
+                                    View Details
+                                </button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-2xl object-cover ring-2 ring-white/10 group-hover:ring-primary/50 transition-all" data-alt="A portrait of a male student of Middle Eastern descent with a sharp beard and professional attire. Neon-accented dark background, focused on eyes and expression. Modern corporate tech aesthetic, clean and authoritative." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAyEBiovgcbmxsm9smpME8GEqwBlFY4nickgfvJGZgd9-7bCDo70t5wDOO0UdNNXzRe74HOQEOI2E5mQF_Y8chNcgDVHVtjRZLXQMokGkM-dwgqyA3qeficXx5kf6GUJYm78GCsSXiMO2gbubAhSRwrwf-TaZMH5xVjRuo1AkvCdYHnbOgSvJQwlUrazhb9xZ7YnO628LKJ5SsFV6dkK7DELT5eZWWVpIUZnGgFSUKijSusdAVq3insGZ6xVzOYWfF4CwzFtWr3mnn"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full"></div>
+</div>
+<div>
+<p class="font-headline-md text-body-md text-on-surface font-semibold">Omar Al-Sayed</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-50">omar.dev@gate.sa</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded-md bg-primary/10 text-primary-fixed-dim text-[11px] font-bold uppercase">Advanced Python</span>
+<span class="px-2 py-1 rounded-md bg-secondary/10 text-secondary-fixed-dim text-[11px] font-bold uppercase">Data Science 101</span>
+<span class="px-2 py-1 rounded-md bg-white/5 text-on-surface-variant text-[11px] font-bold">+5 more</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="w-full max-w-[200px]">
+<div class="flex justify-between mb-1.5">
+<span class="text-[12px] font-bold text-on-surface-variant">91% Complete</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000 ease-out" style="width: 91%;"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="bg-surface-container-highest hover:bg-primary text-on-surface hover:text-background px-lg py-2.5 rounded-xl font-bold transition-all active:scale-95">
+                                    View Details
+                                </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="px-lg py-lg">
+<div class="flex items-center gap-md">
+<div class="relative">
+<img class="w-12 h-12 rounded-2xl object-cover ring-2 ring-white/10 group-hover:ring-primary/50 transition-all" data-alt="A portrait of an Asian female student with dyed hair, focused and studying in a high-tech environment. Background features blurred screens and data visualizations. Cyberpunk-lite aesthetic with high-fidelity textures and professional lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDL0g2kdw9OovVX5xyNe6qd-dvROLgzzmevA3syx2V3yDpAgQxvmrUFJ_tUagnhb_FW6rfKiFoj3qxRsKqCu9DkBAgoAq4T32i57QgG1Xzapcy0KNne_ZCwPfVMqvv14mkd1J17yd61w_cdy11cI4MJSM4-ZKm0skx5WFWQNYMP-WIj8PdxFwPLM-jy1Nkl5FuncGRuM-RNbc6wb6lrmsZ_sXLc8gF-jARob_zDeUJ9fcp6Jqes4ftIXUhdFoNA-in5cyFzYogXNoYw"/>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-background rounded-full"></div>
+</div>
+<div>
+<p class="font-headline-md text-body-md text-on-surface font-semibold">Min-hee Park</p>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-50">minhee.p@gate.edu</p>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="flex flex-wrap gap-xs">
+<span class="px-2 py-1 rounded-md bg-secondary/10 text-secondary-fixed-dim text-[11px] font-bold uppercase">Motion Design</span>
+<span class="px-2 py-1 rounded-md bg-white/5 text-on-surface-variant text-[11px] font-bold">+2 more</span>
+</div>
+</td>
+<td class="px-lg py-lg">
+<div class="w-full max-w-[200px]">
+<div class="flex justify-between mb-1.5">
+<span class="text-[12px] font-bold text-on-surface-variant">15% Complete</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-1000 ease-out" style="width: 15%;"></div>
+</div>
+</div>
+</td>
+<td class="px-lg py-lg text-right">
+<button class="bg-surface-container-highest hover:bg-primary text-on-surface hover:text-background px-lg py-2.5 rounded-xl font-bold transition-all active:scale-95">
+                                    View Details
+                                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-lg py-lg bg-surface-container-low/20 flex items-center justify-between border-t border-white/5">
+<span class="font-label-md text-label-md text-on-surface-variant opacity-60">Showing 1 to 4 of 12,482 students</span>
+<div class="flex gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all opacity-50 cursor-not-allowed">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary-container text-on-primary-container font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all text-on-surface">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all text-on-surface">3</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-white/10 hover:bg-white/5 transition-all text-on-surface">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and effects
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 20) {
+                    header.classList.add('bg-surface/90', 'shadow-xl');
+                } else {
+                    header.classList.remove('bg-surface/90', 'shadow-xl');
+                }
+            });
+
+            // Input focus glow effect logic is handled by Tailwind ring classes
+            
+            // Simulating a language switcher dropdown (UI only)
+            const langSwitcher = document.querySelector('.language-switcher-trigger');
+            if(langSwitcher) {
+                langSwitcher.addEventListener('click', () => {
+                    // Logic to toggle dropdown could go here
+                });
+            }
+        });
+    </script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "name": "gate",
+  "scripts": {
+    "migrate": "node server/scripts/migrate.js",
+    "seed": "node server/scripts/seed.js",
+    "setup": "npm run migrate && npm run seed"
+  },
+  "dependencies": {
+    "cloudinary": "^1.41.3",
+    "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0"
+  }
+}

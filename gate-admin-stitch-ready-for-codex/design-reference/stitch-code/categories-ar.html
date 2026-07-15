@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>إدارة الأقسام | GATE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0b1e;
+            color: #e1e0fb;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cyan-glow {
+            box-shadow: 0 0 15px rgba(0, 219, 231, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0b1e; }
+        ::-webkit-scrollbar-thumb { background: #323348; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00dbe7; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#27283d",
+                      "on-error-container": "#ffdad6",
+                      "inverse-on-surface": "#2e2f43",
+                      "on-surface": "#e1e0fb",
+                      "surface-container-low": "#191a2d",
+                      "on-primary-fixed": "#002022",
+                      "surface-container-highest": "#323348",
+                      "on-secondary": "#002a78",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#6f3cd8",
+                      "on-primary": "#00363a",
+                      "surface-container": "#1d1e32",
+                      "inverse-surface": "#e1e0fb",
+                      "background": "#111225",
+                      "on-secondary-fixed-variant": "#003ea8",
+                      "on-primary-container": "#006a71",
+                      "secondary-container": "#0053db",
+                      "secondary-fixed-dim": "#b4c5ff",
+                      "on-tertiary-fixed-variant": "#5516be",
+                      "surface": "#111225",
+                      "on-secondary-container": "#cdd7ff",
+                      "secondary-fixed": "#dbe1ff",
+                      "surface-container-lowest": "#0b0c1f",
+                      "surface-dim": "#111225",
+                      "primary-fixed-dim": "#00dbe7",
+                      "primary": "#e1fdff",
+                      "outline": "#849495",
+                      "tertiary": "#fcf5ff",
+                      "primary-container": "#00f2ff",
+                      "surface-bright": "#37374d",
+                      "on-secondary-fixed": "#00174b",
+                      "on-tertiary-fixed": "#23005c",
+                      "on-primary-fixed-variant": "#004f54",
+                      "inverse-primary": "#00696f",
+                      "outline-variant": "#3a494b",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#d0bcff",
+                      "tertiary-container": "#e2d4ff",
+                      "surface-variant": "#323348",
+                      "secondary": "#b4c5ff",
+                      "on-tertiary": "#3c0091",
+                      "tertiary-fixed": "#e9ddff",
+                      "primary-fixed": "#74f5ff",
+                      "surface-tint": "#00dbe7",
+                      "on-surface-variant": "#b9cacb",
+                      "on-error": "#690005",
+                      "on-background": "#e1e0fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "24px",
+                      "xxl": "48px",
+                      "margin-desktop": "32px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "sm": "8px",
+                      "unit": "4px",
+                      "xs": "4px",
+                      "xl": "32px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Plus Jakarta Sans"],
+                      "body-lg": ["Plus Jakarta Sans"],
+                      "display-lg": ["Plus Jakarta Sans"],
+                      "display-md": ["Plus Jakarta Sans"],
+                      "label-md": ["Plus Jakarta Sans"],
+                      "headline-lg-mobile": ["Plus Jakarta Sans"],
+                      "headline-md": ["Plus Jakarta Sans"],
+                      "headline-lg": ["Plus Jakarta Sans"],
+                      "body-md": ["Plus Jakarta Sans"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                      "display-md": ["36px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["22px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-lg": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+</head>
+<body class="overflow-x-hidden">
+<!-- Sidebar (Shared Component SideNavBar) -->
+<aside class="fixed inset-y-0 right-0 z-40 flex flex-col p-lg rtl bg-surface-container-low dark:bg-surface-container-low docked h-screen w-[280px] border-l border-outline-variant dark:border-outline-variant shadow-sm transition-all duration-300">
+<div class="mb-xxl flex items-center gap-4 px-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center cyan-glow">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">gate</span>
+</div>
+<div>
+<h1 class="font-display-lg text-[24px] font-extrabold text-primary dark:text-primary-fixed-dim leading-none">GATE</h1>
+<p class="text-label-md text-on-surface-variant">Educational Platform</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 px-2 overflow-y-auto">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<span class="font-label-md">الرئيسية</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">school</span>
+<span class="font-label-md">الكورسات</span>
+</a>
+<!-- Active Navigation for Categories Management -->
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">category</span>
+<span class="font-label-md">الأقسام</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">group</span>
+<span class="font-label-md">الطلاب</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person_celebrate</span>
+<span class="font-label-md">المدرسين</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">quiz</span>
+<span class="font-label-md">الاختبارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">subscriptions</span>
+<span class="font-label-md">الاشتراكات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">notifications</span>
+<span class="font-label-md">الإشعارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">settings</span>
+<span class="font-label-md">الإعدادات</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant px-4">
+<button class="w-full bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-fixed font-bold py-3 rounded-xl cyan-glow active:scale-95 transition-all">
+                إضافة كورس جديد
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar (Shared Component TopNavBar) -->
+<header class="fixed top-0 left-0 right-[280px] h-20 z-30 flex justify-between items-center px-margin-desktop rtl bg-surface/80 backdrop-blur-md border-b border-outline-variant dark:border-outline-variant transition-all">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant rounded-full pr-10 pl-4 py-2 w-72 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-body-md" placeholder="بحث عن قسم..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Language Switcher -->
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-outline-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-primary">language</span>
+<span class="text-label-md">العربية</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<div class="flex items-center gap-2 border-l border-outline-variant pl-4 ml-4">
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="text-left rtl:text-right">
+<p class="text-label-lg font-bold">أحمد الإداري</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider">Super Admin</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a Middle Eastern male administrator in his 40s, wearing a dark suit and glasses. The lighting is soft studio lighting against a dark navy digital backdrop with subtle glowing geometric patterns. The overall aesthetic is premium, corporate, and technologically advanced to match a high-end educational platform admin panel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4lu9r-R4SJGgYPRx8_k7YtAE0L1ydLTxLJfCp52lU9LYnEnT4Kw8EloT7D6bgOvVlWE8QypTabov480dV34P55YsCX6RUliZDbMVbDLhF0H1YlTYgQD0YOsA1VkCNTEJaul2i7tz5cVv3M3OILiYFMDl3GPzSlDu8GEfF34r6ROB7bhqrAY2AG1wuH1saqzllRlIrqV7ee8JytNVXWr_VsRHZo8-7wapF6nznEtIwEqE_k67Lzm9kc8q_IiRxCiEmVlSPHZtzlqeJ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="mr-[280px] pt-20 p-margin-desktop min-h-screen">
+<div class="max-w-[1400px] mx-auto py-lg">
+<!-- Page Header -->
+<div class="flex justify-between items-center mb-xl">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary mb-1">إدارة الأقسام التعليمية</h2>
+<p class="text-body-md text-on-surface-variant">إدارة وتصنيف الدورات التدريبية المتاحة على منصة GATE</p>
+</div>
+<button class="flex items-center gap-2 bg-primary-container text-on-primary-fixed px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary-container/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                    إضافة قسم جديد
+                </button>
+</div>
+<!-- Dashboard Stats (Mini Bento) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-xl">
+<div class="glass-card p-lg rounded-2xl flex items-center justify-between group overflow-hidden relative">
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+<span class="material-symbols-outlined text-[100px] text-primary">category</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase mb-1">إجمالي الأقسام</p>
+<h3 class="text-display-md text-primary leading-none">24</h3>
+</div>
+<div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl flex items-center justify-between group overflow-hidden relative">
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+<span class="material-symbols-outlined text-[100px] text-secondary">school</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase mb-1">إجمالي الكورسات</p>
+<h3 class="text-display-md text-secondary leading-none">142</h3>
+</div>
+<div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">trending_up</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl flex items-center justify-between group overflow-hidden relative">
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+<span class="material-symbols-outlined text-[100px] text-tertiary-fixed-dim">visibility</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase mb-1">الأقسام النشطة</p>
+<h3 class="text-display-md text-tertiary-fixed-dim leading-none">18</h3>
+</div>
+<div class="w-12 h-12 bg-tertiary-fixed-dim/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">check_circle</span>
+</div>
+</div>
+<div class="glass-card p-lg rounded-2xl flex items-center justify-between group overflow-hidden relative">
+<div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-500">
+<span class="material-symbols-outlined text-[100px] text-error">visibility_off</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant uppercase mb-1">أقسام مخفية</p>
+<h3 class="text-display-md text-error leading-none">6</h3>
+</div>
+<div class="w-12 h-12 bg-error/10 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-error">pause_circle</span>
+</div>
+</div>
+</div>
+<!-- Categories Table Section -->
+<div class="glass-card rounded-3xl overflow-hidden shadow-2xl">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-high/30">
+<h3 class="font-headline-md text-primary">قائمة الأقسام</h3>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+<button class="p-2 hover:bg-surface-container-highest rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right">
+<thead class="bg-surface-container-high/50 text-on-surface-variant">
+<tr>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">صورة القسم</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider">اسم القسم</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider text-center">عدد الكورسات</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider text-center">الحالة</th>
+<th class="px-lg py-4 font-label-lg uppercase tracking-wider text-left">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-highest/30 transition-all group">
+<td class="px-lg py-4">
+<div class="w-16 h-12 rounded-lg bg-surface-container-lowest overflow-hidden border border-outline-variant">
+<div class="w-full h-full bg-cover bg-center" data-alt="A stylized 3D icon representing technology and coding with glowing blue circuits and futuristic digital elements. Dark moody background with neon cyan highlights, matching a premium glassmorphic educational interface." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDKR3FtaGHUHKKZ0Fs_hWEo479gh4T7e0STg8ONyvtNQwQJ7LAqpayE-7e1Sf5eTZwv9ET4rGv9Smbw24rDPIc3-eEsoAQY6NnhU7UY23uToDJFATGPvSBmvLB1m_cbsEocY6iEdnc2suZ9joqPVU3wMlpT84yzEzFS7WLv-Y5CkkQjX6BSsJun7UOhw2uILrltZVP5li5fSBA3q3OPzP-p1kxHampm223ddZLKO8vE0SGJIiu46bzLelTe_ULSsZBBbX_ek5EAuCAy')"></div>
+</div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-md font-bold text-on-surface">التكنولوجيا والبرمجة</span>
+<span class="text-label-md text-on-surface-variant">تطوير الويب، الذكاء الاصطناعي</span>
+</div>
+</td>
+<td class="px-lg py-4 text-center">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed rounded-full text-label-md border border-secondary/20">42 كورس</span>
+</td>
+<td class="px-lg py-4 text-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="px-lg py-4 text-left">
+<div class="flex items-center gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors" title="تعديل">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error/20 text-error rounded-lg transition-colors" title="حذف">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-highest/30 transition-all group">
+<td class="px-lg py-4">
+<div class="w-16 h-12 rounded-lg bg-surface-container-lowest overflow-hidden border border-outline-variant">
+<div class="w-full h-full bg-cover bg-center" data-alt="Professional business growth and financial analysis concept illustration. Featuring minimalist 3D charts, glowing currency symbols in gold and cyan, and a sleek dark environment with high-fidelity glass surfaces." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBZdrQxuS_SIXahT7ljs84w3OKv0IX8W5HEkKYlewcKXGy_CsJizUeYmb5x0ole_D-ncIQ_Lv8ukqiudnu3LffcFWaeAGEsmJsnofhS1tC0WuQI2-ING2Xp4eb6-PFPsNAe7i33lm7m4vykXSToPmqPKqIFry6VLW3Zf-L--EPmOE4k3_2pwWe0dXUB94NtWHJEe982f4WN-h229sWPYfbhHsOEso9qtq1XevCgJ3Kdlg1krZrPoqTGBXzzB18SPAJRvEC2o-foeWmq')"></div>
+</div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-md font-bold text-on-surface">إدارة الأعمال والمالية</span>
+<span class="text-label-md text-on-surface-variant">التسويق، المحاسبة، القيادة</span>
+</div>
+</td>
+<td class="px-lg py-4 text-center">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed rounded-full text-label-md border border-secondary/20">28 كورس</span>
+</td>
+<td class="px-lg py-4 text-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="px-lg py-4 text-left">
+<div class="flex items-center gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors" title="تعديل">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error/20 text-error rounded-lg transition-colors" title="حذف">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-highest/30 transition-all group">
+<td class="px-lg py-4">
+<div class="w-16 h-12 rounded-lg bg-surface-container-lowest overflow-hidden border border-outline-variant">
+<div class="w-full h-full bg-cover bg-center" data-alt="Modern creative arts and digital design studio aesthetic. Abstract floating brushes, color palettes, and digital screens with vibrant glowing pigments. Deep navy studio background with soft purple and cyan spotlights." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuATPTfIZuV6YbCGNsxyBGoPQZKegI5NncfLQMVV1RuwIpbHfVyIT6p2CxMHiYlXIA9sNrdqtYdKajRpxu6GQuvX0-9mwYi1agMsJNzM3ZiYQ9ZXCS3TWZgn1jRzGpWyhI8w1XPFZ4tx5jKQ-MnV1mc_AFxgDYvVpAG5ZIOMj8i3mpoxiwS_M0exEKHZ_UDuvpsCRenxZ6UQMifaLD0Z4CSU77FdoJx9Xo9894bkjugC4eBBgG-NesC9L22wIbhm9canPS8AvU2zMdwG')"></div>
+</div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-md font-bold text-on-surface">التصميم والفنون الرقمية</span>
+<span class="text-label-md text-on-surface-variant">الجرافيك، تجربة المستخدم، الرسم</span>
+</div>
+</td>
+<td class="px-lg py-4 text-center">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed rounded-full text-label-md border border-secondary/20">35 كورس</span>
+</td>
+<td class="px-lg py-4 text-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="px-lg py-4 text-left">
+<div class="flex items-center gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors" title="تعديل">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error/20 text-error rounded-lg transition-colors" title="حذف">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-highest/30 transition-all group">
+<td class="px-lg py-4">
+<div class="w-16 h-12 rounded-lg bg-surface-container-lowest overflow-hidden border border-outline-variant">
+<div class="w-full h-full bg-cover bg-center" data-alt="Linguistic and communication concept. Floating 3D alphabet characters, speech bubbles, and globes with glowing connectivity lines. Elegant dark theme with silver and blue lighting, symbolizing global learning." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBp3XqL8xlSLvrxW2OV8Y92IjntpgcMSfy9yErRO3R-plNJVYKLNW67x6oJv3QEUfYjwqvnb1jdJ3UIgHc7HXc6t55JKrFA7D1zlgNYekOP0jm96sxmZ8-5MAceFS7lPedKk4UX5cf8FayMudsaR4Vg1L27Xt8njedt5Gbjocsq4hVGAABY7y5f2jaZK738TG0A4CtRaQs1Vb_KqmgHCmGEBBMXuQYwHUdlg-QE42Fd-Ff71fW3mF7P9tfwSu4ku9SKs8t-iRFAd2g9')"></div>
+</div>
+</td>
+<td class="px-lg py-4">
+<div class="flex flex-col">
+<span class="text-body-md font-bold text-on-surface">اللغات والترجمة</span>
+<span class="text-label-md text-on-surface-variant">الإنجليزية، الألمانية، التركية</span>
+</div>
+</td>
+<td class="px-lg py-4 text-center">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary-fixed rounded-full text-label-md border border-secondary/20">19 كورس</span>
+</td>
+<td class="px-lg py-4 text-center">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+<td class="px-lg py-4 text-left">
+<div class="flex items-center gap-2 justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-2 hover:bg-primary/20 text-primary rounded-lg transition-colors" title="تعديل">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-2 hover:bg-error/20 text-error rounded-lg transition-colors" title="حذف">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-lg bg-surface-container-low border-t border-outline-variant flex justify-between items-center">
+<p class="text-label-md text-on-surface-variant">عرض 1-4 من أصل 24 قسم</p>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-variant border border-outline-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary text-on-primary-fixed font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-variant border border-outline-variant transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-variant border border-outline-variant transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-variant border border-outline-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="mt-xl flex justify-between items-center text-label-md text-on-surface-variant/60">
+<p>© 2024 GATE Educational Platform. جميع الحقوق محفوظة.</p>
+<div class="flex gap-4">
+<a class="hover:text-primary transition-colors" href="#">سياسة الخصوصية</a>
+<a class="hover:text-primary transition-colors" href="#">شروط الاستخدام</a>
+<a class="hover:text-primary transition-colors" href="#">الدعم الفني</a>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Atmosphere Elements -->
+<div class="fixed top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] -z-10 rounded-full pointer-events-none"></div>
+<div class="fixed bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 blur-[120px] -z-10 rounded-full pointer-events-none"></div>
+<script>
+        // Micro-interactions and effects
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = card.getBoundingClientRect();
+                const x = (e.clientX - left) / width;
+                const y = (e.clientY - top) / height;
+                
+                card.style.setProperty('--mouse-x', x);
+                card.style.setProperty('--mouse-y', y);
+            });
+        });
+
+        // Simple Toggle interaction simulation
+        document.querySelectorAll('input[type="checkbox"]').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const statusLabel = this.checked ? "نشط" : "غير نشط";
+                console.log(`Category status changed to: ${statusLabel}`);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ar"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GATE - إدارة المحاضرات</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Noto+Sans+Arabic:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+            background-color: #0a0b1e;
+        }
+        .glass-card {
+            background: rgba(18, 20, 50, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #00dbe7 0%, #0053db 100%);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(0, 219, 231, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0c1f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #323348;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-high": "#27283d",
+                        "on-error-container": "#ffdad6",
+                        "inverse-on-surface": "#2e2f43",
+                        "on-surface": "#e1e0fb",
+                        "surface-container-low": "#191a2d",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-highest": "#323348",
+                        "on-secondary": "#002a78",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#6f3cd8",
+                        "on-primary": "#00363a",
+                        "surface-container": "#1d1e32",
+                        "inverse-surface": "#e1e0fb",
+                        "background": "#111225",
+                        "on-secondary-fixed-variant": "#003ea8",
+                        "on-primary-container": "#006a71",
+                        "secondary-container": "#0053db",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface": "#111225",
+                        "on-secondary-container": "#cdd7ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "surface-container-lowest": "#0b0c1f",
+                        "surface-dim": "#111225",
+                        "primary-fixed-dim": "#00dbe7",
+                        "primary": "#e1fdff",
+                        "outline": "#849495",
+                        "tertiary": "#fcf5ff",
+                        "primary-container": "#00f2ff",
+                        "surface-bright": "#37374d",
+                        "on-secondary-fixed": "#00174b",
+                        "on-tertiary-fixed": "#23005c",
+                        "on-primary-fixed-variant": "#004f54",
+                        "inverse-primary": "#00696f",
+                        "outline-variant": "#3a494b",
+                        "error-container": "#93000a",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "tertiary-container": "#e2d4ff",
+                        "surface-variant": "#323348",
+                        "secondary": "#b4c5ff",
+                        "on-tertiary": "#3c0091",
+                        "tertiary-fixed": "#e9ddff",
+                        "primary-fixed": "#74f5ff",
+                        "surface-tint": "#00dbe7",
+                        "on-surface-variant": "#b9cacb",
+                        "on-error": "#690005",
+                        "on-background": "#e1e0fb"
+                    },
+                    borderRadius: {
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                    },
+                    spacing: {
+                        "lg": "24px",
+                        "xxl": "48px",
+                        "margin-desktop": "32px",
+                        "gutter": "24px",
+                        "sm": "8px",
+                        "md": "16px"
+                    },
+                    fontFamily: {
+                        "label-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "body-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "display-lg": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "headline-md": ["Plus Jakarta Sans", "Noto Sans Arabic"],
+                        "headline-sm": ["Plus Jakarta Sans", "Noto Sans Arabic"]
+                    },
+                    fontSize: {
+                        "label-md": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-on-surface">
+<!-- Side Navigation Shell -->
+<aside class="fixed inset-y-0 right-0 z-40 flex flex-col p-lg bg-surface-container-low border-l border-outline-variant shadow-sm w-[280px]">
+<div class="mb-xxl flex items-center gap-4">
+<div class="w-12 h-12 primary-gradient rounded-xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-white text-3xl" data-weight="fill">school</span>
+</div>
+<div>
+<h1 class="font-display-lg text-headline-md font-extrabold text-primary">GATE</h1>
+<p class="text-label-md text-on-surface-variant opacity-70">Educational Platform</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2 overflow-y-auto">
+<!-- Navigation Items mapping from JSON -->
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">الرئيسية</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="school">school</span>
+<span class="font-label-md text-label-md">الكورسات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="category">category</span>
+<span class="font-label-md text-label-md">الأقسام</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-label-md text-label-md">الطلاب</span>
+</a>
+<!-- Active State: Lectures Management -->
+<a class="flex items-center gap-3 bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined" data-icon="play_lesson">play_lesson</span>
+<span class="font-label-md text-label-md">المحاضرات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="quiz">quiz</span>
+<span class="font-label-md text-label-md">الاختبارات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="subscriptions">subscriptions</span>
+<span class="font-label-md text-label-md">الاشتراكات</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="local_offer">local_offer</span>
+<span class="font-label-md text-label-md">الكوبونات</span>
+</a>
+</nav>
+<div class="pt-lg border-t border-outline-variant mt-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-xl px-4 py-3 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">الإعدادات</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 right-[280px] h-20 z-30 flex justify-between items-center px-margin-desktop bg-surface/80 backdrop-blur-md border-b border-outline-variant">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-full py-2.5 pr-12 pl-4 text-body-md focus:ring-2 focus:ring-primary-fixed-dim transition-all outline-none" placeholder="البحث عن محاضرة..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<!-- Language Switcher -->
+<button class="flex items-center gap-2 px-4 py-2 hover:bg-surface-container-high rounded-full transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="language">language</span>
+<span class="font-label-md">العربية</span>
+</button>
+<button class="hover:bg-surface-container-high rounded-full p-2 transition-colors relative text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-10 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-left">
+<p class="font-label-md text-on-surface text-right">أحمد محمد</p>
+<p class="text-[10px] text-on-surface-variant text-right">مدير النظام</p>
+</div>
+<img class="w-10 h-10 rounded-full border border-primary/20" data-alt="A professional headshot of a Middle Eastern male administrator in a modern office, soft cinematic lighting, high-end corporate photography style with a blurred background of a technology hub, using cool blue and deep navy tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3Pzw5fKZqbXnBFkJmv5fyJvPQ-71D0dYfhsNQ5eh7HdM1pqPHxB0k5Ogn3fMMDk8XxDwWJINHOzwbRUvF83z2r1-ZKMlU7aALE9y8lpnI2SBT9LNTrV8FgfpJ93UkO6L7S5UlH0clQs0RAJAsNJQd6YrtiWGBX2WhPZ9oVcAHe3pBcB6GzTAfIrKfuQXvjaLz09JtTSzMZ4ZVlMSKf0hIc7peIZ4TplGTW0mvVCdP43tsqTuYO3mL_WB-IS0UO2iyrE2sPuMLF2Ib"/>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="mr-[280px] mt-20 p-margin-desktop min-h-screen">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-md text-headline-md text-primary mb-1">إدارة المحاضرات</h2>
+<p class="text-on-surface-variant font-body-md">تنظيم ومراقبة المحتوى التعليمي للمنصة</p>
+</div>
+<button class="primary-gradient glow-hover text-white font-bold px-8 py-3 rounded-xl flex items-center gap-2 transition-all active:scale-95 shadow-lg">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="font-label-md">إضافة كورس جديد</span>
+</button>
+</div>
+<!-- Dashboard Stats (Glass Bento) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-lg">
+<div class="glass-card p-6 rounded-xxl flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-primary p-2 bg-primary/10 rounded-lg">play_circle</span>
+<span class="text-green-400 text-label-md font-bold">+12%</span>
+</div>
+<p class="text-on-surface-variant text-label-md mt-2">إجمالي المحاضرات</p>
+<h3 class="text-headline-md font-bold">1,284</h3>
+</div>
+<div class="glass-card p-6 rounded-xxl flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-secondary p-2 bg-secondary/10 rounded-lg">schedule</span>
+<span class="text-on-surface-variant text-label-md font-bold">هذا الشهر</span>
+</div>
+<p class="text-on-surface-variant text-label-md mt-2">ساعات البث</p>
+<h3 class="text-headline-md font-bold">450 hr</h3>
+</div>
+<div class="glass-card p-6 rounded-xxl flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-tertiary-fixed-dim p-2 bg-tertiary/10 rounded-lg">visibility</span>
+<span class="text-green-400 text-label-md font-bold">+8%</span>
+</div>
+<p class="text-on-surface-variant text-label-md mt-2">إجمالي المشاهدات</p>
+<h3 class="text-headline-md font-bold">24.5k</h3>
+</div>
+<div class="glass-card p-6 rounded-xxl flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<span class="material-symbols-outlined text-error p-2 bg-error/10 rounded-lg">warning</span>
+<span class="text-on-surface-variant text-label-md font-bold">تنبيه</span>
+</div>
+<p class="text-on-surface-variant text-label-md mt-2">روابط معطلة</p>
+<h3 class="text-headline-md font-bold">3</h3>
+</div>
+</div>
+<!-- Table Container -->
+<div class="glass-card rounded-xxl overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<div class="flex gap-4">
+<button class="bg-primary/20 text-primary-fixed-dim px-4 py-2 rounded-lg font-label-md">الكل</button>
+<button class="hover:bg-surface-variant px-4 py-2 rounded-lg font-label-md transition-colors">مفعل</button>
+<button class="hover:bg-surface-variant px-4 py-2 rounded-lg font-label-md transition-colors">مسودة</button>
+</div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="font-label-md">تصفية متقدمة</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-right border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant border-b border-outline-variant">
+<th class="p-6 font-label-lg">عنوان المحاضرة</th>
+<th class="p-6 font-label-lg">الكورس</th>
+<th class="p-6 font-label-lg">المدة</th>
+<th class="p-6 font-label-lg">الحالة</th>
+<th class="p-6 font-label-lg">رابط الفيديو</th>
+<th class="p-6 font-label-lg">الإجراءات</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<!-- Row 1 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-8 rounded bg-surface-container-highest overflow-hidden relative">
+<img class="object-cover w-full h-full opacity-60" data-alt="A cinematic educational video thumbnail for a physics lecture, featuring abstract glowing particles and mathematical formulas, dark blue and cyan neon lighting, professional digital art style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUeLvYZ98-vC-8z77-9qw_jCImwA8AKi6ZKHUIpN9wzyiwqjOKvqdYmbfjLJJXesWcR8312dWal3n-rsUP-8GJtErxOW4-n3dDVxkzOAIkoOYuEqlc7yfgVMMM_14_nRP_wrr8_HkFj98LW3h4gWJbMa7IfoYO6MElVuwIHfWEqGGogoHBymetAst1pWpJTqbxqwli7rKLtG5q0iQOhDKgx8CRAluBAH71rxqfR2eiaMrVs7rV2MOK33ZxjaKtuMtoAxRlpZDJ4-CA"/>
+<span class="material-symbols-outlined absolute inset-0 flex items-center justify-center text-xs">play_arrow</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">مقدمة في الفيزياء الحديثة</p>
+<p class="text-[12px] text-on-surface-variant">تحديث: منذ ساعتين</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="bg-surface-variant/50 text-on-surface px-3 py-1 rounded-full text-label-md border border-outline-variant">الفيزياء 101</span>
+</td>
+<td class="p-6 font-label-md">45:20 دقيقة</td>
+<td class="p-6">
+<span class="flex items-center gap-2 text-green-400 text-label-md">
+<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                    منشور
+                                </span>
+</td>
+<td class="p-6">
+<a class="text-primary-fixed-dim hover:underline flex items-center gap-1 font-label-md" href="#">
+<span class="material-symbols-outlined text-sm">link</span>
+                                    vimeo.com/gate/v827
+                                </a>
+</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 hover:bg-error/10 hover:text-error rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-8 rounded bg-surface-container-highest overflow-hidden relative">
+<img class="object-cover w-full h-full opacity-60" data-alt="A minimalist educational video thumbnail for a mathematics lecture, featuring 3D geometric shapes in a soft glassmorphism style, vibrant purple and blue lighting, clean and professional design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAupDQbQxsWnFauV-ZZZjXO-4k0rMg1-WAGYEOEVLts27YVqmtUEpH5Xayni3_T4UJhFwXoX98Ba8LrrN1XpLETL13nUKeeVk6QnQs_0mqebr_l-fPWpQ75WSvr6XrZdMb_45TPvB_FA7BYKJ9VxHcmOiBULespaN1TGmzI5xPMQvmStTVUJuEgDhv4SWeTqnjNgSMkR8TjOxYqhjYuHdjsYGcgS9GQM_lJdRdWmiUiyKXDpZzI5dni3V-vtr6pbRd9wk3hf5C_iD1u"/>
+<span class="material-symbols-outlined absolute inset-0 flex items-center justify-center text-xs">play_arrow</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">التفاضل المتقدم - الجزء الأول</p>
+<p class="text-[12px] text-on-surface-variant">تحديث: أمس</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="bg-surface-variant/50 text-on-surface px-3 py-1 rounded-full text-label-md border border-outline-variant">رياضيات المستوى 3</span>
+</td>
+<td class="p-6 font-label-md">01:15:00 ساعة</td>
+<td class="p-6">
+<span class="flex items-center gap-2 text-on-surface-variant text-label-md">
+<span class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+                                    مسودة
+                                </span>
+</td>
+<td class="p-6">
+<span class="text-outline text-label-md italic">لا يوجد رابط</span>
+</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 hover:bg-error/10 hover:text-error rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary/5 transition-colors group">
+<td class="p-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-8 rounded bg-surface-container-highest overflow-hidden relative">
+<img class="object-cover w-full h-full opacity-60" data-alt="A corporate educational video thumbnail for a management lecture, showing stylized 3D human figures collaborating on a digital interface, high-tech aesthetic, subtle navy and gold color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5JLF5wO0cLYHjzljsR4rA7G_237ZJ_6DJsdme6JTW6AlClAnZ1ZpOdE9aODd2t-aNlJ6ufd7_dSdgdYll5pdDgWJC_amHwvXvocQTHffFUpn5pDLT6PZGIZ_fJQMMK1ddj2VMl656zISkjbfI3t6F1pSWl3YSEI8QrYnhSw1j7hf-1QZUmzQ_0Q0gUBP-pEc3LlqrtQmmrXIbOyWZ9wN4PlH9jGOCsro_mjQh3Rea4dpI7Q4LTRTUPLpcFzBprxneCNEa64wD5KXF"/>
+<span class="material-symbols-outlined absolute inset-0 flex items-center justify-center text-xs">play_arrow</span>
+</div>
+<div>
+<p class="font-body-md font-bold text-on-surface">مهارات التواصل الفعال</p>
+<p class="text-[12px] text-on-surface-variant">تحديث: منذ ٣ أيام</p>
+</div>
+</div>
+</td>
+<td class="p-6">
+<span class="bg-surface-variant/50 text-on-surface px-3 py-1 rounded-full text-label-md border border-outline-variant">إدارة الأعمال</span>
+</td>
+<td class="p-6 font-label-md">32:15 دقيقة</td>
+<td class="p-6">
+<span class="flex items-center gap-2 text-green-400 text-label-md">
+<span class="w-2 h-2 rounded-full bg-green-400"></span>
+                                    منشور
+                                </span>
+</td>
+<td class="p-6">
+<a class="text-primary-fixed-dim hover:underline flex items-center gap-1 font-label-md" href="#">
+<span class="material-symbols-outlined text-sm">link</span>
+                                    youtube.com/gate/live
+                                </a>
+</td>
+<td class="p-6">
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 hover:bg-error/10 hover:text-error rounded-lg text-on-surface-variant transition-colors"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-6 flex justify-between items-center bg-surface-container-low/50">
+<span class="text-label-md text-on-surface-variant">عرض 1-3 من أصل 1,284 محاضرة</span>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-10 h-10 bg-primary/20 text-primary-fixed-dim rounded-lg font-bold">1</button>
+<button class="w-10 h-10 hover:bg-surface-container-high rounded-lg font-bold">2</button>
+<button class="w-10 h-10 hover:bg-surface-container-high rounded-lg font-bold">3</button>
+<button class="p-2 hover:bg-surface-container-high rounded-lg transition-colors border border-outline-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (FAB) suppression on management/details screens as per guidelines, but the "Add Lecture" is primary CTA in header -->
+<script>
+        // Micro-interactions
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(-4px)';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Animation for the primary CTA
+        const cta = document.querySelector('.primary-gradient');
+        cta.addEventListener('mousedown', () => {
+            cta.style.transform = 'scale(0.95)';
+        });
+        cta.addEventListener('mouseup', () => {
+            cta.style.transform = 'scale(1)';
+        });
+    </script>
+</body></html>
