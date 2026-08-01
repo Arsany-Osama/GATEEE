@@ -24,7 +24,6 @@ const normalizePricingType = (pricingType) => {
 };
 
 const buildPricingDetails = (course) => {
-  const pricingType = normalizePricingType(course.pricing_type);
   const originalPriceValue = Number(course.price);
   const discountPriceValue = course.discount_price === null || course.discount_price === undefined || course.discount_price === ''
     ? null
@@ -32,8 +31,11 @@ const buildPricingDetails = (course) => {
   const originalPrice = Number.isFinite(originalPriceValue) ? originalPriceValue : 0;
   const discountPrice = Number.isFinite(discountPriceValue) ? discountPriceValue : null;
   const hasExplicitPricingType = Boolean(course.pricing_type);
+  const hasDiscount = originalPrice > 0 && discountPrice !== null && discountPrice >= 0 && discountPrice < originalPrice;
+  const pricingType = hasExplicitPricingType
+    ? normalizePricingType(course.pricing_type)
+    : (originalPrice <= 0 ? 'free' : hasDiscount ? 'discounted' : 'paid');
   const isFree = pricingType === 'free' || (!hasExplicitPricingType && originalPrice <= 0);
-  const hasDiscount = pricingType === 'discounted' && discountPrice !== null && discountPrice >= 0 && discountPrice < originalPrice;
   const displayPriceValue = isFree ? 0 : (hasDiscount ? discountPrice : originalPrice);
 
   return {
@@ -156,6 +158,16 @@ export const getPaginatedPublicCourses = async ({
 export const getPublicCourseCategories = async () => {
   const res = await apiClient.get('/courses/categories');
   return Array.isArray(res.data) ? res.data : [];
+};
+
+export const enrollInFreeCourse = async (courseId) => {
+  const res = await apiClient.post(`/enrollments/me/${courseId}`);
+  return res.data;
+};
+
+export const getPublicPlatformSummary = async () => {
+  const res = await apiClient.get('/public/summary');
+  return res.data || {};
 };
 
 export const getMergedPublicCourses = async () => {

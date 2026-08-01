@@ -176,16 +176,20 @@ const buildPublicCoursesQuery = (support, query = {}) => {
         baseQuery.leftJoin('instructors', 'courses.instructor_id', 'instructors.id');
     }
 
-    if (!support.pricing_type) {
-        return { baseQuery, pricingType: 'all', wantsPagination };
-    }
-
-    if (pricingType === 'free') {
-        baseQuery.where('courses.pricing_type', 'free');
-    } else if (pricingType === 'discounted') {
-        baseQuery.where('courses.pricing_type', 'discounted');
-    } else if (pricingType === 'paid') {
-        baseQuery.whereIn('courses.pricing_type', ['paid', 'discounted']);
+    if (support.pricing_type) {
+        if (pricingType === 'free') {
+            baseQuery.where('courses.pricing_type', 'free');
+        } else if (pricingType === 'discounted') {
+            baseQuery.where('courses.pricing_type', 'discounted');
+        } else if (pricingType === 'paid') {
+            baseQuery.whereIn('courses.pricing_type', ['paid', 'discounted']);
+        }
+    } else if (pricingType === 'free') {
+        baseQuery.where((builder) => {
+            builder.whereNull('courses.price').orWhere('courses.price', '<=', 0);
+        });
+    } else if (pricingType === 'paid' || pricingType === 'discounted') {
+        baseQuery.where('courses.price', '>', 0);
     }
 
     return { baseQuery, pricingType, wantsPagination };

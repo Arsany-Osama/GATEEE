@@ -6,6 +6,36 @@ const { createOrRestoreEnrollment } = require('../utils/enrollments');
 const { notifyUser } = require('../services/notifications');
 const { sendUnexpectedError } = require('../utils/http');
 
+let coursePricingSupportPromise = null;
+let coursePricingSupportCache = null;
+
+const coursePricingSupport = async () => {
+    if (coursePricingSupportCache) return coursePricingSupportCache;
+    if (!coursePricingSupportPromise) {
+        coursePricingSupportPromise = Promise.all([
+            db.schema.hasColumn('courses', 'pricing_type'),
+            db.schema.hasColumn('courses', 'discount_price')
+        ])
+            .then(([pricing_type, discount_price]) => {
+                coursePricingSupportCache = { pricing_type, discount_price };
+                return coursePricingSupportCache;
+            })
+            .finally(() => {
+                coursePricingSupportPromise = null;
+            });
+    }
+
+    return coursePricingSupportPromise;
+};
+
+const isFreeCourse = async (course) => {
+    const support = await coursePricingSupport();
+    if (support.pricing_type) {
+        return String(course?.pricing_type || '').toLowerCase() === 'free' || Number(course?.price || 0) <= 0;
+    }
+    return Number(course?.price || 0) <= 0;
+};
+
 // 1. Enroll a student (Admin Only)
 router.post('/enroll', authenticate, isAdmin, async (req, res) => {
     const { user_id, course_id } = req.body;
@@ -53,6 +83,33 @@ router.post('/enroll', authenticate, isAdmin, async (req, res) => {
         res.status(201).json({ message: 'Student enrolled successfully' });
     } catch (error) {
         return sendUnexpectedError(res, error, 'Admin progress failed');
+    }
+});
+
+// Self-enroll in a free course
+router.post('/me/:courseId', authenticate, async (req, res) => {
+    const courseId = Number(req.params.courseId);
+    if (!Number.isInteger(courseId) || courseId <= 0) {
+        return res.status(400).json({ error: 'Select a valid course.' });
+    }
+
+    try {
+        const course = await db('courses').where({ id: courseId }).whereNull('deleted_at').first();
+        if (!course) {
+            return res.status(404).json({ error: 'Course not found.' });
+        }
+
+        if (!(await isFreeCourse(course))) {
+            return res.status(403).json({ error: 'Only free courses can be opened automatically.' });
+        }
+
+        const enrollment = await db.transaction((trx) => createOrRestoreEnrollment(trx, req.user.id, courseId));
+        return res.status(enrollment.action === 'created' ? 201 : 200).json({
+            message: enrollment.action === 'created' ? 'Course opened successfully.' : 'Course access restored.',
+            enrollment_action: enrollment.action,
+        });
+    } catch (error) {
+        return sendUnexpectedError(res, error, 'Course opening failed');
     }
 });
 

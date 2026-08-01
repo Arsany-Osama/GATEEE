@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getApiError } from '../api/client';
-import { getPaginatedPublicCourses, getPublicCourseCategories } from '../api/publicCoursesApi';
+import { enrollInFreeCourse, getPaginatedPublicCourses, getPublicCourseCategories } from '../api/publicCoursesApi';
 import Button from '../components/Button';
 import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
@@ -11,15 +11,16 @@ import PublicNavbar from '../components/public/PublicNavbar';
 import PublicPageShell from '../components/public/PublicPageShell';
 import PageBackLink from '../components/PageBackLink';
 import { useAuth } from '../context/AuthContext';
+import { useAppLanguage } from '../context/AppLanguageContext';
 
 const fallbackImage = '/images/cover of course.png';
 const PAGE_SIZE = 9;
 
-const renderCoursePrice = (course) => {
+const renderCoursePrice = (course, t) => {
   if (course?.isFree) {
     return (
       <strong className="course-price course-price-free" dir="ltr">
-        <span>Free</span>
+        <span>{t.common.free}</span>
       </strong>
     );
   }
@@ -40,7 +41,14 @@ const renderCoursePrice = (course) => {
   );
 };
 
-const LearningCourseCard = memo(({ course }) => (
+const getLocalizedCourseTitle = (course, language) => {
+  const englishTitle = String(course?.title || 'GATE Course').trim();
+  const arabicTitle = String(course?.arabic_title || course?.arabicTitle || '').trim();
+  if (language === 'ar' && arabicTitle) return { main: arabicTitle, sub: englishTitle };
+  return { main: englishTitle, sub: arabicTitle };
+};
+
+const LearningCourseCard = memo(({ course, onAction, t, language }) => (
   <article className="learning-course-card">
     <div className="learning-course-media">
       <img
@@ -62,28 +70,35 @@ const LearningCourseCard = memo(({ course }) => (
 
     <div className="learning-course-body">
       <div>
-        <h2>{course.title}</h2>
-        {course.arabicTitle ? <p className="learning-course-subtitle" dir="rtl">{course.arabicTitle}</p> : null}
+        {(() => {
+          const localized = getLocalizedCourseTitle(course, language);
+          return (
+            <>
+              <h2>{localized.main}</h2>
+              {localized.sub ? <p className="learning-course-subtitle" dir={language === 'ar' ? 'ltr' : 'rtl'}>{localized.sub}</p> : null}
+            </>
+          );
+        })()}
       </div>
 
       <p className="learning-course-description">{course.description}</p>
 
       <div className="learning-course-meta">
         <div>
-          <span>Instructor</span>
+          <span>{t.common.instructor}</span>
           <strong>{course.instructor}</strong>
           <small>{course.instructorSubtitle}</small>
         </div>
         <div>
-          <span>Price</span>
-          {renderCoursePrice(course)}
+          <span>{t.common.price}</span>
+          {renderCoursePrice(course, t)}
         </div>
       </div>
 
       <div className="learning-course-footer">
-        <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath || `/payment/course/${course.backendId}`}>
-          {course.ctaLabel || (course.isFree ? 'Start Free' : 'Buy Course')}
-        </Link>
+        <Button className="btn btn-primary" onClick={() => onAction(course)}>
+          {course.ctaLabel || (course.isFree ? t.common.startFree : t.common.buyCourse)}
+        </Button>
       </div>
     </div>
   </article>
@@ -91,6 +106,8 @@ const LearningCourseCard = memo(({ course }) => (
 
 const Learning = () => {
   const { user, logout } = useAuth();
+  const { language, direction, t } = useAppLanguage();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [page, setPage] = useState(1);
@@ -160,9 +177,9 @@ const Learning = () => {
 
   const hasCategories = categories.length > 0;
   const categorySummary = useMemo(() => {
-    if (!categories.length) return 'All courses are available in one clean catalog.';
-    return `${categories.length} categories available.`;
-  }, [categories.length]);
+    if (!categories.length) return t.learning.noCategories;
+    return `${categories.length} ${t.common.categories}`;
+  }, [categories.length, t.common.categories, t.learning.noCategories]);
 
   const updateSearch = (value) => {
     setPage(1);
@@ -174,21 +191,39 @@ const Learning = () => {
     setSelectedCategory(value);
   };
 
+  const openCourse = async (course) => {
+    if (course.isFree) {
+      if (!user) {
+        navigate(`/login?next=${encodeURIComponent(`/player/${course.id}`)}`);
+        return;
+      }
+
+      try {
+        await enrollInFreeCourse(course.id);
+        navigate(`/player/${course.id}`);
+        return;
+      } catch (error) {
+        setError(getApiError(error, 'Could not open the course.'));
+      }
+    }
+
+    navigate(course.ctaPath || course.paymentPath || `/payment/course/${course.backendId}`);
+  };
+
   return (
-    <PublicPageShell className="learning-page">
+    <PublicPageShell className="learning-page" dir={direction}>
       <PublicNavbar className="learning-nav" activePage="learning" sectionBase="/" user={user} onLogout={logout} showDashboardNav />
 
       <div className="page-toolbar">
-        <PageBackLink to="/">Back to Home</PageBackLink>
+        <PageBackLink to="/">{t.common.backToHome}</PageBackLink>
       </div>
 
       <section className="learning-hero learning-hero-compact">
         <div className="learning-hero-copy">
-          <p className="home-eyebrow">Public Course Catalog</p>
-          <h1>Explore GATE Courses</h1>
+          <p className="home-eyebrow">{t.learning.eyebrow}</p>
+          <h1>{t.learning.title}</h1>
           <p>
-            Search the full catalog, browse by category when available, and jump straight into the right course flow
-            with a smoother, cleaner layout.
+            {t.learning.description}
           </p>
 
           <div className="learning-search-bar" role="search" aria-label="Search courses">
@@ -196,17 +231,17 @@ const Learning = () => {
               type="search"
               value={search}
               onChange={(event) => updateSearch(event.target.value)}
-              placeholder="Search course title, instructor, or description"
+              placeholder={t.learning.searchPlaceholder}
             />
             {search ? (
               <Button variant="ghost" size="sm" onClick={() => updateSearch('')}>
-                Clear
+                {t.common.clear}
               </Button>
             ) : null}
           </div>
 
           <div className="learning-hero-note">
-            <span>{meta.total} courses</span>
+            <span>{`${meta.total} ${t.common.courseCount}`}</span>
             <span>{categorySummary}</span>
           </div>
         </div>
@@ -217,15 +252,15 @@ const Learning = () => {
           <div className="learning-mini-shield" aria-hidden="true">G</div>
           <div className="learning-preview-stack">
             <article>
-              <span>Search</span>
+              <span>{t.common.search}</span>
               <strong>Fast</strong>
             </article>
             <article>
-              <span>Categories</span>
+              <span>{t.common.categories}</span>
               <strong>{hasCategories ? categories.length : 'None'}</strong>
             </article>
             <article>
-              <span>Pagination</span>
+              <span>{t.common.next}</span>
               <strong>{meta.totalPages || 1} pages</strong>
             </article>
           </div>
@@ -233,15 +268,15 @@ const Learning = () => {
       </section>
 
       {hasCategories ? (
-        <section className="learning-filter-panel learning-category-panel" aria-label="Course categories">
-          <span className="learning-filter-label">Categories</span>
+        <section className="learning-filter-panel learning-category-panel" aria-label={t.learning.categoriesTitle}>
+          <span className="learning-filter-label">{t.common.categories}</span>
           <div className="learning-category-chips">
             <button
               type="button"
               className={selectedCategory === '' ? 'is-active' : ''}
               onClick={() => updateCategory('')}
             >
-              All Courses
+              {t.common.allCourses}
             </button>
             {categories.map((category) => (
               <button
@@ -250,7 +285,7 @@ const Learning = () => {
                 key={category.id}
                 onClick={() => updateCategory(category.id)}
               >
-                {category.arabic_name || category.name}
+                {language === 'ar' ? (category.arabic_name || category.name) : (category.name || category.arabic_name)}
                 <span>{category.course_count || 0}</span>
               </button>
             ))}
@@ -263,9 +298,9 @@ const Learning = () => {
 
       {!loadingCourses && courses.length === 0 ? (
         <EmptyState
-          title="No courses found"
-          message="Try a different search or category."
-          action={<Button variant="ghost" onClick={() => { updateSearch(''); updateCategory(''); }}>Reset filters</Button>}
+          title={t.common.noCoursesFound}
+          message={t.common.noCoursesMessage}
+          action={<Button variant="ghost" onClick={() => { updateSearch(''); updateCategory(''); }}>{t.common.resetFilters}</Button>}
         />
       ) : null}
 
@@ -274,6 +309,9 @@ const Learning = () => {
           {courses.map((course) => (
             <LearningCourseCard
               course={course}
+              onAction={openCourse}
+              language={language}
+              t={t}
               key={`${course.source || 'course'}-${course.id}`}
             />
           ))}
@@ -283,21 +321,21 @@ const Learning = () => {
       {meta.totalPages > 1 ? (
         <section className="learning-pagination" aria-label="Course pagination">
           <Button variant="ghost" disabled={!meta.hasPrevPage} onClick={() => setPage((current) => Math.max(1, current - 1))}>
-            Previous
+            {t.common.previous}
           </Button>
           <span>
-            Page {meta.page} of {meta.totalPages}
+            {`Page ${meta.page} of ${meta.totalPages}`}
           </span>
           <Button variant="ghost" disabled={!meta.hasNextPage} onClick={() => setPage((current) => current + 1)}>
-            Next
+            {t.common.next}
           </Button>
         </section>
       ) : null}
 
       <section className="learning-manual-notice">
-        <strong>Manual activation after review</strong>
+        <strong>{t.learning.manualActivationTitle}</strong>
         <p>
-          Paid access is still reviewed manually after payment, while free courses stay open in the catalog.
+          {t.learning.manualActivationText}
         </p>
       </section>
 

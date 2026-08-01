@@ -29,6 +29,7 @@ const adminUploadRoutes = require('./routes/admin/uploads');
 const notificationRoutes = require('./routes/notifications');
 const progressRoutes = require('./routes/progress');
 const settingsRoutes = require('./routes/settings');
+const publicRoutes = require('./routes/public');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -93,6 +94,7 @@ app.use('/student', studentRoutes);
 app.use('/payment-requests', paymentRequestRoutes);
 app.use('/quizzes', quizRoutes);
 app.use('/admin', enrollmentRoutes);
+app.use('/enrollments', enrollmentRoutes);
 app.use('/streaming', streamingRoutes);
 app.use('/admin/quizzes', adminQuizRoutes);
 app.use('/admin/dashboard', adminDashboardRoutes);
@@ -109,6 +111,7 @@ app.use('/notifications', notificationRoutes);
 app.use('/progress', progressRoutes);
 app.use('/settings', settingsRoutes);
 app.use('/admin/settings', settingsRoutes);
+app.use('/public', publicRoutes);
 
 // Health Check
 app.get('/health', async (req, res) => {

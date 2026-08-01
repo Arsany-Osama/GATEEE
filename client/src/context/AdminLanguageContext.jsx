@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useMemo } from 'react';
+import { useAppLanguage } from './AppLanguageContext';
 
 const AdminLanguageContext = createContext(null);
 
@@ -68,22 +69,10 @@ const dictionaries = {
   },
 };
 
-const getInitialLanguage = () => {
-  if (typeof window === 'undefined') return 'ar';
-  const saved = window.localStorage.getItem('gate-admin-language');
-  return saved === 'en' || saved === 'ar' ? saved : 'ar';
-};
-
 export const AdminLanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(getInitialLanguage);
+  const appLanguage = useAppLanguage();
+  const { language, setLanguage, direction } = appLanguage;
   const dictionary = dictionaries[language] || dictionaries.ar;
-  const direction = dictionary.dir;
-
-  useEffect(() => {
-    window.localStorage.setItem('gate-admin-language', language);
-    document.documentElement.lang = language;
-    document.documentElement.dir = direction;
-  }, [direction, language]);
 
   const value = useMemo(() => ({
     language,
@@ -91,7 +80,7 @@ export const AdminLanguageProvider = ({ children }) => {
     direction,
     isRtl: direction === 'rtl',
     t: dictionary,
-  }), [dictionary, direction, language]);
+  }), [dictionary, direction, language, setLanguage]);
 
   return (
     <AdminLanguageContext.Provider value={value}>

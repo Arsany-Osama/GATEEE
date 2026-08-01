@@ -1,6 +1,7 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { AppLanguageProvider } from './context/AppLanguageContext';
 import Loader from './components/Loader';
 import AdminLayout from './layouts/AdminLayout';
 import StudentLayout from './layouts/StudentLayout';
@@ -94,10 +95,12 @@ const ScrollToTop = () => {
 
 const App = () => (
   <AuthProvider>
-    <BrowserRouter>
-      <ScrollToTop />
-      <AppRoutes />
-    </BrowserRouter>
+    <AppLanguageProvider>
+      <BrowserRouter>
+        <ScrollToTop />
+        <AppRoutes />
+      </BrowserRouter>
+    </AppLanguageProvider>
   </AuthProvider>
 );
 

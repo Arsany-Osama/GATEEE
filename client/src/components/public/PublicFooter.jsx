@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getPublicSettings } from '../../api/settingsApi';
 import { contactInfo } from '../../data/contact';
+import { useAppLanguage } from '../../context/AppLanguageContext';
 
 const SocialIcon = ({ type }) => {
   if (type === 'facebook') {
@@ -29,6 +30,7 @@ const SocialIcon = ({ type }) => {
 
 const PublicFooter = ({ className = '' }) => {
   const [settings, setSettings] = useState({});
+  const { t } = useAppLanguage();
   const platformName = settings.platform_name || 'GATE';
   const facebookUrl = settings.facebook_url || 'https://www.facebook.com/share/1Ph9fSQUkJ/';
   const instagramUrl = settings.instagram_url || 'https://www.instagram.com/ahmed_gamal_elghawy?igsh=MWdhb2hod3R5MGc1dw==';
@@ -61,7 +63,7 @@ const PublicFooter = ({ className = '' }) => {
           <span className="brand-mark" aria-hidden="true">G</span>
           <span className="brand-name">{platformName}</span>
         </Link>
-        <p>Empowering professionals with world-class safety training, certified courses, and practical training paths.</p>
+        <p>{t.footer.description}</p>
         <div className="footer-socials" aria-label="GATE social and contact channels">
           <a href={facebookUrl} target="_blank" rel="noreferrer" title="Facebook"><SocialIcon type="facebook" /></a>
           <a href={whatsappUrl} target="_blank" rel="noreferrer" title="WhatsApp"><SocialIcon type="whatsapp" /></a>
@@ -69,15 +71,15 @@ const PublicFooter = ({ className = '' }) => {
         </div>
       </div>
       <div>
-        <h2>Quick Links</h2>
-        <Link to="/">Home</Link>
-        <Link to="/learning">Courses</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/register">Register</Link>
+        <h2>{t.footer.quickLinks}</h2>
+        <Link to="/">{t.nav.home}</Link>
+        <Link to="/learning">{t.nav.courses}</Link>
+        <Link to="/login">{t.nav.login}</Link>
+        <Link to="/register">{t.nav.register}</Link>
       </div>
       <div>
-        <h2>Contact Us</h2>
-        <p>Have questions? We're here to help!</p>
+        <h2>{t.footer.contact}</h2>
+        <p>{t.footer.help}</p>
         <p className="footer-phone">{phoneDisplay}</p>
         <p>{contactEmail}</p>
         <p>{footerLocation}</p>

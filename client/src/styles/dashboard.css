@@ -10,6 +10,38 @@
 .topnav a.active, .topnav a:hover { color: var(--primary); background: var(--soft-blue); }
 .topbar-user { display: flex; gap: 12px; align-items: center; color: var(--muted); font-weight: 800; }
 
+.public-language-switch,
+.admin-language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 4px;
+  border: 1px solid rgba(148, 163, 184, .18);
+  border-radius: 999px;
+  background: rgba(7, 18, 34, .36);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+.public-language-switch button,
+.admin-language-switch button {
+  min-width: 44px;
+  min-height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.public-language-switch button.is-active,
+.admin-language-switch button.is-active {
+  background: linear-gradient(135deg, #22d3ee, #2563eb);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .22);
+}
+
 .notification-bell {
   position: relative;
   z-index: 30;
@@ -1325,22 +1357,22 @@
 
 .notification-trigger {
   position: relative;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  flex: 0 0 40px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  flex: 0 0 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 1px solid rgba(56, 189, 248, .34);
-  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, .28);
+  border-radius: 16px;
   background:
-    radial-gradient(circle at 30% 0, rgba(34, 211, 238, .15), transparent 35%),
-    linear-gradient(145deg, rgba(8, 15, 29, .92), rgba(10, 26, 49, .84));
+    linear-gradient(145deg, rgba(8, 15, 29, .9), rgba(10, 26, 49, .8)),
+    radial-gradient(circle at 30% 0, rgba(34, 211, 238, .12), transparent 38%);
   color: #ecfeff;
   line-height: 1;
-  box-shadow: 0 12px 30px rgba(2, 8, 23, .28), inset 0 1px 0 rgba(255, 255, 255, .08);
+  box-shadow: 0 10px 26px rgba(2, 8, 23, .22), inset 0 1px 0 rgba(255, 255, 255, .08);
   cursor: pointer;
   transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease, color .18s ease;
 }
@@ -1358,9 +1390,9 @@
 }
 
 .notification-icon {
-  width: 19px;
-  height: 19px;
-  flex: 0 0 19px;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
   line-height: 1;
 }
 
@@ -1370,8 +1402,8 @@
 }
 
 .notification-icon svg {
-  width: 19px;
-  height: 19px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   fill: none;
   stroke: currentColor;
@@ -1383,8 +1415,8 @@
 
 .notification-trigger strong {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  inset-block-start: -5px;
+  inset-inline-end: -5px;
   min-width: 18px;
   height: 18px;
   display: grid;

@@ -1260,8 +1260,10 @@
 }
 
 .admin-shell .notification-trigger {
-  border-color: rgba(34, 211, 238, .38);
-  background: linear-gradient(135deg, rgba(2, 8, 23, .72), rgba(15, 39, 71, .62));
+  border-color: rgba(34, 211, 238, .28);
+  background:
+    linear-gradient(145deg, rgba(2, 8, 23, .74), rgba(15, 39, 71, .64)),
+    radial-gradient(circle at 28% 0, rgba(34, 211, 238, .12), transparent 38%);
 }
 
 .admin-shell .notification-popover {

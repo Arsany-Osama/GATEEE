@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { getApiError } from '../api/client';
-import { getPaginatedPublicCourses } from '../api/publicCoursesApi';
+import { enrollInFreeCourse, getPaginatedPublicCourses, getPublicPlatformSummary } from '../api/publicCoursesApi';
 import Button from '../components/Button';
 import Loader from '../components/Loader';
 import PublicFooter from '../components/public/PublicFooter';
 import PublicNavbar from '../components/public/PublicNavbar';
 import { useAuth } from '../context/AuthContext';
-
-const stats = [
-  { label: 'Professional Courses', value: '1+', note: 'High Quality Courses', icon: 'cap' },
-  { label: 'Active Students', value: '5,000+', note: 'Worldwide Students', icon: 'users' },
-  { label: 'Video Lessons', value: '100+', note: 'Expert Video Content', icon: 'play' },
-  { label: '24/7 Support', value: 'Always On', note: 'Manual Activation Support', icon: 'support' },
-];
+import { useAppLanguage } from '../context/AppLanguageContext';
 
 const features = [
   { title: 'Structured Courses', text: 'Well organized modules designed by industry experts.', icon: 'book', tone: 'blue' },
@@ -43,14 +37,20 @@ const floatingBadges = [
 
 const courseTitle = (course) => String(course?.title || 'GATE Course').trim();
 const courseArabicTitle = (course) => String(course?.arabic_title || course?.arabicTitle || '').trim();
+const getLocalizedCourseTitle = (course, language) => {
+  const englishTitle = courseTitle(course);
+  const arabicTitle = courseArabicTitle(course);
+  if (language === 'ar' && arabicTitle) return { main: arabicTitle, sub: englishTitle };
+  return { main: englishTitle, sub: arabicTitle };
+};
 const FREE_COURSE_LIMIT = 2;
 const FEATURED_COURSE_LIMIT = 4;
 
-const renderCoursePrice = (course) => {
+const renderCoursePrice = (course, t) => {
   if (course?.isFree) {
     return (
       <strong className="course-price course-price-free" dir="ltr">
-        <span>Free</span>
+        <span>{t.common.free}</span>
       </strong>
     );
   }
@@ -73,12 +73,15 @@ const renderCoursePrice = (course) => {
 
 const Home = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const { language, direction, t } = useAppLanguage();
   const [freeCourses, setFreeCourses] = useState([]);
   const [paidCourses, setPaidCourses] = useState([]);
   const [freeMeta, setFreeMeta] = useState({ page: 1, totalPages: 0, total: 0 });
   const [paidMeta, setPaidMeta] = useState({ page: 1, totalPages: 0, total: 0 });
   const [freePage, setFreePage] = useState(1);
   const [paidPage, setPaidPage] = useState(1);
+  const [platformSummary, setPlatformSummary] = useState({});
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [courseError, setCourseError] = useState('');
 
@@ -125,8 +128,51 @@ const Home = () => {
     };
   }, [freePage, paidPage]);
 
+  useEffect(() => {
+    let active = true;
+    const loadSummary = async () => {
+      try {
+        const summary = await getPublicPlatformSummary();
+        if (active) setPlatformSummary(summary || {});
+      } catch {
+        if (active) setPlatformSummary({});
+      }
+    };
+
+    loadSummary();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const stats = useMemo(() => {
+    const publishedCourses = Number(platformSummary.published_courses ?? platformSummary.total_courses ?? freeCourses.length + paidCourses.length);
+    const totalStudents = Number(platformSummary.total_students ?? 0);
+    const totalLessons = Number(platformSummary.total_lessons ?? 0);
+    return [
+      { label: t.home.stats.courses, value: `${publishedCourses}+`, note: 'Live catalog', icon: 'cap' },
+      { label: t.home.stats.students, value: `${totalStudents}+`, note: 'Growing audience', icon: 'users' },
+      { label: t.home.stats.lessons, value: `${totalLessons}+`, note: 'Expert video content', icon: 'play' },
+      { label: t.home.stats.support, value: '24/7', note: 'Manual activation support', icon: 'support' },
+    ];
+  }, [freeCourses.length, paidCourses.length, platformSummary.published_courses, platformSummary.total_courses, platformSummary.total_lessons, platformSummary.total_students, t.home.stats.courses, t.home.stats.lessons, t.home.stats.students, t.home.stats.support]);
+
+  const openFreeCourse = async (course) => {
+    if (!user) {
+      navigate(`/login?next=${encodeURIComponent(`/player/${course.id}`)}`);
+      return;
+    }
+
+    try {
+      await enrollInFreeCourse(course.id);
+      navigate(`/player/${course.id}`);
+    } catch (error) {
+      setCourseError(getApiError(error, 'Could not open the course.'));
+    }
+  };
+
   return (
-    <main className="home-page safety-home">
+    <main className="home-page safety-home" dir={direction}>
       <span className="safety-bg safety-bg-helmet" aria-hidden="true" />
       <span className="safety-bg safety-bg-vest" aria-hidden="true" />
       <span className="safety-bg safety-bg-crane" aria-hidden="true" />
@@ -142,19 +188,18 @@ const Home = () => {
           aria-hidden="true"
         />
         <div className="home-copy">
-          <p className="home-eyebrow">#1 Safety Courses Platform</p>
+          <p className="home-eyebrow">{t.home.eyebrow}</p>
           <h1>
-            Master Professional
-            <span>Safety Skills with</span>
-            <strong>GATE</strong>
+            {t.home.title[0]}
+            <span>{t.home.title[1]}</span>
+            <strong>{t.home.title[2]}</strong>
           </h1>
           <p>
-            Premium safety training, video lessons, and certified courses designed for professionals and
-            organizations worldwide.
+            {t.home.description}
           </p>
           <div className="hero-actions">
             <Link className="btn btn-primary btn-lg" to="/learning">
-              Browse Courses
+              {t.home.browseCourses}
               <span aria-hidden="true">-&gt;</span>
             </Link>
           </div>
@@ -166,7 +211,7 @@ const Home = () => {
               <span />
             </div>
             <div>
-              <p>Trusted by safety professionals and organizations</p>
+              <p>{t.home.trustedBy}</p>
             </div>
           </div>
         </div>
@@ -207,7 +252,7 @@ const Home = () => {
       <section className="home-stats" aria-label="GATE courses platform statistics">
         {stats.map((stat) => (
           <article className="home-stat-card" key={stat.label}>
-            {stat.label === 'Professional Courses' ? (
+            {stat.icon === 'cap' ? (
               <span className="home-gate-mark home-stat-gate-mark" aria-hidden="true">G</span>
             ) : (
               <span className={`home-card-icon icon-${stat.icon}`} aria-hidden="true" />
@@ -223,8 +268,8 @@ const Home = () => {
 
       <section className="home-section home-features-section" id="features">
         <div className="home-section-head">
-          <p>Powerful & Easy To Use</p>
-          <h2>Platform Features</h2>
+          <p>{t.home.featuresEyebrow}</p>
+          <h2>{t.home.featuresTitle}</h2>
         </div>
         <div className="home-features" aria-label="GATE platform features">
           {features.map((feature) => (
@@ -241,33 +286,33 @@ const Home = () => {
       </section>
 
       <section className="home-section home-courses-section" id="courses">
-        <div className="home-section-head with-action">
-          <div>
-            <p>Featured Courses</p>
-            <h2>Start Your Course Journey</h2>
+              <div className="home-section-head with-action">
+            <div>
+              <p>{t.home.coursesEyebrow}</p>
+              <h2>{t.home.coursesTitle}</h2>
+            </div>
+            <Link className="btn btn-ghost" to="/learning">
+              {t.home.viewAllCourses}
+              <span aria-hidden="true">-&gt;</span>
+            </Link>
           </div>
-          <Link className="btn btn-ghost" to="/learning">
-            View All Courses
-            <span aria-hidden="true">-&gt;</span>
-          </Link>
-        </div>
         {courseError ? <div className="home-course-error">{courseError}</div> : null}
         {loadingCourses ? <Loader label="Loading courses..." /> : null}
 
         <div className="home-course-section-group">
           <div className="home-course-section-head">
             <div>
-              <p>Free Courses</p>
-              <h3>Start with open learning</h3>
+              <p>{t.common.free}</p>
+              <h3>{t.home.freeSectionTitle}</h3>
             </div>
             {freeMeta.totalPages > 1 ? (
               <div className="home-section-pager" aria-label="Free course pagination">
                 <Button variant="ghost" size="sm" disabled={freeMeta.page <= 1} onClick={() => setFreePage((current) => Math.max(1, current - 1))}>
-                  Previous
+                  {t.common.previous}
                 </Button>
-                <span>Page {freeMeta.page} of {freeMeta.totalPages}</span>
+                <span>{`Page ${freeMeta.page} of ${freeMeta.totalPages}`}</span>
                 <Button variant="ghost" size="sm" disabled={freeMeta.page >= freeMeta.totalPages} onClick={() => setFreePage((current) => current + 1)}>
-                  Next
+                  {t.common.next}
                 </Button>
               </div>
             ) : null}
@@ -280,9 +325,16 @@ const Home = () => {
                   <img className="course-thumb" src={course.image} alt="" aria-hidden="true" />
                 </div>
                 <div className="course-body">
-                  <span className="home-course-pill is-free">Free</span>
-                  <h3>{courseTitle(course)}</h3>
-                  {courseArabicTitle(course) ? <p className="home-course-subtitle" dir="rtl">{courseArabicTitle(course)}</p> : null}
+                  <span className="home-course-pill is-free">{t.common.free}</span>
+                  {(() => {
+                    const localized = getLocalizedCourseTitle(course, language);
+                    return (
+                      <>
+                        <h3>{localized.main}</h3>
+                        {localized.sub ? <p className="home-course-subtitle" dir={language === 'ar' ? 'ltr' : 'rtl'}>{localized.sub}</p> : null}
+                      </>
+                    );
+                  })()}
                   <p className="home-course-description">{course.description}</p>
                   <div className="course-instructor">
                     <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
@@ -292,10 +344,10 @@ const Home = () => {
                     </div>
                   </div>
                   <div className="course-foot">
-                    {renderCoursePrice(course)}
-                    <Link className="btn btn-secondary" to={course.ctaPath || '/learning'}>
-                      {course.ctaLabel || 'Start Free'}
-                    </Link>
+                    {renderCoursePrice(course, t)}
+                    <Button className="btn btn-secondary" onClick={() => openFreeCourse(course)}>
+                      {course.ctaLabel || t.common.startFree}
+                    </Button>
                   </div>
                 </div>
               </article>
@@ -306,17 +358,17 @@ const Home = () => {
         <div className="home-course-section-group">
           <div className="home-course-section-head">
             <div>
-              <p>Paid Courses</p>
-              <h3>Premium courses and special offers</h3>
+              <p>{t.home.paidSectionTitle}</p>
+              <h3>{t.home.paidSectionTitle}</h3>
             </div>
             {paidMeta.totalPages > 1 ? (
               <div className="home-section-pager" aria-label="Paid course pagination">
                 <Button variant="ghost" size="sm" disabled={paidMeta.page <= 1} onClick={() => setPaidPage((current) => Math.max(1, current - 1))}>
-                  Previous
+                  {t.common.previous}
                 </Button>
-                <span>Page {paidMeta.page} of {paidMeta.totalPages}</span>
+                <span>{`Page ${paidMeta.page} of ${paidMeta.totalPages}`}</span>
                 <Button variant="ghost" size="sm" disabled={paidMeta.page >= paidMeta.totalPages} onClick={() => setPaidPage((current) => current + 1)}>
-                  Next
+                  {t.common.next}
                 </Button>
               </div>
             ) : null}
@@ -329,9 +381,16 @@ const Home = () => {
                   <img className="course-thumb" src={course.image} alt="" aria-hidden="true" />
                 </div>
                 <div className="course-body">
-                  {course.hasDiscount ? <span className="home-course-pill is-discounted">Discounted</span> : null}
-                  <h3>{courseTitle(course)}</h3>
-                  {courseArabicTitle(course) ? <p className="home-course-subtitle" dir="rtl">{courseArabicTitle(course)}</p> : null}
+                  {course.hasDiscount ? <span className="home-course-pill is-discounted">{t.common.offer}</span> : null}
+                  {(() => {
+                    const localized = getLocalizedCourseTitle(course, language);
+                    return (
+                      <>
+                        <h3>{localized.main}</h3>
+                        {localized.sub ? <p className="home-course-subtitle" dir={language === 'ar' ? 'ltr' : 'rtl'}>{localized.sub}</p> : null}
+                      </>
+                    );
+                  })()}
                   <p className="home-course-description">{course.description}</p>
                   <div className="course-instructor">
                     <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
@@ -341,9 +400,9 @@ const Home = () => {
                     </div>
                   </div>
                   <div className="course-foot">
-                    {renderCoursePrice(course)}
+                    {renderCoursePrice(course, t)}
                     <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath}>
-                      {course.ctaLabel || 'Buy Course'}
+                      {course.ctaLabel || t.common.buyCourse}
                     </Link>
                   </div>
                 </div>
@@ -355,8 +414,8 @@ const Home = () => {
 
       <section className="home-section why-gate" id="why-gate">
         <div className="home-section-head">
-          <p>Why Choose GATE</p>
-          <h2>Your Success is Our Mission</h2>
+          <p>{t.home.whyEyebrow}</p>
+          <h2>{t.home.whyTitle}</h2>
         </div>
         <div className="why-grid">
           {benefits.map((benefit) => (
