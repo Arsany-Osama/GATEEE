@@ -1,4 +1,4 @@
-import { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
+import { memo, startTransition, useCallback, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiError } from '../api/client';
 import { enrollInFreeCourse, getPaginatedPublicCourses, getPublicCourseCategories } from '../api/publicCoursesApi';
@@ -58,6 +58,7 @@ const LearningCourseCard = memo(({ course, onAction, t, language }) => (
         alt={`${course.title} cover`}
         loading="lazy"
         decoding="async"
+        fetchPriority="low"
         onError={(event) => { event.currentTarget.src = fallbackImage; }}
       />
       <div className="learning-course-overlay">
@@ -70,17 +71,15 @@ const LearningCourseCard = memo(({ course, onAction, t, language }) => (
     </div>
 
     <div className="learning-course-body">
-      <div>
-        {(() => {
-          const localized = getLocalizedCourseTitle(course, language);
-          return (
-            <>
-              <h2>{localized.main}</h2>
-              {localized.sub ? <p className="learning-course-subtitle" dir={language === 'ar' ? 'ltr' : 'rtl'}>{localized.sub}</p> : null}
-            </>
-          );
-        })()}
-      </div>
+      {(() => {
+        const localized = getLocalizedCourseTitle(course, language);
+        return (
+          <div>
+            <h2>{localized.main}</h2>
+            {localized.sub ? <p className="learning-course-subtitle" dir={language === 'ar' ? 'ltr' : 'rtl'}>{localized.sub}</p> : null}
+          </div>
+        );
+      })()}
 
       <p className="learning-course-description">{course.description}</p>
 
@@ -183,17 +182,21 @@ const Learning = () => {
     return `${categories.length} ${t.common.categories}`;
   }, [categories.length, t.common.categories, t.learning.noCategories]);
 
-  const updateSearch = (value) => {
-    setPage(1);
-    setSearch(value);
-  };
+  const updateSearch = useCallback((value) => {
+    startTransition(() => {
+      setPage(1);
+      setSearch(value);
+    });
+  }, []);
 
-  const updateCategory = (value) => {
-    setPage(1);
-    setSelectedCategory(value);
-  };
+  const updateCategory = useCallback((value) => {
+    startTransition(() => {
+      setPage(1);
+      setSelectedCategory(value);
+    });
+  }, []);
 
-  const openCourse = async (course) => {
+  const openCourse = useCallback(async (course) => {
     if (course.isFree) {
       if (!user) {
         navigate(`/login?next=${encodeURIComponent(`/player/${course.id}`)}`);
@@ -210,7 +213,7 @@ const Learning = () => {
     }
 
     navigate(course.ctaPath || course.paymentPath || `/payment/course/${course.backendId}`);
-  };
+  }, [navigate, user]);
 
   return (
     <PublicPageShell className="learning-page" dir={direction}>

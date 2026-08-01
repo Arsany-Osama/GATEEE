@@ -7849,6 +7849,7 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-top: 20px;
+  contain: layout paint style;
 }
 
 .learning-page .learning-course-card {
@@ -7859,11 +7860,16 @@
     linear-gradient(150deg, rgba(15, 39, 71, .84), rgba(7, 26, 51, .66) 56%, rgba(2, 8, 23, .94)),
     radial-gradient(circle at 18% 0, rgba(34, 211, 238, .12), transparent 36%);
   box-shadow: 0 18px 46px rgba(0, 0, 0, .28);
+  content-visibility: auto;
+  contain-intrinsic-size: 520px 760px;
+  contain: layout paint style;
+  transform: translateZ(0);
 }
 
 .learning-page .learning-course-media {
   position: relative;
   min-height: 240px;
+  contain: paint;
 }
 
 .learning-page .learning-course-image {
@@ -7976,6 +7982,13 @@
 .learning-page .learning-course-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+@supports not (content-visibility: auto) {
+  .learning-page .learning-course-card {
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+  }
 }
 
 .learning-page .learning-pagination {

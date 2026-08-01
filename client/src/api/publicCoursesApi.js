@@ -6,10 +6,16 @@ const DEFAULT_INSTRUCTOR_SUBTITLE = '10+ Years Experience';
 const DEFAULT_PRICE = '2000';
 const FALLBACK_IMAGE = '/images/cover of course.png';
 const PUBLIC_COURSES_CACHE_TTL_MS = 60_000;
+const PUBLIC_CATEGORIES_CACHE_TTL_MS = 5 * 60_000;
 
 let publicCoursesCache = null;
 let publicCoursesCacheAt = 0;
 let publicCoursesRequest = null;
+const paginatedCoursesCache = new Map();
+const paginatedCoursesRequests = new Map();
+let publicCategoriesCache = null;
+let publicCategoriesCacheAt = 0;
+let publicCategoriesRequest = null;
 
 const formatPrice = (price) => {
   const value = Number(price);
@@ -21,6 +27,24 @@ const normalizePricingType = (pricingType) => {
   const value = String(pricingType || '').toLowerCase().trim();
   if (value === 'free' || value === 'discounted' || value === 'paid') return value;
   return 'paid';
+};
+
+const buildPaginatedCacheKey = ({ page, limit, pricingType, search, categoryId }) => JSON.stringify({
+  page: String(page),
+  limit: String(limit),
+  pricingType: String(pricingType || 'all'),
+  search: String(search || '').trim(),
+  categoryId: String(categoryId || ''),
+});
+
+const readCachedPaginatedCourses = (cacheKey) => {
+  const entry = paginatedCoursesCache.get(cacheKey);
+  if (!entry) return null;
+  if ((Date.now() - entry.at) >= PUBLIC_COURSES_CACHE_TTL_MS) {
+    paginatedCoursesCache.delete(cacheKey);
+    return null;
+  }
+  return entry.value;
 };
 
 const buildPricingDetails = (course) => {
@@ -100,6 +124,12 @@ export const normalizeBackendCourse = (course) => {
 export const clearPublicCoursesCache = () => {
   publicCoursesCache = null;
   publicCoursesCacheAt = 0;
+  publicCoursesRequest = null;
+  paginatedCoursesCache.clear();
+  paginatedCoursesRequests.clear();
+  publicCategoriesCache = null;
+  publicCategoriesCacheAt = 0;
+  publicCategoriesRequest = null;
 };
 
 export const getPublicBackendCourses = async ({ forceRefresh = false } = {}) => {
@@ -133,6 +163,14 @@ export const getPaginatedPublicCourses = async ({
   search = '',
   categoryId = '',
 } = {}) => {
+  const cacheKey = buildPaginatedCacheKey({ page, limit, pricingType, search, categoryId });
+  const cached = readCachedPaginatedCourses(cacheKey);
+  if (cached) return cached;
+
+  if (paginatedCoursesRequests.has(cacheKey)) {
+    return paginatedCoursesRequests.get(cacheKey);
+  }
+
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('limit', String(limit));
@@ -140,24 +178,52 @@ export const getPaginatedPublicCourses = async ({
   if (search.trim()) params.set('q', search.trim());
   if (categoryId) params.set('category_id', String(categoryId));
 
-  const res = await apiClient.get(`/courses?${params.toString()}`);
-  const data = Array.isArray(res.data?.data) ? res.data.data.map(normalizeBackendCourse) : [];
-  return {
-    data,
-    meta: {
-      page: Number(res.data?.meta?.page || page),
-      limit: Number(res.data?.meta?.limit || limit),
-      total: Number(res.data?.meta?.total || data.length),
-      totalPages: Number(res.data?.meta?.totalPages || 0),
-      hasNextPage: Boolean(res.data?.meta?.hasNextPage),
-      hasPrevPage: Boolean(res.data?.meta?.hasPrevPage),
-    },
-  };
+  const request = apiClient.get(`/courses?${params.toString()}`)
+    .then((res) => {
+      const data = Array.isArray(res.data?.data) ? res.data.data.map(normalizeBackendCourse) : [];
+      const value = {
+        data,
+        meta: {
+          page: Number(res.data?.meta?.page || page),
+          limit: Number(res.data?.meta?.limit || limit),
+          total: Number(res.data?.meta?.total || data.length),
+          totalPages: Number(res.data?.meta?.totalPages || 0),
+          hasNextPage: Boolean(res.data?.meta?.hasNextPage),
+          hasPrevPage: Boolean(res.data?.meta?.hasPrevPage),
+        },
+      };
+      paginatedCoursesCache.set(cacheKey, { at: Date.now(), value });
+      return value;
+    })
+    .finally(() => {
+      paginatedCoursesRequests.delete(cacheKey);
+    });
+
+  paginatedCoursesRequests.set(cacheKey, request);
+  return request;
 };
 
 export const getPublicCourseCategories = async () => {
-  const res = await apiClient.get('/courses/categories');
-  return Array.isArray(res.data) ? res.data : [];
+  const now = Date.now();
+  if (publicCategoriesCache && (now - publicCategoriesCacheAt) < PUBLIC_CATEGORIES_CACHE_TTL_MS) {
+    return publicCategoriesCache;
+  }
+
+  if (publicCategoriesRequest) {
+    return publicCategoriesRequest;
+  }
+
+  publicCategoriesRequest = apiClient.get('/courses/categories')
+    .then((res) => {
+      publicCategoriesCache = Array.isArray(res.data) ? res.data : [];
+      publicCategoriesCacheAt = Date.now();
+      return publicCategoriesCache;
+    })
+    .finally(() => {
+      publicCategoriesRequest = null;
+    });
+
+  return publicCategoriesRequest;
 };
 
 export const enrollInFreeCourse = async (courseId) => {

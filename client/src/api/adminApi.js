@@ -1,4 +1,5 @@
 import apiClient from './client';
+import { clearPublicCoursesCache } from './publicCoursesApi';
 
 const asArray = (data) => (Array.isArray(data) ? data : Array.isArray(data?.data) ? data.data : []);
 
@@ -24,16 +25,19 @@ export const getAdminCourses = async () => {
 
 export const createCourse = async (payload) => {
   const res = await apiClient.post('/admin/courses', payload);
+  clearPublicCoursesCache();
   return res.data;
 };
 
 export const updateCourse = async (id, payload) => {
   const res = await apiClient.put(`/admin/courses/${id}`, payload);
+  clearPublicCoursesCache();
   return res.data;
 };
 
 export const deleteCourse = async (id) => {
   const res = await apiClient.delete(`/admin/courses/${id}`);
+  clearPublicCoursesCache();
   return res.data;
 };
 
@@ -113,11 +117,13 @@ export const getDeletedCourses = async () => {
 
 export const restoreCourse = async (id) => {
   const res = await apiClient.post(`/admin/courses/${id}/restore`);
+  clearPublicCoursesCache();
   return res.data;
 };
 
 export const permanentlyDeleteCourse = async (id) => {
   const res = await apiClient.post(`/admin/courses/${id}/permanent`);
+  clearPublicCoursesCache();
   return res.data;
 };
 

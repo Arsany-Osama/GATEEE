@@ -33,7 +33,7 @@ const blankCourse = {
   thumbnail_public_id: '',
   category_id: '',
   instructor_id: '',
-    instructor_name: 'Eng. Ahmed Gamal Elghawy',
+  instructor_name: 'Eng. Ahmed Gamal Elghawy',
   instructor_subtitle: '10+ Years Experience',
   price: '2000',
   discount_price: '',
@@ -326,7 +326,9 @@ const resolvePricingType = (form) => {
     && discountPrice < price;
 
   if (requestedType === 'free') return 'free';
-  if (hasValidDiscount || requestedType === 'discounted') return 'discounted';
+  if (requestedType === 'paid') return 'paid';
+  if (requestedType === 'discounted') return 'discounted';
+  if (hasValidDiscount) return 'discounted';
   return 'paid';
 };
 
@@ -347,22 +349,30 @@ const toForm = (course = {}) => ({
   display_order: course.display_order ?? '0',
 });
 
-const buildPayload = (form) => ({
-  title: form.title.trim(),
-  arabic_title: form.arabic_title.trim(),
-  description: form.description.trim(),
-  thumbnail_url: form.thumbnail_url.trim(),
-  thumbnail_public_id: form.thumbnail_public_id || '',
-  category_id: form.category_id ? Number(form.category_id) : null,
-  instructor_id: form.instructor_id ? Number(form.instructor_id) : null,
-  instructor_name: form.instructor_name.trim(),
-  instructor_subtitle: form.instructor_subtitle.trim(),
-  price: Number(form.price),
-  discount_price: resolvePricingType(form) === 'discounted' ? Number(form.discount_price) : null,
-  pricing_type: resolvePricingType(form),
-  is_published: Boolean(form.is_published),
-  display_order: Number(form.display_order) || 0,
-});
+const buildPayload = (form) => {
+  const pricingType = resolvePricingType(form);
+  const displayOrder = Number(form.display_order) || 0;
+
+  return {
+    title: form.title.trim(),
+    arabic_title: form.arabic_title.trim(),
+    description: form.description.trim(),
+    thumbnail_url: form.thumbnail_url.trim(),
+    thumbnail_public_id: form.thumbnail_public_id || '',
+    category_id: form.category_id ? Number(form.category_id) : null,
+    instructor_id: form.instructor_id ? Number(form.instructor_id) : null,
+    instructor_name: form.instructor_name.trim(),
+    instructor_subtitle: form.instructor_subtitle.trim(),
+    price: Number(form.price),
+    discount_price: pricingType === 'discounted' ? Number(form.discount_price) : null,
+    pricing_type: pricingType,
+    pricingType,
+    is_published: Boolean(form.is_published),
+    isPublished: Boolean(form.is_published),
+    display_order: displayOrder,
+    displayOrder,
+  };
+};
 
 const CoursesPage = () => {
   const { language } = useAdminLanguage();

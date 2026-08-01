@@ -56,10 +56,26 @@ const requireAdminForAdminMount = (req, res, next) => {
     return authenticate(req, res, () => isAdmin(req, res, next));
 };
 
+const firstDefined = (body, keys) => {
+    for (const key of keys) {
+        if (body[key] !== undefined) return body[key];
+    }
+    return undefined;
+};
+
 const normalizePricingType = (value) => {
     const next = String(value || '').toLowerCase().trim();
     if (next === 'free' || next === 'paid' || next === 'discounted') return next;
+    if (next === 'paid with discount' || next === 'paid-with-discount' || next === 'paid_with_discount') return 'discounted';
     return 'paid';
+};
+
+const normalizePricingTypeInput = (value) => {
+    if (value === undefined || value === null || String(value).trim() === '') return null;
+    const next = String(value).toLowerCase().trim();
+    if (next === 'free' || next === 'paid' || next === 'discounted') return next;
+    if (next === 'paid with discount' || next === 'paid-with-discount' || next === 'paid_with_discount') return 'discounted';
+    return null;
 };
 
 const parseFiniteNumber = (value) => {
@@ -68,23 +84,32 @@ const parseFiniteNumber = (value) => {
     return Number.isFinite(number) ? number : null;
 };
 
+const parseBoolean = (value, fallback = false) => {
+    if (value === undefined || value === null || value === '') return fallback;
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') return value !== 0;
+
+    const next = String(value).toLowerCase().trim();
+    if (['true', '1', 'yes', 'on', 'published', 'active'].includes(next)) return true;
+    if (['false', '0', 'no', 'off', 'draft', 'inactive'].includes(next)) return false;
+    return Boolean(value);
+};
+
 const resolvePricingType = (requestedPricingType, priceInput, discountPriceInput) => {
-    if (requestedPricingType === 'free') return 'free';
+    if (requestedPricingType === 'free' || requestedPricingType === 'paid' || requestedPricingType === 'discounted') {
+        return requestedPricingType;
+    }
 
     const price = Number.isFinite(priceInput) ? priceInput : 2000;
     const hasValidDiscount = Number.isFinite(discountPriceInput) && discountPriceInput > 0 && discountPriceInput < price;
 
-    if (hasValidDiscount || requestedPricingType === 'discounted') {
-        return 'discounted';
-    }
-
-    return 'paid';
+    return hasValidDiscount ? 'discounted' : 'paid';
 };
 
 const normalizeCoursePayload = (body, support = {}) => {
-    const requestedPricingType = normalizePricingType(body.pricing_type);
-    const priceInput = parseFiniteNumber(body.price);
-    const discountPriceInput = parseFiniteNumber(body.discount_price);
+    const requestedPricingType = normalizePricingTypeInput(firstDefined(body, ['pricing_type', 'pricingType']));
+    const priceInput = parseFiniteNumber(firstDefined(body, ['price']));
+    const discountPriceInput = parseFiniteNumber(firstDefined(body, ['discount_price', 'discountPrice']));
     const price = requestedPricingType === 'free' ? 0 : (priceInput ?? 2000);
     const pricingType = resolvePricingType(requestedPricingType, priceInput, discountPriceInput);
 
@@ -106,20 +131,20 @@ const normalizeCoursePayload = (body, support = {}) => {
     }
 
     const payload = {
-        title: String(body.title || '').trim(),
-        arabic_title: String(body.arabic_title || '').trim() || null,
-        description: String(body.description || '').trim() || null,
-        thumbnail_url: String(body.thumbnail_url || '').trim() || null,
+        title: String(firstDefined(body, ['title']) || '').trim(),
+        arabic_title: String(firstDefined(body, ['arabic_title', 'arabicTitle']) || '').trim() || null,
+        description: String(firstDefined(body, ['description']) || '').trim() || null,
+        thumbnail_url: String(firstDefined(body, ['thumbnail_url', 'thumbnailUrl']) || '').trim() || null,
         price,
-        instructor_name: String(body.instructor_name || 'Ch. Ahmed Gamal Elghawy').trim(),
-        instructor_subtitle: String(body.instructor_subtitle || '10+ Years Experience').trim(),
-        is_published: body.is_published === undefined ? true : Boolean(body.is_published),
-        display_order: Number.isFinite(Number(body.display_order)) ? Number(body.display_order) : 0
+        instructor_name: String(firstDefined(body, ['instructor_name', 'instructorName']) || 'Ch. Ahmed Gamal Elghawy').trim(),
+        instructor_subtitle: String(firstDefined(body, ['instructor_subtitle', 'instructorSubtitle']) || '10+ Years Experience').trim(),
+        is_published: parseBoolean(firstDefined(body, ['is_published', 'isPublished']), true),
+        display_order: Number.isFinite(Number(firstDefined(body, ['display_order', 'displayOrder']))) ? Number(firstDefined(body, ['display_order', 'displayOrder'])) : 0
     };
 
-    if (support.thumbnail_public_id) payload.thumbnail_public_id = String(body.thumbnail_public_id || '').trim() || null;
-    if (support.category_id) payload.category_id = body.category_id ? Number(body.category_id) : null;
-    if (support.instructor_id) payload.instructor_id = body.instructor_id ? Number(body.instructor_id) : null;
+    if (support.thumbnail_public_id) payload.thumbnail_public_id = String(firstDefined(body, ['thumbnail_public_id', 'thumbnailPublicId']) || '').trim() || null;
+    if (support.category_id) payload.category_id = firstDefined(body, ['category_id', 'categoryId']) ? Number(firstDefined(body, ['category_id', 'categoryId'])) : null;
+    if (support.instructor_id) payload.instructor_id = firstDefined(body, ['instructor_id', 'instructorId']) ? Number(firstDefined(body, ['instructor_id', 'instructorId'])) : null;
     if (support.pricing_type) payload.pricing_type = pricingType;
     if (support.discount_price) payload.discount_price = pricingType === 'discounted' ? discountPriceInput : null;
 
