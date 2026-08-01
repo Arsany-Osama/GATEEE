@@ -1,7 +1,9 @@
-import { memo, startTransition, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getApiError } from '../api/client';
-import { getMergedPublicCourses, normalizeStaticCourse } from '../api/publicCoursesApi';
+import { getPaginatedPublicCourses, getPublicCourseCategories } from '../api/publicCoursesApi';
+import Button from '../components/Button';
+import EmptyState from '../components/EmptyState';
 import ErrorMessage from '../components/ErrorMessage';
 import Loader from '../components/Loader';
 import PublicFooter from '../components/public/PublicFooter';
@@ -9,13 +11,9 @@ import PublicNavbar from '../components/public/PublicNavbar';
 import PublicPageShell from '../components/public/PublicPageShell';
 import PageBackLink from '../components/PageBackLink';
 import { useAuth } from '../context/AuthContext';
-import { publicCourses } from '../data/publicCourses';
-
-const categories = ['All Courses', 'Safety', 'HSE', 'Fire Safety', 'First Aid', 'Professional Training'];
-const INITIAL_VISIBLE_COURSES = 6;
-const PRIORITY_COURSE_IMAGES = INITIAL_VISIBLE_COURSES;
 
 const fallbackImage = '/images/cover of course.png';
+const PAGE_SIZE = 9;
 
 const renderCoursePrice = (course) => {
   if (course?.isFree) {
@@ -37,43 +35,55 @@ const renderCoursePrice = (course) => {
 
   return (
     <strong className="course-price" dir="ltr">
-      <span>{course?.displayPrice || course?.price || '2000'}</span>
+      <span>{course?.displayPrice || course?.price || 'Contact us'}</span>
     </strong>
   );
 };
 
-const PublicCourseCard = memo(({ course, priority = false, deferred = false }) => (
-  <article className={`preview-course-card${deferred ? ' is-deferred' : ''}`}>
-    <div className="preview-image-wrap">
+const LearningCourseCard = memo(({ course }) => (
+  <article className="learning-course-card">
+    <div className="learning-course-media">
       <img
-        className="preview-image-main"
+        className="learning-course-image"
         src={course.image}
         alt={`${course.title} cover`}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding={priority ? 'sync' : 'async'}
-        fetchPriority={priority ? 'high' : 'low'}
-        width="960"
-        height="540"
+        loading="lazy"
+        decoding="async"
         onError={(event) => { event.currentTarget.src = fallbackImage; }}
       />
-    </div>
-      <div className="preview-course-body">
-        <h2>{course.title}</h2>
-        {course.arabicTitle ? <p className="preview-course-subtitle" dir="rtl">{course.arabicTitle}</p> : null}
-        <p>{course.description}</p>
-        <div className="preview-instructor">
-        <span className="preview-avatar" aria-hidden="true">G</span>
-        <div>
-          <strong>{course.instructor}</strong>
-          <span>{course.instructorSubtitle}</span>
-        </div>
+      <div className="learning-course-overlay">
+        <span className="learning-course-category">
+          {course.categoryName || 'All Courses'}
+        </span>
+        {course.isFree ? <span className="learning-course-badge is-free">Free</span> : null}
+        {course.hasDiscount ? <span className="learning-course-badge is-discount">Offer</span> : null}
       </div>
-      <div className="preview-course-footer">
+    </div>
+
+    <div className="learning-course-body">
+      <div>
+        <h2>{course.title}</h2>
+        {course.arabicTitle ? <p className="learning-course-subtitle" dir="rtl">{course.arabicTitle}</p> : null}
+      </div>
+
+      <p className="learning-course-description">{course.description}</p>
+
+      <div className="learning-course-meta">
         <div>
-          <span>Course price</span>
+          <span>Instructor</span>
+          <strong>{course.instructor}</strong>
+          <small>{course.instructorSubtitle}</small>
+        </div>
+        <div>
+          <span>Price</span>
           {renderCoursePrice(course)}
         </div>
-        <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath}>{course.ctaLabel || 'Buy Course'}</Link>
+      </div>
+
+      <div className="learning-course-footer">
+        <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath || `/payment/course/${course.backendId}`}>
+          {course.ctaLabel || (course.isFree ? 'Start Free' : 'Buy Course')}
+        </Link>
       </div>
     </div>
   </article>
@@ -81,81 +91,123 @@ const PublicCourseCard = memo(({ course, priority = false, deferred = false }) =
 
 const Learning = () => {
   const { user, logout } = useAuth();
-  const [courses, setCourses] = useState(() => publicCourses.map(normalizeStaticCourse));
-  const [visibleCourseCount, setVisibleCourseCount] = useState(INITIAL_VISIBLE_COURSES);
+  const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false });
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [loadingCourses, setLoadingCourses] = useState(true);
-  const [courseError, setCourseError] = useState('');
-  const firstCourseImage = courses[0]?.image;
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let active = true;
-    const loadCourses = async () => {
-      setLoadingCourses(true);
-      setCourseError('');
+    const loadCategories = async () => {
+      setLoadingCategories(true);
       try {
-        const next = await getMergedPublicCourses();
-        if (active) {
-          startTransition(() => {
-            setCourses(next);
-            setVisibleCourseCount(INITIAL_VISIBLE_COURSES);
-          });
-        }
-      } catch (err) {
-        if (active) {
-          startTransition(() => {
-            setCourses(publicCourses.map(normalizeStaticCourse));
-            setVisibleCourseCount(INITIAL_VISIBLE_COURSES);
-          });
-          setCourseError(getApiError(err, 'Could not load backend courses. Showing the default public courses.'));
-        }
+        const next = await getPublicCourseCategories();
+        if (active) setCategories(Array.isArray(next) ? next : []);
+      } catch {
+        if (active) setCategories([]);
       } finally {
-        if (active) setLoadingCourses(false);
+        if (active) setLoadingCategories(false);
       }
     };
-    loadCourses();
+    loadCategories();
     return () => {
       active = false;
     };
   }, []);
 
   useEffect(() => {
-    if (courses.length <= INITIAL_VISIBLE_COURSES || visibleCourseCount >= courses.length) return undefined;
-    const revealAll = () => {
-      startTransition(() => setVisibleCourseCount(courses.length));
-    };
-    const idleId = window.requestIdleCallback
-      ? window.requestIdleCallback(revealAll, { timeout: 1200 })
-      : window.setTimeout(revealAll, 250);
+    let active = true;
+    const loadCourses = async () => {
+      setLoadingCourses(true);
+      setError('');
+      try {
+        const result = await getPaginatedPublicCourses({
+          page,
+          limit: PAGE_SIZE,
+          search,
+          categoryId: selectedCategory,
+        });
 
+        if (!active) return;
+
+        setCourses(Array.isArray(result.data) ? result.data : []);
+        setMeta(result.meta || { page, limit: PAGE_SIZE, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false });
+
+        if (result.meta?.totalPages && page > result.meta.totalPages) {
+          setPage(result.meta.totalPages);
+        }
+      } catch (err) {
+        if (active) {
+          setCourses([]);
+          setMeta({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false });
+          setError(getApiError(err, 'Could not load the course catalog.'));
+        }
+      } finally {
+        if (active) setLoadingCourses(false);
+      }
+    };
+
+    loadCourses();
     return () => {
-      if (window.cancelIdleCallback && typeof idleId === 'number') window.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
+      active = false;
     };
-  }, [courses.length, visibleCourseCount]);
+  }, [page, search, selectedCategory]);
 
-  const visibleCourses = useMemo(() => courses.slice(0, visibleCourseCount), [courses, visibleCourseCount]);
+  const hasCategories = categories.length > 0;
+  const categorySummary = useMemo(() => {
+    if (!categories.length) return 'All courses are available in one clean catalog.';
+    return `${categories.length} categories available.`;
+  }, [categories.length]);
+
+  const updateSearch = (value) => {
+    setPage(1);
+    setSearch(value);
+  };
+
+  const updateCategory = (value) => {
+    setPage(1);
+    setSelectedCategory(value);
+  };
 
   return (
     <PublicPageShell className="learning-page">
-      {firstCourseImage ? <link rel="preload" as="image" href={firstCourseImage} fetchPriority="high" /> : null}
       <PublicNavbar className="learning-nav" activePage="learning" sectionBase="/" user={user} onLogout={logout} showDashboardNav />
 
       <div className="page-toolbar">
         <PageBackLink to="/">Back to Home</PageBackLink>
       </div>
 
-      <section className="learning-hero">
+      <section className="learning-hero learning-hero-compact">
         <div className="learning-hero-copy">
           <p className="home-eyebrow">Public Course Catalog</p>
           <h1>Explore GATE Courses</h1>
           <p>
-            Browse safety and industrial training programs built with video lessons, progress tracking, quizzes,
-            and manual activation after payment review.
+            Search the full catalog, browse by category when available, and jump straight into the right course flow
+            with a smoother, cleaner layout.
           </p>
-          <div className="learning-pill-row" aria-label="Course catalog highlights">
-            <span>Safety Training</span>
-            <span>Video Lessons</span>
-            <span>Manual Activation</span>
+
+          <div className="learning-search-bar" role="search" aria-label="Search courses">
+            <input
+              type="search"
+              value={search}
+              onChange={(event) => updateSearch(event.target.value)}
+              placeholder="Search course title, instructor, or description"
+            />
+            {search ? (
+              <Button variant="ghost" size="sm" onClick={() => updateSearch('')}>
+                Clear
+              </Button>
+            ) : null}
+          </div>
+
+          <div className="learning-hero-note">
+            <span>{meta.total} courses</span>
+            <span>{categorySummary}</span>
           </div>
         </div>
 
@@ -165,51 +217,87 @@ const Learning = () => {
           <div className="learning-mini-shield" aria-hidden="true">G</div>
           <div className="learning-preview-stack">
             <article>
-              <span>Video Lessons</span>
-              <strong>32+</strong>
+              <span>Search</span>
+              <strong>Fast</strong>
             </article>
             <article>
-              <span>Manual Activation</span>
-              <strong>Admin Review</strong>
+              <span>Categories</span>
+              <strong>{hasCategories ? categories.length : 'None'}</strong>
             </article>
             <article>
-              <span>Progress Tracking</span>
-              <strong>Dashboard Ready</strong>
+              <span>Pagination</span>
+              <strong>{meta.totalPages || 1} pages</strong>
             </article>
           </div>
         </div>
       </section>
 
-      <section className="learning-filter-panel" aria-label="Course category highlights">
-        <span className="learning-filter-label">Category highlights</span>
-        <div>
-          {categories.map((category, index) => (
-            <span className={index === 0 ? 'is-active' : ''} key={category}>
-              {category}
-            </span>
+      {hasCategories ? (
+        <section className="learning-filter-panel learning-category-panel" aria-label="Course categories">
+          <span className="learning-filter-label">Categories</span>
+          <div className="learning-category-chips">
+            <button
+              type="button"
+              className={selectedCategory === '' ? 'is-active' : ''}
+              onClick={() => updateCategory('')}
+            >
+              All Courses
+            </button>
+            {categories.map((category) => (
+              <button
+                type="button"
+                className={String(category.id) === String(selectedCategory) ? 'is-active' : ''}
+                key={category.id}
+                onClick={() => updateCategory(category.id)}
+              >
+                {category.arabic_name || category.name}
+                <span>{category.course_count || 0}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <ErrorMessage message={error} />
+      {loadingCategories || loadingCourses ? <Loader label="Loading courses..." /> : null}
+
+      {!loadingCourses && courses.length === 0 ? (
+        <EmptyState
+          title="No courses found"
+          message="Try a different search or category."
+          action={<Button variant="ghost" onClick={() => { updateSearch(''); updateCategory(''); }}>Reset filters</Button>}
+        />
+      ) : null}
+
+      {courses.length > 0 ? (
+        <section className="learning-catalog-grid" aria-label="GATE public course catalog">
+          {courses.map((course) => (
+            <LearningCourseCard
+              course={course}
+              key={`${course.source || 'course'}-${course.id}`}
+            />
           ))}
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <ErrorMessage message={courseError} />
-      {loadingCourses ? <Loader label="Loading backend courses..." /> : null}
-
-      <section className="preview-course-grid learning-course-grid" aria-label="GATE public course previews">
-        {visibleCourses.map((course, index) => (
-          <PublicCourseCard
-            course={course}
-            deferred={index >= INITIAL_VISIBLE_COURSES}
-            key={`${course.source || 'course'}-${course.id}`}
-            priority={index < PRIORITY_COURSE_IMAGES}
-          />
-        ))}
-      </section>
+      {meta.totalPages > 1 ? (
+        <section className="learning-pagination" aria-label="Course pagination">
+          <Button variant="ghost" disabled={!meta.hasPrevPage} onClick={() => setPage((current) => Math.max(1, current - 1))}>
+            Previous
+          </Button>
+          <span>
+            Page {meta.page} of {meta.totalPages}
+          </span>
+          <Button variant="ghost" disabled={!meta.hasNextPage} onClick={() => setPage((current) => current + 1)}>
+            Next
+          </Button>
+        </section>
+      ) : null}
 
       <section className="learning-manual-notice">
         <strong>Manual activation after review</strong>
         <p>
-          Course access is activated after your payment screenshot is reviewed by the instructor/admin. Once approved,
-          the course will appear inside your Dashboard for the correct account.
+          Paid access is still reviewed manually after payment, while free courses stay open in the catalog.
         </p>
       </section>
 

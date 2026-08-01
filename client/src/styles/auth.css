@@ -6639,3 +6639,284 @@
 .learning-page .preview-image-wrap::after {
   display: none !important;
 }
+
+.learning-page .learning-hero-compact {
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, .8fr);
+  align-items: stretch;
+  gap: 22px;
+}
+
+.learning-page .learning-search-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 18px;
+  padding: 10px;
+  border: 1px solid rgba(34, 211, 238, .18);
+  border-radius: 18px;
+  background: rgba(2, 8, 23, .34);
+}
+
+.learning-page .learning-search-bar input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 14px;
+  height: 46px;
+  border: 0;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, .86);
+  color: #f8fafc;
+  outline: none;
+}
+
+.learning-page .learning-search-bar input::placeholder {
+  color: rgba(148, 163, 184, .95);
+}
+
+.learning-page .learning-hero-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+  color: rgba(224, 242, 254, .82);
+  font-size: .88rem;
+  font-weight: 800;
+}
+
+.learning-page .learning-hero-note span {
+  padding: 8px 12px;
+  border: 1px solid rgba(34, 211, 238, .14);
+  border-radius: 999px;
+  background: rgba(2, 8, 23, .26);
+}
+
+.learning-page .learning-category-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.learning-page .learning-category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.learning-page .learning-category-chips button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid rgba(34, 211, 238, .16);
+  border-radius: 999px;
+  background: rgba(2, 8, 23, .26);
+  color: #dbeafe;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.learning-page .learning-category-chips button span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, .14);
+  color: #67e8f9;
+  font-size: .75rem;
+}
+
+.learning-page .learning-category-chips button.is-active {
+  border-color: rgba(34, 211, 238, .42);
+  background: linear-gradient(135deg, rgba(34, 211, 238, .16), rgba(37, 99, 235, .16));
+  color: #f8fafc;
+}
+
+.learning-page .learning-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.learning-page .learning-course-card {
+  overflow: hidden;
+  border: 1px solid rgba(34, 211, 238, .16);
+  border-radius: 18px;
+  background:
+    linear-gradient(150deg, rgba(15, 39, 71, .84), rgba(7, 26, 51, .66) 56%, rgba(2, 8, 23, .94)),
+    radial-gradient(circle at 18% 0, rgba(34, 211, 238, .12), transparent 36%);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .28);
+}
+
+.learning-page .learning-course-media {
+  position: relative;
+  min-height: 240px;
+}
+
+.learning-page .learning-course-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.learning-page .learning-course-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(2, 8, 23, .06), rgba(2, 8, 23, .58));
+}
+
+.learning-page .learning-course-category,
+.learning-page .learning-course-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.learning-page .learning-course-category {
+  background: rgba(15, 23, 42, .76);
+  border: 1px solid rgba(255, 255, 255, .12);
+}
+
+.learning-page .learning-course-badge.is-free {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+}
+
+.learning-page .learning-course-badge.is-discount {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+
+.learning-page .learning-course-body {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.learning-page .learning-course-body h2 {
+  margin: 0;
+  color: #f8fafc;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.learning-page .learning-course-subtitle {
+  margin: 4px 0 0;
+  color: rgba(224, 242, 254, .88);
+  font-size: .9rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.learning-page .learning-course-description {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #cbd5e1;
+  line-height: 1.55;
+}
+
+.learning-page .learning-course-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.learning-page .learning-course-meta > div {
+  display: grid;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, .14);
+  border-radius: 14px;
+  background: rgba(2, 8, 23, .24);
+}
+
+.learning-page .learning-course-meta span {
+  color: #94a3b8;
+  font-size: .75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.learning-page .learning-course-meta strong {
+  color: #f8fafc;
+  font-size: .95rem;
+}
+
+.learning-page .learning-course-meta small {
+  color: #cbd5e1;
+  font-size: .8rem;
+}
+
+.learning-page .learning-course-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.learning-page .learning-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+  color: rgba(224, 242, 254, .8);
+  font-weight: 800;
+}
+
+.learning-page .admin-course-price-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.learning-page .admin-course-price-stack del {
+  color: rgba(248, 250, 252, .56);
+  font-size: .82rem;
+}
+
+.learning-page .course-price-free span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, .18), rgba(34, 211, 238, .16));
+}
+
+@media (max-width: 1120px) {
+  .learning-page .learning-catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .learning-page .learning-hero-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-page .learning-course-meta {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .learning-page .learning-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-page .learning-search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

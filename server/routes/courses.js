@@ -91,6 +91,10 @@ const normalizeCoursePayload = (body, support = {}) => {
         throw new Error('Course price must be a valid non-negative number.');
     }
 
+    if (pricingType !== 'free' && price <= 0) {
+        throw new Error('Paid courses must have a price greater than zero.');
+    }
+
     if (pricingType === 'discounted') {
         if (!Number.isFinite(discountPriceInput) || discountPriceInput === null || discountPriceInput <= 0) {
             throw new Error('Discount price must be a valid positive number.');
@@ -185,6 +189,28 @@ const buildPublicCoursesQuery = (support, query = {}) => {
     }
 
     return { baseQuery, pricingType, wantsPagination };
+};
+
+const applyPublicSearchAndFilters = (queryBuilder, support, query = {}) => {
+    const search = String(query.q || query.search || '').trim();
+    const categoryId = query.category_id ? Number(query.category_id) : null;
+
+    if (search) {
+        queryBuilder.where((builder) => {
+            builder
+                .where('courses.title', 'like', `%${search}%`)
+                .orWhere('courses.arabic_title', 'like', `%${search}%`)
+                .orWhere('courses.description', 'like', `%${search}%`)
+                .orWhere('courses.instructor_name', 'like', `%${search}%`)
+                .orWhere('courses.instructor_subtitle', 'like', `%${search}%`);
+        });
+    }
+
+    if (support.category_id && Number.isInteger(categoryId) && categoryId > 0) {
+        queryBuilder.where('courses.category_id', categoryId);
+    }
+
+    return queryBuilder;
 };
 
 let lessonContentSupportPromise = null;
@@ -317,6 +343,37 @@ router.get('/:courseId/curriculum', authenticate, isAdmin, async (req, res) => {
     }
 });
 
+router.get('/categories', async (req, res) => {
+    try {
+        const support = await courseSchemaSupport();
+        if (!support.categoriesTable || !support.category_id) {
+            return res.json([]);
+        }
+
+        const categories = await db('categories')
+            .leftJoin('courses', function joinCourses() {
+                this.on('courses.category_id', '=', 'categories.id').andOnNull('courses.deleted_at');
+            })
+            .where(function onlyActiveCategories() {
+                this.whereNull('categories.is_active').orWhere('categories.is_active', true);
+            })
+            .groupBy('categories.id', 'categories.name', 'categories.arabic_name', 'categories.display_order')
+            .select(
+                'categories.id',
+                'categories.name',
+                'categories.arabic_name',
+                'categories.display_order',
+                db.raw('COUNT(courses.id) as course_count')
+            )
+            .orderBy('categories.display_order', 'asc')
+            .orderBy('categories.name', 'asc');
+
+        res.json(categories);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // 3. Get Courses. Admin mount returns editable fields; public mount returns only published public fields.
 router.get('/', requireAdminForAdminMount, async (req, res) => {
     try {
@@ -369,7 +426,11 @@ router.get('/', requireAdminForAdminMount, async (req, res) => {
             );
         }
 
-        const publicQuery = baseQuery.clone().where('courses.is_published', true);
+        const publicQuery = applyPublicSearchAndFilters(
+            baseQuery.clone().where('courses.is_published', true),
+            schema,
+            req.query
+        );
         const selectedQuery = publicQuery.clone().select([...publicSelect, ...referenceSelect])
             .orderBy('courses.display_order', 'asc')
             .orderBy('courses.id', 'asc');
@@ -378,7 +439,11 @@ router.get('/', requireAdminForAdminMount, async (req, res) => {
             const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
             const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 6, 1), 24);
             const offset = (page - 1) * limit;
-            const countQuery = baseQuery.clone().where('courses.is_published', true).clearSelect().clearOrder();
+            const countQuery = applyPublicSearchAndFilters(
+                baseQuery.clone().where('courses.is_published', true),
+                schema,
+                req.query
+            ).clearSelect().clearOrder();
             const countRow = await countQuery
                 .count({ total: 'courses.id' })
                 .first();

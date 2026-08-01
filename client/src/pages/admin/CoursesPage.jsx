@@ -61,6 +61,12 @@ const getCourseCategory = (course) => course?.category || course?.category_name 
 const getPricingType = (course) => course?.pricing_type || 'paid';
 const isFreeCourse = (course) => getPricingType(course) === 'free' || Number(course?.price || 0) <= 0;
 const hasCourseDiscount = (course) => getPricingType(course) === 'discounted' && course?.discount_price !== null && course?.discount_price !== undefined && String(course.discount_price) !== '';
+const sortCoursesByOrder = (items) => [...items].sort((left, right) => {
+  const leftOrder = Number(left?.display_order ?? 0);
+  const rightOrder = Number(right?.display_order ?? 0);
+  if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+  return Number(left?.id ?? 0) - Number(right?.id ?? 0);
+});
 const formatPrice = (value) => {
   if (value === null || value === undefined || value === '') return '';
   const number = Number(value);
@@ -120,6 +126,7 @@ const CoursesPage = () => {
   const [saving, setSaving] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [busyId, setBusyId] = useState('');
+  const [draggedCourseId, setDraggedCourseId] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
@@ -133,7 +140,7 @@ const CoursesPage = () => {
         getAdminCategories().catch(() => []),
         getAdminInstructors().catch(() => []),
       ]);
-      setCourses(Array.isArray(activeCourses) ? activeCourses.filter((course) => !course?.deleted_at) : []);
+      setCourses(sortCoursesByOrder(Array.isArray(activeCourses) ? activeCourses.filter((course) => !course?.deleted_at) : []));
       setDeleted(Array.isArray(deletedCourses) ? deletedCourses : []);
       setCategories(Array.isArray(categoryRows) ? categoryRows : []);
       setInstructors(Array.isArray(instructorRows) ? instructorRows : []);
@@ -157,7 +164,7 @@ const CoursesPage = () => {
           getAdminInstructors().catch(() => []),
         ]);
         if (!active) return;
-        setCourses(Array.isArray(activeCourses) ? activeCourses.filter((course) => !course?.deleted_at) : []);
+        setCourses(sortCoursesByOrder(Array.isArray(activeCourses) ? activeCourses.filter((course) => !course?.deleted_at) : []));
         setDeleted(Array.isArray(deletedCourses) ? deletedCourses : []);
         setCategories(Array.isArray(categoryRows) ? categoryRows : []);
         setInstructors(Array.isArray(instructorRows) ? instructorRows : []);
@@ -176,14 +183,16 @@ const CoursesPage = () => {
 
   const search = searchState.source === searchParamValue ? searchState.value : searchParamValue;
 
+  const orderedCourses = useMemo(() => sortCoursesByOrder(courses), [courses]);
+
   const categoryFilters = useMemo(() => {
-    const values = courses.map(getCourseCategory).filter(Boolean);
+    const values = orderedCourses.map(getCourseCategory).filter(Boolean);
     return [...new Set(values)];
-  }, [courses]);
+  }, [orderedCourses]);
 
   const filteredCourses = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return courses.filter((course) => {
+    return orderedCourses.filter((course) => {
       const status = getCourseStatus(course);
       const category = getCourseCategory(course);
       const searchable = [
@@ -199,7 +208,46 @@ const CoursesPage = () => {
         && (categoryFilter === 'all' || category === categoryFilter)
         && (statusFilter === 'all' || status === statusFilter);
     });
-  }, [categoryFilter, courses, search, statusFilter]);
+  }, [categoryFilter, orderedCourses, search, statusFilter]);
+
+  const persistCourseOrder = async (nextCourses) => {
+    setError('');
+    setMessage('');
+    try {
+      await Promise.all(nextCourses.map((course, index) => updateCourse(course.id, {
+        ...buildPayload(toForm(course)),
+        display_order: index,
+      })));
+      setCourses(nextCourses.map((course, index) => ({ ...course, display_order: index })));
+      setMessage('تم حفظ ترتيب الكورسات بنجاح.');
+    } catch (err) {
+      setError(getApiError(err, 'تعذر حفظ ترتيب الكورسات.'));
+      await load();
+    } finally {
+      setDraggedCourseId('');
+    }
+  };
+
+  const moveCourse = async (sourceId, targetId) => {
+    if (!sourceId || !targetId || sourceId === targetId) return;
+    const sourceIndex = orderedCourses.findIndex((course) => String(course.id) === String(sourceId));
+    const targetIndex = orderedCourses.findIndex((course) => String(course.id) === String(targetId));
+    if (sourceIndex < 0 || targetIndex < 0) return;
+
+    const nextCourses = [...orderedCourses];
+    const [movedCourse] = nextCourses.splice(sourceIndex, 1);
+    nextCourses.splice(targetIndex, 0, movedCourse);
+    await persistCourseOrder(nextCourses);
+  };
+
+  const handleDragStart = (courseId) => {
+    setDraggedCourseId(String(courseId));
+  };
+
+  const handleDrop = async (courseId) => {
+    if (!draggedCourseId) return;
+    await moveCourse(draggedCourseId, courseId);
+  };
 
   const handleImageUpload = async (file) => {
     if (!file) return;
@@ -231,7 +279,8 @@ const CoursesPage = () => {
   const openCreatePanel = () => {
     setPanelMode('create');
     setEditingCourse(null);
-    setForm(blankCourse);
+    const nextDisplayOrder = (courses.reduce((maxOrder, course) => Math.max(maxOrder, Number(course.display_order || 0)), 0)) + 1;
+    setForm({ ...blankCourse, display_order: String(nextDisplayOrder) });
     setError('');
     setMessage('');
   };
@@ -257,8 +306,8 @@ const CoursesPage = () => {
       return;
     }
     const price = Number(form.price);
-    if (!Number.isFinite(price) || price < 0) {
-      setError('سعر الكورس يجب أن يكون رقمًا صحيحًا أو عشريًا غير سالب.');
+    if (form.pricing_type !== 'free' && (!Number.isFinite(price) || price <= 0)) {
+      setError('سعر الكورس المدفوع يجب أن يكون رقمًا موجبًا.');
       return;
     }
     if (form.pricing_type === 'discounted') {
@@ -420,9 +469,18 @@ const CoursesPage = () => {
               {filteredCourses.map((course) => {
                 const published = isPublished(course);
                 return (
-                  <tr key={course.id}>
+                  <tr
+                    key={course.id}
+                    draggable
+                    className={draggedCourseId === String(course.id) ? 'is-dragging' : ''}
+                    onDragStart={() => handleDragStart(course.id)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => handleDrop(course.id)}
+                    onDragEnd={() => setDraggedCourseId('')}
+                  >
                     <td>
                       <div className="admin-course-cell">
+                        <span className="admin-course-drag-handle" aria-hidden="true">⋮⋮</span>
                         <img
                           src={course.thumbnail_url || fallbackImage}
                           alt=""
@@ -544,15 +602,18 @@ const CoursesPage = () => {
                   <option value="discounted">مدفوع مع خصم</option>
                 </select>
               </label>
-              <Input
-                label="السعر الأصلي"
-                type="number"
-                min="0"
-                step="0.01"
-                value={form.price}
-                onChange={(event) => setForm({ ...form, price: event.target.value })}
-                disabled={form.pricing_type === 'free'}
-              />
+              {form.pricing_type !== 'free' ? (
+                <Input
+                  label="السعر الأصلي"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.price}
+                  onChange={(event) => setForm({ ...form, price: event.target.value })}
+                />
+              ) : (
+                <div className="admin-course-free-note">الكورس المجاني لا يحتاج إلى سعر.</div>
+              )}
               {form.pricing_type === 'discounted' ? (
                 <Input
                   label="سعر الخصم"
@@ -596,12 +657,11 @@ const CoursesPage = () => {
               </label>
               <div className="admin-field-wide admin-api-note">
                 <strong>حقول الكورس المدعومة حاليا</strong>
-                <p>الصورة كرابط، الاسم، العنوان العربي، الوصف، نوع التسعير، السعر الأصلي، سعر الخصم، المدرس، وصف المدرس، ترتيب العرض، وحالة النشر.</p>
+                <p>الصورة كرابط، الاسم، العنوان العربي، الوصف، نوع التسعير، السعر الأصلي، سعر الخصم، المدرس، وصف المدرس، وحالة النشر.</p>
                 <p>القسم، المستوى، المدة، ورفع صورة كملف غير موجودة في API الكورسات الحالي، لذلك لا يتم إرسال حقول غير مدعومة.</p>
               </div>
               <Input label="المدرس" value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
               <Input label="وصف المدرس / المستوى" value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />
-              <Input label="ترتيب العرض" type="number" value={form.display_order} onChange={(event) => setForm({ ...form, display_order: event.target.value })} />
               <label className="field admin-checkbox-field">
                 <span>حالة الكورس</span>
                 <select value={form.is_published ? 'published' : 'draft'} onChange={(event) => setForm({ ...form, is_published: event.target.value === 'published' })}>

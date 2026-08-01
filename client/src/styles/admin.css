@@ -34,6 +34,58 @@
 .file-btn { position: relative; overflow: hidden; }
 .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
 .admin-upload-button { width: fit-content; }
+.admin-course-free-note {
+  padding: 12px 14px;
+  border: 1px dashed rgba(34, 211, 238, .28);
+  border-radius: 14px;
+  background: rgba(15, 39, 71, .26);
+  color: #cbd5e1;
+  font-weight: 700;
+}
+.admin-course-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.admin-course-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 1px solid rgba(34, 211, 238, .16);
+  border-radius: 10px;
+  background: rgba(2, 8, 23, .34);
+  color: #67e8f9;
+  font-size: 1rem;
+  cursor: grab;
+  user-select: none;
+}
+.admin-course-price-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #f8fafc;
+  font-size: .78rem;
+  font-weight: 900;
+}
+.admin-course-price-pill.is-free {
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+}
+.admin-course-price-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.admin-course-price-stack del {
+  color: #94a3b8;
+  font-size: .82rem;
+}
+.admin-courses-table tr.is-dragging {
+  opacity: .62;
+}
 .admin-reference-layout {
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);

@@ -31,7 +31,8 @@ const buildPricingDetails = (course) => {
     : Number(course.discount_price);
   const originalPrice = Number.isFinite(originalPriceValue) ? originalPriceValue : 0;
   const discountPrice = Number.isFinite(discountPriceValue) ? discountPriceValue : null;
-  const isFree = pricingType === 'free' || originalPrice <= 0;
+  const hasExplicitPricingType = Boolean(course.pricing_type);
+  const isFree = pricingType === 'free' || (!hasExplicitPricingType && originalPrice <= 0);
   const hasDiscount = pricingType === 'discounted' && discountPrice !== null && discountPrice >= 0 && discountPrice < originalPrice;
   const displayPriceValue = isFree ? 0 : (hasDiscount ? discountPrice : originalPrice);
 
@@ -123,11 +124,19 @@ export const getPublicBackendCourses = async ({ forceRefresh = false } = {}) => 
   return publicCoursesRequest;
 };
 
-export const getPaginatedPublicCourses = async ({ page = 1, limit = 6, pricingType = 'all' } = {}) => {
+export const getPaginatedPublicCourses = async ({
+  page = 1,
+  limit = 6,
+  pricingType = 'all',
+  search = '',
+  categoryId = '',
+} = {}) => {
   const params = new URLSearchParams();
   params.set('page', String(page));
   params.set('limit', String(limit));
   if (pricingType && pricingType !== 'all') params.set('pricing_type', pricingType);
+  if (search.trim()) params.set('q', search.trim());
+  if (categoryId) params.set('category_id', String(categoryId));
 
   const res = await apiClient.get(`/courses?${params.toString()}`);
   const data = Array.isArray(res.data?.data) ? res.data.data.map(normalizeBackendCourse) : [];
@@ -142,6 +151,11 @@ export const getPaginatedPublicCourses = async ({ page = 1, limit = 6, pricingTy
       hasPrevPage: Boolean(res.data?.meta?.hasPrevPage),
     },
   };
+};
+
+export const getPublicCourseCategories = async () => {
+  const res = await apiClient.get('/courses/categories');
+  return Array.isArray(res.data) ? res.data : [];
 };
 
 export const getMergedPublicCourses = async () => {
