@@ -40,15 +40,19 @@ const courseSchemaSupport = async () => {
             db.schema.hasTable('instructors'),
             db.schema.hasColumn('courses', 'thumbnail_public_id'),
             db.schema.hasColumn('courses', 'category_id'),
-            db.schema.hasColumn('courses', 'instructor_id')
+            db.schema.hasColumn('courses', 'instructor_id'),
+            db.schema.hasColumn('courses', 'pricing_type'),
+            db.schema.hasColumn('courses', 'discount_price')
         ])
-            .then(([categoriesTable, instructorsTable, thumbnail_public_id, category_id, instructor_id]) => {
+            .then(([categoriesTable, instructorsTable, thumbnail_public_id, category_id, instructor_id, pricing_type, discount_price]) => {
                 courseSchemaSupportCache = {
                     categoriesTable,
                     instructorsTable,
                     thumbnail_public_id,
                     category_id,
-                    instructor_id
+                    instructor_id,
+                    pricing_type,
+                    discount_price
                 };
                 return courseSchemaSupportCache;
             })
@@ -102,8 +106,6 @@ const normalizeCoursePayload = (body, support = {}) => {
         description: String(body.description || '').trim() || null,
         thumbnail_url: String(body.thumbnail_url || '').trim() || null,
         price,
-        pricing_type: pricingType,
-        discount_price: pricingType === 'discounted' ? discountPriceInput : null,
         instructor_name: String(body.instructor_name || 'Eng. Ahmed Gamal Elghawy').trim(),
         instructor_subtitle: String(body.instructor_subtitle || '10+ Years Experience').trim(),
         is_published: body.is_published === undefined ? true : Boolean(body.is_published),
@@ -113,6 +115,8 @@ const normalizeCoursePayload = (body, support = {}) => {
     if (support.thumbnail_public_id) payload.thumbnail_public_id = String(body.thumbnail_public_id || '').trim() || null;
     if (support.category_id) payload.category_id = body.category_id ? Number(body.category_id) : null;
     if (support.instructor_id) payload.instructor_id = body.instructor_id ? Number(body.instructor_id) : null;
+    if (support.pricing_type) payload.pricing_type = pricingType;
+    if (support.discount_price) payload.discount_price = pricingType === 'discounted' ? discountPriceInput : null;
 
     return payload;
 };
@@ -144,6 +148,8 @@ const fieldsForSupport = (fields, support) => fields.filter((field) => {
     if (field === 'thumbnail_public_id') return support.thumbnail_public_id;
     if (field === 'category_id') return support.category_id;
     if (field === 'instructor_id') return support.instructor_id;
+    if (field === 'pricing_type') return support.pricing_type;
+    if (field === 'discount_price') return support.discount_price;
     return true;
 });
 
@@ -164,6 +170,10 @@ const buildPublicCoursesQuery = (support, query = {}) => {
 
     if (support.instructorsTable && support.instructor_id) {
         baseQuery.leftJoin('instructors', 'courses.instructor_id', 'instructors.id');
+    }
+
+    if (!support.pricing_type) {
+        return { baseQuery, pricingType: 'all', wantsPagination };
     }
 
     if (pricingType === 'free') {
@@ -359,8 +369,8 @@ router.get('/', requireAdminForAdminMount, async (req, res) => {
             );
         }
 
-        const query = baseQuery.where('courses.is_published', true);
-        const selectedQuery = query.select([...publicSelect, ...referenceSelect])
+        const publicQuery = baseQuery.clone().where('courses.is_published', true);
+        const selectedQuery = publicQuery.clone().select([...publicSelect, ...referenceSelect])
             .orderBy('courses.display_order', 'asc')
             .orderBy('courses.id', 'asc');
 
@@ -368,9 +378,8 @@ router.get('/', requireAdminForAdminMount, async (req, res) => {
             const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
             const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 6, 1), 24);
             const offset = (page - 1) * limit;
-            const countRow = await baseQuery
-                .clone()
-                .where('courses.is_published', true)
+            const countQuery = baseQuery.clone().where('courses.is_published', true).clearSelect().clearOrder();
+            const countRow = await countQuery
                 .count({ total: 'courses.id' })
                 .first();
             const total = Number(countRow?.total || 0);

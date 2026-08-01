@@ -1334,7 +1334,7 @@
   justify-content: center;
   padding: 0;
   border: 1px solid rgba(56, 189, 248, .34);
-  border-radius: 999px;
+  border-radius: 14px;
   background:
     radial-gradient(circle at 30% 0, rgba(34, 211, 238, .15), transparent 35%),
     linear-gradient(145deg, rgba(8, 15, 29, .92), rgba(10, 26, 49, .84));
