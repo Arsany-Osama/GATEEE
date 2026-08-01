@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 require('./config/loadEnv');
 
 const db = require('./db/knex');
+const runMigrations = require('./scripts/migrate');
 const authRoutes = require('./routes/auth');
 const certificatesRoutes = require('./routes/certificates');
 const lessonRoutes = require('./routes/lessons');
@@ -130,7 +131,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'An unexpected error occurred.' });
 });
 
-// Start the server
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const start = async () => {
+  try {
+    await runMigrations();
+  } catch (error) {
+    console.error('Migration bootstrap failed:', error);
+    process.exit(1);
+  }
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+};
+
+start();

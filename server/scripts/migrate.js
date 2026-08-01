@@ -78,11 +78,15 @@ const run = async () => {
   console.log('Migrations complete.');
 };
 
-run()
-  .catch((error) => {
-    console.error('Migration failed:', error);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await db.destroy();
-  });
+if (require.main === module) {
+  run()
+    .catch((error) => {
+      console.error('Migration failed:', error);
+      process.exitCode = 1;
+    })
+    .finally(async () => {
+      await db.destroy();
+    });
+}
+
+module.exports = run;

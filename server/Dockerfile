@@ -15,5 +15,5 @@ COPY . .
 # Expose the port the Express app will run on
 EXPOSE 5000
 
-# Start the server using nodemon for hot-reloading during development
-CMD ["npx", "nodemon", "index.js"]
+# Start the production server
+CMD ["node", "index.js"]
