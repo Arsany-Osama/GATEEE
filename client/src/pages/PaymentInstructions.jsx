@@ -40,6 +40,31 @@ const initialPaymentForm = {
   note: '',
 };
 
+const renderCoursePrice = (course) => {
+  if (course?.isFree) {
+    return (
+      <strong className="course-price course-price-free" dir="ltr">
+        <span>Free</span>
+      </strong>
+    );
+  }
+
+  if (course?.hasDiscount) {
+    return (
+      <div className="course-price course-price-discounted" dir="ltr">
+        <del>{course.originalPrice}</del>
+        <strong><span>{course.displayPrice}</span></strong>
+      </div>
+    );
+  }
+
+  return (
+    <strong className="course-price" dir="ltr">
+      <span>{priceAmount(course?.price)}</span>
+    </strong>
+  );
+};
+
 const PaymentInstructions = () => {
   const { courseId } = useParams();
   const { user } = useAuth();
@@ -313,9 +338,7 @@ const PaymentInstructions = () => {
             <div className="preview-course-footer payment-course-price">
               <div>
                 <span>Course price</span>
-                <strong className="course-price" dir="ltr">
-                  <span>{priceAmount(course.price)}</span>
-                </strong>
+                {renderCoursePrice(course)}
               </div>
             </div>
           </div>

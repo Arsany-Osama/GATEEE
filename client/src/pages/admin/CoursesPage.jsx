@@ -35,6 +35,8 @@ const blankCourse = {
   instructor_name: 'Eng. Ahmed Gamal Elghawy',
   instructor_subtitle: '10+ Years Experience',
   price: '2000',
+  discount_price: '',
+  pricing_type: 'paid',
   is_published: true,
   display_order: '0',
 };
@@ -56,6 +58,15 @@ const isPublished = (course) => !(course?.is_published === false || course?.is_p
 const getCourseStatus = (course) => (isPublished(course) ? 'published' : 'draft');
 const getCourseTitle = (course) => course?.title || course?.arabic_title || 'كورس بدون اسم';
 const getCourseCategory = (course) => course?.category || course?.category_name || course?.section || course?.section_name || 'غير مصنف';
+const getPricingType = (course) => course?.pricing_type || 'paid';
+const isFreeCourse = (course) => getPricingType(course) === 'free' || Number(course?.price || 0) <= 0;
+const hasCourseDiscount = (course) => getPricingType(course) === 'discounted' && course?.discount_price !== null && course?.discount_price !== undefined && String(course.discount_price) !== '';
+const formatPrice = (value) => {
+  if (value === null || value === undefined || value === '') return '';
+  const number = Number(value);
+  if (!Number.isFinite(number)) return String(value);
+  return Number.isInteger(number) ? String(number) : number.toFixed(2);
+};
 
 const toForm = (course = {}) => ({
   title: course.title || '',
@@ -68,6 +79,8 @@ const toForm = (course = {}) => ({
   instructor_name: course.instructor_name || 'Eng. Ahmed Gamal Elghawy',
   instructor_subtitle: course.instructor_subtitle || '10+ Years Experience',
   price: course.price ?? '2000',
+  discount_price: course.discount_price ?? '',
+  pricing_type: getPricingType(course),
   is_published: course.is_published === undefined ? true : isPublished(course),
   display_order: course.display_order ?? '0',
 });
@@ -83,6 +96,8 @@ const buildPayload = (form) => ({
   instructor_name: form.instructor_name.trim(),
   instructor_subtitle: form.instructor_subtitle.trim(),
   price: Number(form.price),
+  discount_price: form.pricing_type === 'discounted' ? Number(form.discount_price) : null,
+  pricing_type: form.pricing_type,
   is_published: Boolean(form.is_published),
   display_order: Number(form.display_order) || 0,
 });
@@ -245,6 +260,17 @@ const CoursesPage = () => {
     if (!Number.isFinite(price) || price < 0) {
       setError('سعر الكورس يجب أن يكون رقمًا صحيحًا أو عشريًا غير سالب.');
       return;
+    }
+    if (form.pricing_type === 'discounted') {
+      const discountPrice = Number(form.discount_price);
+      if (!Number.isFinite(discountPrice) || discountPrice <= 0) {
+        setError('سعر الخصم يجب أن يكون رقمًا موجبًا.');
+        return;
+      }
+      if (discountPrice >= price) {
+        setError('سعر الخصم يجب أن يكون أقل من السعر الأصلي.');
+        return;
+      }
     }
 
     setSaving(true);
@@ -410,7 +436,18 @@ const CoursesPage = () => {
                     </td>
                     <td>{getCourseCategory(course)}</td>
                     <td>{course.instructor_name || 'غير محدد'}</td>
-                    <td>{course.price ?? 0}</td>
+                    <td>
+                      {isFreeCourse(course) ? (
+                        <span className="admin-course-price-pill is-free">مجاني</span>
+                      ) : hasCourseDiscount(course) ? (
+                        <span className="admin-course-price-stack">
+                          <del>{formatPrice(course.price)}</del>
+                          <strong>{formatPrice(course.discount_price)}</strong>
+                        </span>
+                      ) : (
+                        <strong>{formatPrice(course.price)}</strong>
+                      )}
+                    </td>
                     <td><Badge tone={published ? 'green' : 'amber'}>{published ? 'منشور' : 'غير منشور'}</Badge></td>
                     <td>{formatDate(course.created_at)}</td>
                     <td>
@@ -491,7 +528,41 @@ const CoursesPage = () => {
                   {imageChoices.map((choice) => <option key={choice.value} value={choice.value}>{choice.label}</option>)}
                 </select>
               </label>
-              <Input label="السعر" type="number" min="0" step="0.01" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} />
+              <label className="field">
+                <span>نوع التسعير</span>
+                <select
+                  value={form.pricing_type}
+                  onChange={(event) => setForm((current) => ({
+                    ...current,
+                    pricing_type: event.target.value,
+                    price: event.target.value === 'free' ? '0' : current.price || '2000',
+                    discount_price: event.target.value === 'discounted' ? current.discount_price : '',
+                  }))}
+                >
+                  <option value="free">مجاني</option>
+                  <option value="paid">مدفوع</option>
+                  <option value="discounted">مدفوع مع خصم</option>
+                </select>
+              </label>
+              <Input
+                label="السعر الأصلي"
+                type="number"
+                min="0"
+                step="0.01"
+                value={form.price}
+                onChange={(event) => setForm({ ...form, price: event.target.value })}
+                disabled={form.pricing_type === 'free'}
+              />
+              {form.pricing_type === 'discounted' ? (
+                <Input
+                  label="سعر الخصم"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={form.discount_price}
+                  onChange={(event) => setForm({ ...form, discount_price: event.target.value })}
+                />
+              ) : null}
               <label className="btn btn-secondary file-btn admin-upload-button">
                 {uploadingImage ? 'Uploading image...' : 'Upload course image'}
                 <input
@@ -525,8 +596,8 @@ const CoursesPage = () => {
               </label>
               <div className="admin-field-wide admin-api-note">
                 <strong>حقول الكورس المدعومة حاليا</strong>
-                <p>الصورة كرابط، الاسم، العنوان العربي، الوصف، السعر، المدرس، وصف المدرس، ترتيب العرض، وحالة النشر.</p>
-                <p>سعر الخصم، القسم، المستوى، المدة، ورفع صورة كملف غير موجودة في API الكورسات الحالي، لذلك لا يتم إرسال حقول غير مدعومة.</p>
+                <p>الصورة كرابط، الاسم، العنوان العربي، الوصف، نوع التسعير، السعر الأصلي، سعر الخصم، المدرس، وصف المدرس، ترتيب العرض، وحالة النشر.</p>
+                <p>القسم، المستوى، المدة، ورفع صورة كملف غير موجودة في API الكورسات الحالي، لذلك لا يتم إرسال حقول غير مدعومة.</p>
               </div>
               <Input label="المدرس" value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
               <Input label="وصف المدرس / المستوى" value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />

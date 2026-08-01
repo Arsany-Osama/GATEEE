@@ -15,8 +15,32 @@ const categories = ['All Courses', 'Safety', 'HSE', 'Fire Safety', 'First Aid', 
 const INITIAL_VISIBLE_COURSES = 6;
 const PRIORITY_COURSE_IMAGES = INITIAL_VISIBLE_COURSES;
 
-const priceAmount = (price) => String(price || '2000').split(' ')[0];
 const fallbackImage = '/images/cover of course.png';
+
+const renderCoursePrice = (course) => {
+  if (course?.isFree) {
+    return (
+      <strong className="course-price course-price-free" dir="ltr">
+        <span>Free</span>
+      </strong>
+    );
+  }
+
+  if (course?.hasDiscount) {
+    return (
+      <div className="course-price course-price-discounted" dir="ltr">
+        <del>{course.originalPrice}</del>
+        <strong><span>{course.displayPrice}</span></strong>
+      </div>
+    );
+  }
+
+  return (
+    <strong className="course-price" dir="ltr">
+      <span>{course?.displayPrice || course?.price || '2000'}</span>
+    </strong>
+  );
+};
 
 const PublicCourseCard = memo(({ course, priority = false, deferred = false }) => (
   <article className={`preview-course-card${deferred ? ' is-deferred' : ''}`}>
@@ -33,11 +57,11 @@ const PublicCourseCard = memo(({ course, priority = false, deferred = false }) =
         onError={(event) => { event.currentTarget.src = fallbackImage; }}
       />
     </div>
-    <div className="preview-course-body">
-      <h2>{course.title}</h2>
-      {course.arabicTitle ? <p className="preview-course-subtitle" dir="rtl">{course.arabicTitle}</p> : null}
-      <p>{course.description}</p>
-      <div className="preview-instructor">
+      <div className="preview-course-body">
+        <h2>{course.title}</h2>
+        {course.arabicTitle ? <p className="preview-course-subtitle" dir="rtl">{course.arabicTitle}</p> : null}
+        <p>{course.description}</p>
+        <div className="preview-instructor">
         <span className="preview-avatar" aria-hidden="true">G</span>
         <div>
           <strong>{course.instructor}</strong>
@@ -47,11 +71,9 @@ const PublicCourseCard = memo(({ course, priority = false, deferred = false }) =
       <div className="preview-course-footer">
         <div>
           <span>Course price</span>
-          <strong className="course-price" dir="ltr">
-            <span>{priceAmount(course.price)}</span>
-          </strong>
+          {renderCoursePrice(course)}
         </div>
-        <Link className="btn btn-primary" to={course.paymentPath}>Buy Course</Link>
+        <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath}>{course.ctaLabel || 'Buy Course'}</Link>
       </div>
     </div>
   </article>

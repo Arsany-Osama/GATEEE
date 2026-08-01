@@ -12,6 +12,8 @@ const publicCourseFields = [
     'thumbnail_url',
     'thumbnail_public_id',
     'price',
+    'discount_price',
+    'pricing_type',
     'category_id',
     'instructor_id',
     'instructor_name',
@@ -63,10 +65,35 @@ const requireAdminForAdminMount = (req, res, next) => {
     return authenticate(req, res, () => isAdmin(req, res, next));
 };
 
+const normalizePricingType = (value) => {
+    const next = String(value || '').toLowerCase().trim();
+    if (next === 'free' || next === 'paid' || next === 'discounted') return next;
+    return 'paid';
+};
+
+const parseFiniteNumber = (value) => {
+    if (value === '' || value === null || value === undefined) return null;
+    const number = Number(value);
+    return Number.isFinite(number) ? number : null;
+};
+
 const normalizeCoursePayload = (body, support = {}) => {
-    const price = body.price === '' || body.price === undefined || body.price === null ? 2000 : Number(body.price);
+    const pricingType = normalizePricingType(body.pricing_type);
+    const priceInput = parseFiniteNumber(body.price);
+    const discountPriceInput = parseFiniteNumber(body.discount_price);
+    const price = pricingType === 'free' ? 0 : (priceInput ?? 2000);
+
     if (!Number.isFinite(price) || price < 0) {
         throw new Error('Course price must be a valid non-negative number.');
+    }
+
+    if (pricingType === 'discounted') {
+        if (!Number.isFinite(discountPriceInput) || discountPriceInput === null || discountPriceInput <= 0) {
+            throw new Error('Discount price must be a valid positive number.');
+        }
+        if (discountPriceInput >= price) {
+            throw new Error('Discount price must be lower than the original price.');
+        }
     }
 
     const payload = {
@@ -75,6 +102,8 @@ const normalizeCoursePayload = (body, support = {}) => {
         description: String(body.description || '').trim() || null,
         thumbnail_url: String(body.thumbnail_url || '').trim() || null,
         price,
+        pricing_type: pricingType,
+        discount_price: pricingType === 'discounted' ? discountPriceInput : null,
         instructor_name: String(body.instructor_name || 'Eng. Ahmed Gamal Elghawy').trim(),
         instructor_subtitle: String(body.instructor_subtitle || '10+ Years Experience').trim(),
         is_published: body.is_published === undefined ? true : Boolean(body.is_published),
@@ -121,6 +150,31 @@ const fieldsForSupport = (fields, support) => fields.filter((field) => {
 const validId = (value) => {
     const id = Number(value);
     return Number.isInteger(id) && id > 0 ? id : null;
+};
+
+const buildPublicCoursesQuery = (support, query = {}) => {
+    const baseQuery = db('courses').whereNull('courses.deleted_at');
+    const hasPricingFilter = query.pricing_type !== undefined && query.pricing_type !== null && String(query.pricing_type).trim() !== '';
+    const pricingType = hasPricingFilter ? normalizePricingType(query.pricing_type) : 'all';
+    const wantsPagination = query.page !== undefined || query.limit !== undefined;
+
+    if (support.categoriesTable && support.category_id) {
+        baseQuery.leftJoin('categories', 'courses.category_id', 'categories.id');
+    }
+
+    if (support.instructorsTable && support.instructor_id) {
+        baseQuery.leftJoin('instructors', 'courses.instructor_id', 'instructors.id');
+    }
+
+    if (pricingType === 'free') {
+        baseQuery.where('courses.pricing_type', 'free');
+    } else if (pricingType === 'discounted') {
+        baseQuery.where('courses.pricing_type', 'discounted');
+    } else if (pricingType === 'paid') {
+        baseQuery.whereIn('courses.pricing_type', ['paid', 'discounted']);
+    }
+
+    return { baseQuery, pricingType, wantsPagination };
 };
 
 let lessonContentSupportPromise = null;
@@ -257,30 +311,31 @@ router.get('/:courseId/curriculum', authenticate, isAdmin, async (req, res) => {
 router.get('/', requireAdminForAdminMount, async (req, res) => {
     try {
         const schema = await courseSchemaSupport();
-        const query = db('courses').whereNull('courses.deleted_at');
-
         const publicSelect = fieldsForSupport(publicCourseFields, schema).map((field) => `courses.${field}`);
         const adminSelect = fieldsForSupport(adminCourseFields, schema).map((field) => `courses.${field}`);
         const referenceSelect = [];
 
-        if (schema.categoriesTable && schema.category_id) {
-            query.leftJoin('categories', 'courses.category_id', 'categories.id');
-            referenceSelect.push(
-                'categories.name as category_name',
-                'categories.arabic_name as category_arabic_name'
-            );
-        }
-
-        if (schema.instructorsTable && schema.instructor_id) {
-            query.leftJoin('instructors', 'courses.instructor_id', 'instructors.id');
-            referenceSelect.push(
-                'instructors.name as linked_instructor_name',
-                'instructors.subtitle as linked_instructor_subtitle',
-                'instructors.avatar_url as instructor_avatar_url'
-            );
-        }
-
         if (req.baseUrl.includes('/admin')) {
+            const query = db('courses')
+                .whereNull('courses.deleted_at');
+
+            if (schema.categoriesTable && schema.category_id) {
+                query.leftJoin('categories', 'courses.category_id', 'categories.id');
+                referenceSelect.push(
+                    'categories.name as category_name',
+                    'categories.arabic_name as category_arabic_name'
+                );
+            }
+
+            if (schema.instructorsTable && schema.instructor_id) {
+                query.leftJoin('instructors', 'courses.instructor_id', 'instructors.id');
+                referenceSelect.push(
+                    'instructors.name as linked_instructor_name',
+                    'instructors.subtitle as linked_instructor_subtitle',
+                    'instructors.avatar_url as instructor_avatar_url'
+                );
+            }
+
             const courses = await query
                 .select([...adminSelect, ...referenceSelect])
                 .orderBy('courses.display_order', 'asc')
@@ -288,11 +343,53 @@ router.get('/', requireAdminForAdminMount, async (req, res) => {
             return res.json(courses);
         }
 
-        const courses = await query
-            .where('courses.is_published', true)
-            .select([...publicSelect, ...referenceSelect])
+        const { baseQuery, wantsPagination } = buildPublicCoursesQuery(schema, req.query);
+        if (schema.categoriesTable && schema.category_id) {
+            referenceSelect.push(
+                'categories.name as category_name',
+                'categories.arabic_name as category_arabic_name'
+            );
+        }
+
+        if (schema.instructorsTable && schema.instructor_id) {
+            referenceSelect.push(
+                'instructors.name as linked_instructor_name',
+                'instructors.subtitle as linked_instructor_subtitle',
+                'instructors.avatar_url as instructor_avatar_url'
+            );
+        }
+
+        const query = baseQuery.where('courses.is_published', true);
+        const selectedQuery = query.select([...publicSelect, ...referenceSelect])
             .orderBy('courses.display_order', 'asc')
             .orderBy('courses.id', 'asc');
+
+        if (wantsPagination) {
+            const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+            const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 6, 1), 24);
+            const offset = (page - 1) * limit;
+            const countRow = await baseQuery
+                .clone()
+                .where('courses.is_published', true)
+                .count({ total: 'courses.id' })
+                .first();
+            const total = Number(countRow?.total || 0);
+            const totalPages = total > 0 ? Math.ceil(total / limit) : 0;
+            const data = await selectedQuery.limit(limit).offset(offset);
+            return res.json({
+                data,
+                meta: {
+                    page,
+                    limit,
+                    total,
+                    totalPages,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1
+                }
+            });
+        }
+
+        const courses = await selectedQuery;
         return res.json(courses);
     } catch (error) {
         res.status(500).json({ error: error.message });

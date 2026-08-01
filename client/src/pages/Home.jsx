@@ -1,8 +1,12 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { getApiError } from '../api/client';
+import { getPaginatedPublicCourses } from '../api/publicCoursesApi';
+import Button from '../components/Button';
+import Loader from '../components/Loader';
 import PublicFooter from '../components/public/PublicFooter';
 import PublicNavbar from '../components/public/PublicNavbar';
 import { useAuth } from '../context/AuthContext';
-import { publicCourses } from '../data/publicCourses';
 
 const stats = [
   { label: 'Professional Courses', value: '1+', note: 'High Quality Courses', icon: 'cap' },
@@ -37,22 +41,89 @@ const floatingBadges = [
   { title: 'Manual Activation Support', text: '24/7 Assistance', icon: 'support', className: 'badge-activation' },
 ];
 
-const priceAmount = (price) => {
-  const text = String(price ?? '').trim();
-  if (!text) return 'Contact us';
-
-  const firstPart = text.split(' ')[0];
-  const numeric = Number(firstPart);
-  if (!Number.isFinite(numeric)) return firstPart || 'Contact us';
-
-  return Number.isInteger(numeric) ? String(numeric) : numeric.toFixed(2);
-};
-
 const courseTitle = (course) => String(course?.title || 'GATE Course').trim();
 const courseArabicTitle = (course) => String(course?.arabic_title || course?.arabicTitle || '').trim();
+const FREE_COURSE_LIMIT = 2;
+const FEATURED_COURSE_LIMIT = 4;
+
+const renderCoursePrice = (course) => {
+  if (course?.isFree) {
+    return (
+      <strong className="course-price course-price-free" dir="ltr">
+        <span>Free</span>
+      </strong>
+    );
+  }
+
+  if (course?.hasDiscount) {
+    return (
+      <div className="course-price course-price-discounted" dir="ltr">
+        <del>{course.originalPrice}</del>
+        <strong><span>{course.displayPrice}</span></strong>
+      </div>
+    );
+  }
+
+  return (
+    <strong className="course-price" dir="ltr">
+      <span>{course?.displayPrice || course?.price || 'Contact us'}</span>
+    </strong>
+  );
+};
 
 const Home = () => {
   const { user, logout } = useAuth();
+  const [freeCourses, setFreeCourses] = useState([]);
+  const [paidCourses, setPaidCourses] = useState([]);
+  const [freeMeta, setFreeMeta] = useState({ page: 1, totalPages: 0, total: 0 });
+  const [paidMeta, setPaidMeta] = useState({ page: 1, totalPages: 0, total: 0 });
+  const [freePage, setFreePage] = useState(1);
+  const [paidPage, setPaidPage] = useState(1);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+  const [courseError, setCourseError] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    const loadCourses = async () => {
+      setLoadingCourses(true);
+      setCourseError('');
+
+      const [freeResult, paidResult] = await Promise.allSettled([
+        getPaginatedPublicCourses({ page: freePage, limit: FREE_COURSE_LIMIT, pricingType: 'free' }),
+        getPaginatedPublicCourses({ page: paidPage, limit: FEATURED_COURSE_LIMIT, pricingType: 'paid' }),
+      ]);
+
+      if (!active) return;
+
+      if (freeResult.status === 'fulfilled') {
+        setFreeCourses(Array.isArray(freeResult.value.data) ? freeResult.value.data : []);
+        setFreeMeta(freeResult.value.meta || { page: freePage, totalPages: 0, total: 0 });
+      } else {
+        setFreeCourses([]);
+      }
+
+      if (paidResult.status === 'fulfilled') {
+        setPaidCourses(Array.isArray(paidResult.value.data) ? paidResult.value.data : []);
+        setPaidMeta(paidResult.value.meta || { page: paidPage, totalPages: 0, total: 0 });
+      } else {
+        setPaidCourses([]);
+      }
+
+      if (freeResult.status === 'rejected' && paidResult.status === 'rejected') {
+        setCourseError(getApiError(freeResult.reason || paidResult.reason, 'Could not load the latest courses.'));
+      } else if (freeResult.status === 'rejected' || paidResult.status === 'rejected') {
+        setCourseError(getApiError(freeResult.reason || paidResult.reason, 'Could not load part of the course catalog.'));
+      }
+
+      setLoadingCourses(false);
+    };
+
+    loadCourses();
+    return () => {
+      active = false;
+    };
+  }, [freePage, paidPage]);
 
   return (
     <main className="home-page safety-home">
@@ -180,33 +251,105 @@ const Home = () => {
             <span aria-hidden="true">-&gt;</span>
           </Link>
         </div>
-        <div className="home-course-grid">
-          {publicCourses.map((course) => (
-            <article className="home-course-card" key={course.id}>
-              <div className={`course-visual course-visual-${course.tone}`}>
-                <img className="course-image-bg" src={course.image} alt="" aria-hidden="true" />
-                <img className="course-thumb" src={course.image} alt="" aria-hidden="true" />
+        {courseError ? <div className="home-course-error">{courseError}</div> : null}
+        {loadingCourses ? <Loader label="Loading courses..." /> : null}
+
+        <div className="home-course-section-group">
+          <div className="home-course-section-head">
+            <div>
+              <p>Free Courses</p>
+              <h3>Start with open learning</h3>
+            </div>
+            {freeMeta.totalPages > 1 ? (
+              <div className="home-section-pager" aria-label="Free course pagination">
+                <Button variant="ghost" size="sm" disabled={freeMeta.page <= 1} onClick={() => setFreePage((current) => Math.max(1, current - 1))}>
+                  Previous
+                </Button>
+                <span>Page {freeMeta.page} of {freeMeta.totalPages}</span>
+                <Button variant="ghost" size="sm" disabled={freeMeta.page >= freeMeta.totalPages} onClick={() => setFreePage((current) => current + 1)}>
+                  Next
+                </Button>
               </div>
-              <div className="course-body">
-                <h3>{courseTitle(course)}</h3>
-                {courseArabicTitle(course) ? <p className="home-course-subtitle" dir="rtl">{courseArabicTitle(course)}</p> : null}
-                <p>{course.description}</p>
-                <div className="course-instructor">
-                  <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
-                  <div>
-                    <strong>{course.instructor}</strong>
-                    <span>{course.instructorSubtitle}</span>
+            ) : null}
+          </div>
+          <div className="home-course-grid" aria-busy={loadingCourses}>
+            {freeCourses.map((course) => (
+              <article className="home-course-card" key={`free-${course.id}`}>
+                <div className="course-visual">
+                  <img className="course-image-bg" src={course.image} alt="" aria-hidden="true" />
+                  <img className="course-thumb" src={course.image} alt="" aria-hidden="true" />
+                </div>
+                <div className="course-body">
+                  <span className="home-course-pill is-free">Free</span>
+                  <h3>{courseTitle(course)}</h3>
+                  {courseArabicTitle(course) ? <p className="home-course-subtitle" dir="rtl">{courseArabicTitle(course)}</p> : null}
+                  <p className="home-course-description">{course.description}</p>
+                  <div className="course-instructor">
+                    <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
+                    <div>
+                      <strong>{course.instructor}</strong>
+                      <span>{course.instructorSubtitle}</span>
+                    </div>
+                  </div>
+                  <div className="course-foot">
+                    {renderCoursePrice(course)}
+                    <Link className="btn btn-secondary" to={course.ctaPath || '/learning'}>
+                      {course.ctaLabel || 'Start Free'}
+                    </Link>
                   </div>
                 </div>
-                <div className="course-foot">
-                  <strong className="course-price" dir="ltr">
-                    <span>{priceAmount(course.price)}</span>
-                  </strong>
-                  <Link className="btn btn-primary" to={course.paymentPath}>Buy Course</Link>
-                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="home-course-section-group">
+          <div className="home-course-section-head">
+            <div>
+              <p>Paid Courses</p>
+              <h3>Premium courses and special offers</h3>
+            </div>
+            {paidMeta.totalPages > 1 ? (
+              <div className="home-section-pager" aria-label="Paid course pagination">
+                <Button variant="ghost" size="sm" disabled={paidMeta.page <= 1} onClick={() => setPaidPage((current) => Math.max(1, current - 1))}>
+                  Previous
+                </Button>
+                <span>Page {paidMeta.page} of {paidMeta.totalPages}</span>
+                <Button variant="ghost" size="sm" disabled={paidMeta.page >= paidMeta.totalPages} onClick={() => setPaidPage((current) => current + 1)}>
+                  Next
+                </Button>
               </div>
-            </article>
-          ))}
+            ) : null}
+          </div>
+          <div className="home-course-grid" aria-busy={loadingCourses}>
+            {paidCourses.map((course) => (
+              <article className="home-course-card" key={`paid-${course.id}`}>
+                <div className="course-visual">
+                  <img className="course-image-bg" src={course.image} alt="" aria-hidden="true" />
+                  <img className="course-thumb" src={course.image} alt="" aria-hidden="true" />
+                </div>
+                <div className="course-body">
+                  {course.hasDiscount ? <span className="home-course-pill is-discounted">Discounted</span> : null}
+                  <h3>{courseTitle(course)}</h3>
+                  {courseArabicTitle(course) ? <p className="home-course-subtitle" dir="rtl">{courseArabicTitle(course)}</p> : null}
+                  <p className="home-course-description">{course.description}</p>
+                  <div className="course-instructor">
+                    <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
+                    <div>
+                      <strong>{course.instructor}</strong>
+                      <span>{course.instructorSubtitle}</span>
+                    </div>
+                  </div>
+                  <div className="course-foot">
+                    {renderCoursePrice(course)}
+                    <Link className="btn btn-primary" to={course.ctaPath || course.paymentPath}>
+                      {course.ctaLabel || 'Buy Course'}
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
