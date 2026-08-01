@@ -40,7 +40,7 @@ const AdminLayoutInner = () => {
       <aside className="admin-sidebar">
         <div className="admin-brand-block">
           <Link className="admin-brand" to="/" aria-label="GATE home">
-            <span className="admin-brand-mark">G</span>
+            <img className="brand-logo" src="/images/logo.png" alt="" aria-hidden="true" />
           </Link>
           <div>
             <strong>{t.brandTitle}</strong>

@@ -51,7 +51,7 @@ const DashboardCourseCard = memo(({ course, certificateLoading = false, onIssueC
       <div className="dashboard-course-instructor">
         <span className="dashboard-instructor-avatar" aria-hidden="true">G</span>
         <div>
-          <strong>{course.instructor_name || 'Eng. Ahmed Gamal Elghawy'}</strong>
+          <strong>{course.instructor_name || 'Ch. Ahmed Gamal Elghawy'}</strong>
           <span>{course.instructor_subtitle || '10+ Years Experience'}</span>
         </div>
       </div>

@@ -29,8 +29,7 @@ const PublicNavbar = ({
   return (
     <header className={`home-nav public-navbar ${className}`.trim()}>
       <Link className="home-brand" to="/" aria-label="GATE home">
-        <span className="brand-mark" aria-hidden="true">G</span>
-        <span className="brand-name">GATE</span>
+        <img className="brand-logo" src="/images/logo.png" alt="" aria-hidden="true" />
       </Link>
       <nav aria-label="Public navigation">
         <Link className={isHomeActive ? 'is-active' : ''} to="/">{t.nav.home}</Link>

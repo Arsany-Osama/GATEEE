@@ -5,13 +5,14 @@ import { getApiError } from '../../api/client';
 import ErrorMessage from '../../components/ErrorMessage';
 import Loader from '../../components/Loader';
 import StatCard from '../../components/StatCard';
+import { useAdminLanguage } from '../../context/AdminLanguageContext';
 
 const fallbackImage = '/images/cover of course.png';
 
-const formatDate = (value) => {
+const formatDate = (value, locale = 'ar-EG') => {
   if (!value) return 'غير متاح';
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? 'غير متاح' : date.toLocaleDateString('ar-EG');
+  return Number.isNaN(date.getTime()) ? 'غير متاح' : date.toLocaleDateString(locale);
 };
 
 const getPaymentRequestsFromDashboard = (data) => {
@@ -24,12 +25,125 @@ const getPaymentRequestsFromDashboard = (data) => {
   return candidates.find((candidate) => Array.isArray(candidate)) || [];
 };
 
-const getCourseTitle = (course) => course?.title || course?.arabic_title || 'كورس بدون اسم';
+const getCourseTitle = (course, language = 'ar') => course?.title || course?.arabic_title || (language === 'ar' ? 'كورس بدون اسم' : 'Untitled course');
+
+const copy = {
+  ar: {
+    overview: 'نظرة عامة',
+    title: 'لوحة تحكم الأدمن',
+    description: 'متابعة مختصرة للكورسات، الطلاب، طلبات الدفع، والعمليات اليومية داخل منصة GATE.',
+    reports: 'فتح التقارير',
+    loading: 'جاري تحميل بيانات لوحة التحكم...',
+    stats: {
+      students: 'إجمالي الطلاب',
+      courses: 'إجمالي الكورسات',
+      teachers: 'المدرسين',
+      pendingPayments: 'طلبات الدفع المعلقة',
+      quizzes: 'الاختبارات',
+      helperStudents: 'حسابات المتعلمين',
+      helperCourses: 'الكورسات الحالية',
+      helperTeachers: 'حسب الأدوار المتاحة',
+      helperPayments: 'بانتظار المراجعة',
+      helperQuizzes: 'حسب بيانات الـ API',
+    },
+    sections: {
+      students: 'الطلاب',
+      studentsTitle: 'آخر تسجيلات الطلاب',
+      studentsLink: 'عرض الطلاب',
+      payments: 'الدفع',
+      paymentsTitle: 'آخر طلبات الدفع',
+      paymentsLink: 'مراجعة الطلبات',
+      courses: 'الكورسات',
+      coursesTitle: 'أحدث الكورسات',
+      coursesLink: 'إدارة الكورسات',
+      actions: 'إجراءات سريعة',
+      quick: 'اختصارات الإدارة',
+    },
+    activity: {
+      enroll: 'تسجيل',
+      student: 'طالب',
+      courseEnroll: 'اشتراك في كورس',
+      payment: 'طلب دفع',
+      manualPayment: 'مراجعة دفع يدوي',
+      noEnrollments: 'لا توجد تسجيلات حديثة في بيانات لوحة التحكم.',
+      noPayments: 'طلبات الدفع غير متاحة من بيانات لوحة التحكم الحالية.',
+      noCourses: 'لا توجد كورسات متاحة في بيانات لوحة التحكم.',
+      published: 'منشور',
+      draft: 'غير منشور',
+    },
+    quickActions: {
+      addCourse: 'إضافة كورس',
+      addTeacher: 'إضافة مدرس',
+      addTeacherNote: 'لا يوجد Route أو API للمدرسين حاليًا',
+      createQuiz: 'إنشاء اختبار',
+      sendNotification: 'إرسال إشعار',
+      reviewPayments: 'مراجعة طلبات الدفع',
+      addCoupon: 'إضافة كوبون',
+      addCouponNote: 'لا يوجد Route أو API للكوبونات حاليًا',
+    },
+  },
+  en: {
+    overview: 'Overview',
+    title: 'Admin dashboard',
+    description: 'Quick monitoring for courses, students, payment requests, and daily operations inside GATE.',
+    reports: 'Open reports',
+    loading: 'Loading dashboard data...',
+    stats: {
+      students: 'Total students',
+      courses: 'Total courses',
+      teachers: 'Teachers',
+      pendingPayments: 'Pending payments',
+      quizzes: 'Quizzes',
+      helperStudents: 'Learner accounts',
+      helperCourses: 'Active courses',
+      helperTeachers: 'By available roles',
+      helperPayments: 'Waiting for review',
+      helperQuizzes: 'Based on API data',
+    },
+    sections: {
+      students: 'Students',
+      studentsTitle: 'Latest student enrollments',
+      studentsLink: 'View students',
+      payments: 'Payments',
+      paymentsTitle: 'Latest payment requests',
+      paymentsLink: 'Review requests',
+      courses: 'Courses',
+      coursesTitle: 'Latest courses',
+      coursesLink: 'Manage courses',
+      actions: 'Quick actions',
+      quick: 'Admin shortcuts',
+    },
+    activity: {
+      enroll: 'Enrollment',
+      student: 'Student',
+      courseEnroll: 'Course enrollment',
+      payment: 'Payment request',
+      manualPayment: 'Manual payment review',
+      noEnrollments: 'No recent enrollments are available in the dashboard data.',
+      noPayments: 'Payment requests are not available in the current dashboard data.',
+      noCourses: 'No courses are available in the dashboard data.',
+      published: 'Published',
+      draft: 'Draft',
+    },
+    quickActions: {
+      addCourse: 'Add course',
+      addTeacher: 'Add teacher',
+      addTeacherNote: 'No teacher route or API is available right now',
+      createQuiz: 'Create quiz',
+      sendNotification: 'Send notification',
+      reviewPayments: 'Review payment requests',
+      addCoupon: 'Add coupon',
+      addCouponNote: 'No coupon route or API is available right now',
+    },
+  },
+};
 
 const AdminDashboard = () => {
+  const { language } = useAdminLanguage();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const text = copy[language] || copy.ar;
 
   useEffect(() => {
     let active = true;
@@ -38,7 +152,7 @@ const AdminDashboard = () => {
         if (active) setData(next || {});
       })
       .catch((err) => {
-        if (active) setError(getApiError(err, 'تعذر تحميل بيانات لوحة التحكم.'));
+        if (active) setError(getApiError(err, language === 'ar' ? 'تعذر تحميل بيانات لوحة التحكم.' : 'Could not load dashboard data.'));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -69,83 +183,84 @@ const AdminDashboard = () => {
   const recentEnrollments = enrollments.slice(0, 5);
   const recentPayments = paymentRequests.slice(0, 5);
   const latestCourses = courses.slice(0, 4);
+  const dateLocale = language === 'ar' ? 'ar-EG' : 'en-US';
   const quickActions = [
-    { label: 'إضافة كورس', to: '/admin/courses' },
-    { label: 'إضافة مدرس', disabled: true, note: 'لا يوجد Route أو API للمدرسين حاليًا' },
-    { label: 'إنشاء اختبار', to: '/admin/quizzes' },
-    { label: 'إرسال إشعار', to: '/admin/notifications' },
-    { label: 'مراجعة طلبات الدفع', to: '/admin/payment-requests' },
-    { label: 'إضافة كوبون', disabled: true, note: 'لا يوجد Route أو API للكوبونات حاليًا' },
+    { label: text.quickActions.addCourse, to: '/admin/courses' },
+    { label: text.quickActions.addTeacher, disabled: true, note: text.quickActions.addTeacherNote },
+    { label: text.quickActions.createQuiz, to: '/admin/quizzes' },
+    { label: text.quickActions.sendNotification, to: '/admin/notifications' },
+    { label: text.quickActions.reviewPayments, to: '/admin/payment-requests' },
+    { label: text.quickActions.addCoupon, disabled: true, note: text.quickActions.addCouponNote },
   ];
 
   return (
     <main className="admin-page admin-dashboard-page">
       <section className="page-head admin-dashboard-head">
         <div>
-          <p className="eyebrow">نظرة عامة</p>
-          <h1>لوحة تحكم الأدمن</h1>
-          <p>متابعة مختصرة للكورسات، الطلاب، طلبات الدفع، والعمليات اليومية داخل منصة GATE.</p>
+          <p className="eyebrow">{text.overview}</p>
+          <h1>{text.title}</h1>
+          <p>{text.description}</p>
         </div>
-        <Link className="btn btn-primary" to="/admin/reports">فتح التقارير</Link>
+        <Link className="btn btn-primary" to="/admin/reports">{text.reports}</Link>
       </section>
 
       <ErrorMessage message={error} />
-      {loading ? <Loader label="جاري تحميل بيانات لوحة التحكم..." /> : null}
+      {loading ? <Loader label={text.loading} /> : null}
 
       {!loading ? (
         <>
           <section className="stats-grid admin-stats-grid" aria-label="ملخص لوحة التحكم">
-            <StatCard label="إجمالي الطلاب" value={summary.students} helper="حسابات المتعلمين" />
-            <StatCard label="إجمالي الكورسات" value={summary.courses} helper="الكورسات الحالية" tone="navy" />
-            <StatCard label="المدرسين" value={summary.teachers} helper="حسب الأدوار المتاحة" tone="green" />
-            <StatCard label="طلبات الدفع المعلقة" value={summary.pendingPayments} helper="بانتظار المراجعة" tone="amber" />
-            <StatCard label="الاختبارات" value={summary.quizzes} helper="حسب بيانات الـ API" tone="navy" />
+            <StatCard label={text.stats.students} value={summary.students} helper={text.stats.helperStudents} />
+            <StatCard label={text.stats.courses} value={summary.courses} helper={text.stats.helperCourses} tone="navy" />
+            <StatCard label={text.stats.teachers} value={summary.teachers} helper={text.stats.helperTeachers} tone="green" />
+            <StatCard label={text.stats.pendingPayments} value={summary.pendingPayments} helper={text.stats.helperPayments} tone="amber" />
+            <StatCard label={text.stats.quizzes} value={summary.quizzes} helper={text.stats.helperQuizzes} tone="navy" />
           </section>
 
           <section className="admin-dashboard-grid">
             <article className="admin-card admin-list-card">
               <div className="admin-section-head">
                 <div>
-                  <p className="eyebrow">الطلاب</p>
-                  <h2>آخر تسجيلات الطلاب</h2>
+                  <p className="eyebrow">{text.sections.students}</p>
+                  <h2>{text.sections.studentsTitle}</h2>
                 </div>
-                <Link className="btn btn-ghost btn-sm" to="/admin/students">عرض الطلاب</Link>
+                <Link className="btn btn-ghost btn-sm" to="/admin/students">{text.sections.studentsLink}</Link>
               </div>
               <div className="admin-activity-list">
                 {recentEnrollments.map((enrollment, index) => (
                   <div className="admin-activity-item" key={enrollment.id || index}>
-                    <span>تسجيل</span>
+                    <span>{text.activity.enroll}</span>
                     <div>
-                      <h3>{enrollment.name || enrollment.email || enrollment.user_name || 'طالب'}</h3>
-                      <p>{enrollment.course_title || enrollment.title || 'اشتراك في كورس'}</p>
+                      <h3>{enrollment.name || enrollment.email || enrollment.user_name || text.activity.student}</h3>
+                      <p>{enrollment.course_title || enrollment.title || text.activity.courseEnroll}</p>
                     </div>
-                    <span>{formatDate(enrollment.created_at || enrollment.enrolled_at || enrollment.updated_at)}</span>
+                    <span>{formatDate(enrollment.created_at || enrollment.enrolled_at || enrollment.updated_at, dateLocale)}</span>
                   </div>
                 ))}
-                {recentEnrollments.length === 0 ? <p className="muted">لا توجد تسجيلات حديثة في بيانات لوحة التحكم.</p> : null}
+                {recentEnrollments.length === 0 ? <p className="muted">{text.activity.noEnrollments}</p> : null}
               </div>
             </article>
 
             <article className="admin-card admin-list-card">
               <div className="admin-section-head">
                 <div>
-                  <p className="eyebrow">الدفع</p>
-                  <h2>آخر طلبات الدفع</h2>
+                  <p className="eyebrow">{text.sections.payments}</p>
+                  <h2>{text.sections.paymentsTitle}</h2>
                 </div>
-                <Link className="btn btn-ghost btn-sm" to="/admin/payment-requests">مراجعة الطلبات</Link>
+                <Link className="btn btn-ghost btn-sm" to="/admin/payment-requests">{text.sections.paymentsLink}</Link>
               </div>
               <div className="admin-activity-list">
                 {recentPayments.map((request, index) => (
                   <div className="admin-activity-item" key={request.id || index}>
-                    <span>{request.status || 'طلب'}</span>
+                    <span>{request.status || text.activity.payment}</span>
                     <div>
-                      <h3>{request.payer_name || request.name || request.user_name || request.email || 'طلب دفع'}</h3>
-                      <p>{request.course_title || request.title || 'مراجعة دفع يدوي'}</p>
+                      <h3>{request.payer_name || request.name || request.user_name || request.email || text.activity.payment}</h3>
+                      <p>{request.course_title || request.title || text.activity.manualPayment}</p>
                     </div>
-                    <span>{formatDate(request.created_at || request.updated_at)}</span>
+                    <span>{formatDate(request.created_at || request.updated_at, dateLocale)}</span>
                   </div>
                 ))}
-                {recentPayments.length === 0 ? <p className="muted">طلبات الدفع غير متاحة من بيانات لوحة التحكم الحالية.</p> : null}
+                {recentPayments.length === 0 ? <p className="muted">{text.activity.noPayments}</p> : null}
               </div>
             </article>
           </section>
@@ -154,31 +269,31 @@ const AdminDashboard = () => {
             <article className="admin-card">
               <div className="admin-section-head">
                 <div>
-                  <p className="eyebrow">الكورسات</p>
-                  <h2>أحدث الكورسات</h2>
+                  <p className="eyebrow">{text.sections.courses}</p>
+                  <h2>{text.sections.coursesTitle}</h2>
                 </div>
-                <Link className="btn btn-ghost btn-sm" to="/admin/courses">إدارة الكورسات</Link>
+                <Link className="btn btn-ghost btn-sm" to="/admin/courses">{text.sections.coursesLink}</Link>
               </div>
               <div className="admin-latest-course-grid">
                 {latestCourses.map((course) => (
                   <Link className="admin-latest-course-card" to={`/admin/courses/${course.id}/edit`} key={course.id}>
                     <img src={course.thumbnail_url || fallbackImage} alt="" onError={(event) => { event.currentTarget.src = fallbackImage; }} />
                     <div>
-                      <h3>{getCourseTitle(course)}</h3>
-                      <p>{course.instructor_name || 'غير محدد'}</p>
+                      <h3>{getCourseTitle(course, language)}</h3>
+                      <p>{course.instructor_name || (language === 'ar' ? 'غير محدد' : 'Unspecified')}</p>
                     </div>
-                    <strong>{course.is_published === false || course.is_published === 0 ? 'غير منشور' : 'منشور'}</strong>
+                    <strong>{course.is_published === false || course.is_published === 0 ? text.activity.draft : text.activity.published}</strong>
                   </Link>
                 ))}
-                {latestCourses.length === 0 ? <p className="muted">لا توجد كورسات متاحة في بيانات لوحة التحكم.</p> : null}
+                {latestCourses.length === 0 ? <p className="muted">{text.activity.noCourses}</p> : null}
               </div>
             </article>
 
             <article className="admin-card admin-quick-panel">
               <div className="admin-section-head">
                 <div>
-                  <p className="eyebrow">إجراءات سريعة</p>
-                  <h2>اختصارات الإدارة</h2>
+                  <p className="eyebrow">{text.sections.actions}</p>
+                  <h2>{text.sections.quick}</h2>
                 </div>
               </div>
               <div className="admin-quick-grid">

@@ -45,6 +45,8 @@ const getLocalizedCourseTitle = (course, language) => {
 };
 const FREE_COURSE_LIMIT = 2;
 const FEATURED_COURSE_LIMIT = 4;
+const brandLogo = '/images/logo.png';
+const homeLogo = '/images/home-logo.png';
 
 const renderCoursePrice = (course, t) => {
   if (course?.isFree) {
@@ -230,7 +232,7 @@ const Home = () => {
           <span className="orbit orbit-3" aria-hidden="true" />
           <div className="home-shield">
             <span className="shield-glass" aria-hidden="true" />
-            <span className="shield-letter">G</span>
+            <img className="shield-logo" src={homeLogo} alt="" aria-hidden="true" />
           </div>
           <div className="holo-platform" aria-hidden="true">
             <span />
@@ -251,9 +253,9 @@ const Home = () => {
 
       <section className="home-stats" aria-label="GATE courses platform statistics">
         {stats.map((stat) => (
-          <article className="home-stat-card" key={stat.label}>
+            <article className="home-stat-card" key={stat.label}>
             {stat.icon === 'cap' ? (
-              <span className="home-gate-mark home-stat-gate-mark" aria-hidden="true">G</span>
+              <img className="home-gate-mark home-stat-gate-mark" src={brandLogo} alt="" aria-hidden="true" />
             ) : (
               <span className={`home-card-icon icon-${stat.icon}`} aria-hidden="true" />
             )}
@@ -337,7 +339,7 @@ const Home = () => {
                   })()}
                   <p className="home-course-description">{course.description}</p>
                   <div className="course-instructor">
-                    <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
+                    <img className="instructor-avatar home-gate-mark course-logo-mark" src={brandLogo} alt="" aria-hidden="true" />
                     <div>
                       <strong>{course.instructor}</strong>
                       <span>{course.instructorSubtitle}</span>
@@ -393,7 +395,7 @@ const Home = () => {
                   })()}
                   <p className="home-course-description">{course.description}</p>
                   <div className="course-instructor">
-                    <span className="instructor-avatar home-gate-mark course-logo-mark" aria-hidden="true">G</span>
+                    <img className="instructor-avatar home-gate-mark course-logo-mark" src={brandLogo} alt="" aria-hidden="true" />
                     <div>
                       <strong>{course.instructor}</strong>
                       <span>{course.instructorSubtitle}</span>

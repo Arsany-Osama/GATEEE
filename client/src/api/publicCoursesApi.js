@@ -1,7 +1,7 @@
 import apiClient from './client';
 import { publicCourses } from '../data/publicCourses';
 
-const DEFAULT_INSTRUCTOR = 'Eng. Ahmed Gamal Elghawy';
+const DEFAULT_INSTRUCTOR = 'Ch. Ahmed Gamal Elghawy';
 const DEFAULT_INSTRUCTOR_SUBTITLE = '10+ Years Experience';
 const DEFAULT_PRICE = '2000';
 const FALLBACK_IMAGE = '/images/cover of course.png';

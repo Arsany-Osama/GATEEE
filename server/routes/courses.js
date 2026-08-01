@@ -110,7 +110,7 @@ const normalizeCoursePayload = (body, support = {}) => {
         description: String(body.description || '').trim() || null,
         thumbnail_url: String(body.thumbnail_url || '').trim() || null,
         price,
-        instructor_name: String(body.instructor_name || 'Eng. Ahmed Gamal Elghawy').trim(),
+        instructor_name: String(body.instructor_name || 'Ch. Ahmed Gamal Elghawy').trim(),
         instructor_subtitle: String(body.instructor_subtitle || '10+ Years Experience').trim(),
         is_published: body.is_published === undefined ? true : Boolean(body.is_published),
         display_order: Number.isFinite(Number(body.display_order)) ? Number(body.display_order) : 0
@@ -517,16 +517,16 @@ router.delete('/:id', authenticate, isAdmin, async (req, res) => {
                 const quizzes = await trx('quizzes').whereIn('lesson_id', lessonIds).select('id');
                 const quizIds = quizzes.map(q => q.id);
                 if (quizIds.length) {
-                    await trx('quiz_options').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(()=>{});
-                    await trx('quiz_questions').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(()=>{});
-                    await trx('quiz_results').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(()=>{});
-                    await trx('quizzes').whereIn('id', quizIds).update({ deleted_at: now }).catch(()=>{});
+                    await trx('quiz_options').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(() => { });
+                    await trx('quiz_questions').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(() => { });
+                    await trx('quiz_results').whereIn('quiz_id', quizIds).update({ deleted_at: now }).catch(() => { });
+                    await trx('quizzes').whereIn('id', quizIds).update({ deleted_at: now }).catch(() => { });
                 }
             }
 
             // Mark enrollments and progress
-            await trx('enrollments').where({ course_id: courseId }).update({ deleted_at: now }).catch(()=>{});
-            await trx('progress').where({ course_id: courseId }).update({ deleted_at: now }).catch(()=>{});
+            await trx('enrollments').where({ course_id: courseId }).update({ deleted_at: now }).catch(() => { });
+            await trx('progress').where({ course_id: courseId }).update({ deleted_at: now }).catch(() => { });
         });
 
         res.json({ message: 'Course soft-deleted (content retained).' });
@@ -576,7 +576,7 @@ router.post('/:id/permanent', authenticate, isAdmin, async (req, res) => {
                         await trx('quiz_questions').whereIn('id', questionIds).del();
                     }
 
-                    await trx('quiz_results').whereIn('quiz_id', quizIds).del().catch(() => {});
+                    await trx('quiz_results').whereIn('quiz_id', quizIds).del().catch(() => { });
                     await trx('quizzes').whereIn('id', quizIds).del();
                 }
             }
@@ -592,8 +592,8 @@ router.post('/:id/permanent', authenticate, isAdmin, async (req, res) => {
             }
 
             // 7. Delete enrollments and progress records for this course
-            await trx('enrollments').where({ course_id: courseId }).del().catch(() => {});
-            await trx('progress').where({ course_id: courseId }).del().catch(() => {});
+            await trx('enrollments').where({ course_id: courseId }).del().catch(() => { });
+            await trx('progress').where({ course_id: courseId }).del().catch(() => { });
 
             // 8. Finally delete the course
             await trx('courses').where({ id: courseId }).del();
@@ -640,15 +640,15 @@ router.post('/:id/restore', authenticate, isAdmin, async (req, res) => {
                 const quizzes = await trx('quizzes').whereIn('lesson_id', lessonIds).select('id');
                 const quizIds = quizzes.map(q => q.id);
                 if (quizIds.length) {
-                    await trx('quiz_options').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(()=>{});
-                    await trx('quiz_questions').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(()=>{});
-                    await trx('quiz_results').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(()=>{});
-                    await trx('quizzes').whereIn('id', quizIds).update({ deleted_at: null }).catch(()=>{});
+                    await trx('quiz_options').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(() => { });
+                    await trx('quiz_questions').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(() => { });
+                    await trx('quiz_results').whereIn('quiz_id', quizIds).update({ deleted_at: null }).catch(() => { });
+                    await trx('quizzes').whereIn('id', quizIds).update({ deleted_at: null }).catch(() => { });
                 }
             }
 
-            await trx('enrollments').where({ course_id: courseId }).update({ deleted_at: null }).catch(()=>{});
-            await trx('progress').where({ course_id: courseId }).update({ deleted_at: null }).catch(()=>{});
+            await trx('enrollments').where({ course_id: courseId }).update({ deleted_at: null }).catch(() => { });
+            await trx('progress').where({ course_id: courseId }).update({ deleted_at: null }).catch(() => { });
         });
 
         res.json({ message: 'Course restored' });

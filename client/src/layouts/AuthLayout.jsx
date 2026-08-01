@@ -6,11 +6,10 @@ const AuthLayout = ({ children, title, subtitle }) => (
     <div className="auth-back-toolbar">
       <PageBackLink to="/">Back to Home</PageBackLink>
     </div>
-    <section className="auth-panel">
+      <section className="auth-panel">
       <div className="auth-copy">
         <a className="auth-brand" href="/" aria-label="GATE home">
-          <span className="auth-brand-mark" aria-hidden="true">G</span>
-          <span className="auth-brand-name">GATE</span>
+          <img className="brand-logo" src="/images/logo.png" alt="" aria-hidden="true" />
         </a>
         <p className="auth-eyebrow">Safety training workspace</p>
         <h1>{title}</h1>

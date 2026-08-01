@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS courses (
   description TEXT NULL,
   thumbnail_url VARCHAR(1024) NULL,
   price DECIMAL(10,2) NOT NULL DEFAULT 2000.00,
-  instructor_name VARCHAR(255) NOT NULL DEFAULT 'Eng. Ahmed Gamal Elghawy',
+  instructor_name VARCHAR(255) NOT NULL DEFAULT 'Ch. Ahmed Gamal Elghawy',
   instructor_subtitle VARCHAR(255) NOT NULL DEFAULT '10+ Years Experience',
   is_published BOOLEAN NOT NULL DEFAULT TRUE,
   display_order INT NOT NULL DEFAULT 0,

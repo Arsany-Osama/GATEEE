@@ -1272,13 +1272,10 @@
 .home-page .instructor-avatar {
   width: 39px;
   height: 39px;
-  display: grid;
-  place-items: center;
-  border: 2px solid rgba(248, 250, 252, .28);
+  display: block;
+  border: 0;
   border-radius: 999px;
-  background: linear-gradient(135deg, #FDE68A, #93C5FD);
-  color: var(--home-midnight);
-  font-weight: 950;
+  object-fit: contain;
 }
 .home-page .course-instructor strong {
   display: block;
@@ -2721,6 +2718,7 @@
 .home-page .instructor-avatar {
   width: 34px;
   height: 34px;
+  display: block;
 }
 .home-page .course-meta span {
   min-height: 24px;
@@ -3739,26 +3737,17 @@
 .auth-page .auth-brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   color: var(--public-white);
 }
 
-.learning-page .brand-mark,
-.payment-page .brand-mark,
-.auth-page .auth-brand-mark {
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px;
-  background:
-    radial-gradient(circle at 35% 20%, rgba(255, 255, 255, .55), transparent 24%),
-    linear-gradient(135deg, var(--public-cyan) 0%, var(--public-blue) 52%, var(--public-purple) 100%);
-  color: var(--public-white);
-  font-size: 1.25rem;
-  font-weight: 950;
-  line-height: 1;
-  box-shadow: 0 0 22px rgba(34, 211, 238, .28), inset 0 1px 0 rgba(255, 255, 255, .26);
+.learning-page .brand-logo,
+.payment-page .brand-logo,
+.auth-page .brand-logo {
+  display: block;
+  width: auto;
+  height: 40px;
+  max-width: 160px;
+  object-fit: contain;
 }
 
 .learning-page .brand-name,
@@ -5365,28 +5354,42 @@
 }
 
 .home-page.safety-home .home-gate-mark {
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(224, 242, 254, .42);
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at 28% 20%, rgba(255, 255, 255, .34), transparent 34%),
-    linear-gradient(135deg, #06b6d4 0%, #2563eb 52%, #8b5cf6 100%);
-  color: #fff;
-  font-weight: 950;
-  line-height: 1;
-  text-shadow: 0 1px 8px rgba(2, 8, 23, .3);
-  box-shadow: 0 0 22px rgba(34, 211, 238, .28), inset 0 1px 0 rgba(255, 255, 255, .28);
+  display: block;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  object-fit: contain;
 }
 
 .home-page.safety-home .home-stat-gate-mark {
   width: 52px;
   height: 52px;
-  font-size: 1.35rem;
 }
 
 .home-page.safety-home .course-logo-mark {
-  font-size: 1rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+}
+
+.home-page.safety-home .shield-logo,
+.learning-page .learning-mini-logo {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 74%;
+  height: 74%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(248, 250, 252, .3));
+}
+
+.learning-page .learning-mini-shield {
+  overflow: hidden;
+}
+
+.learning-page .learning-mini-logo {
+  width: 72%;
+  height: 72%;
 }
 
 .learning-page .page-back-link,
@@ -5928,7 +5931,7 @@
     radial-gradient(circle at 5% 10%, rgba(34, 211, 238, .26), transparent 16rem),
     radial-gradient(circle at 86% 11%, rgba(139, 92, 246, .24), transparent 18rem),
     radial-gradient(circle at 78% 58%, rgba(245, 158, 11, .08), transparent 18rem),
-    url('/images/safety-industrial-bg.png') center top / cover fixed no-repeat,
+    url('/images/safety-industrial-bg.png') center top / cover no-repeat,
     linear-gradient(180deg, #020817 0%, #041024 48%, #071a33 100%);
 }
 

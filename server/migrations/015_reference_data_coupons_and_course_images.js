@@ -82,9 +82,9 @@ exports.up = async function up(db) {
     display_order: 999,
   }))[0];
 
-  const defaultInstructor = await db('instructors').where({ name: 'Eng. Ahmed Gamal Elghawy' }).first('id');
+  const defaultInstructor = await db('instructors').where({ name: 'Ch. Ahmed Gamal Elghawy' }).first('id');
   const instructorId = defaultInstructor?.id || (await db('instructors').insert({
-    name: 'Eng. Ahmed Gamal Elghawy',
+    name: 'Ch. Ahmed Gamal Elghawy',
     subtitle: '10+ Years Experience',
     bio: 'Default instructor for existing GATE courses.',
   }))[0];

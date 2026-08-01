@@ -100,8 +100,8 @@
 
 .notification-trigger strong {
   position: absolute;
-  right: -4px;
-  top: -5px;
+  inset-inline-end: -4px;
+  inset-block-start: -5px;
   min-width: 20px;
   height: 20px;
   display: grid;
@@ -118,8 +118,8 @@
 
 .notification-popover {
   position: absolute;
-  right: 0;
-  top: calc(100% + 12px);
+  inset-inline-end: 0;
+  inset-block-start: calc(100% + 12px);
   width: min(380px, calc(100vw - 28px));
   max-height: min(620px, calc(100vh - 120px));
   overflow: hidden;

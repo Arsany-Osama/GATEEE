@@ -22,7 +22,7 @@ VALUES
     'Comprehensive training on industrial safety principles, risk assessment, and control measures.',
     '/images/osha-course-cover.png',
     2000.00,
-    'Eng. Ahmed Gamal Elghawy',
+    'Ch. Ahmed Gamal Elghawy',
     '10+ Years Experience',
     TRUE,
     1
@@ -34,7 +34,7 @@ VALUES
     'Essential safety practices for construction sites and project environments.',
     '/images/iosh-course-cover.png',
     2000.00,
-    'Eng. Ahmed Gamal Elghawy',
+    'Ch. Ahmed Gamal Elghawy',
     '10+ Years Experience',
     TRUE,
     2

@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useDeferredValue, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiError } from '../api/client';
 import { enrollInFreeCourse, getPaginatedPublicCourses, getPublicCourseCategories } from '../api/publicCoursesApi';
@@ -14,6 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import { useAppLanguage } from '../context/AppLanguageContext';
 
 const fallbackImage = '/images/cover of course.png';
+const homeLogo = '/images/home-logo.png';
 const PAGE_SIZE = 9;
 
 const renderCoursePrice = (course, t) => {
@@ -113,6 +114,7 @@ const Learning = () => {
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 0, hasNextPage: false, hasPrevPage: false });
   const [search, setSearch] = useState('');
+  const deferredSearch = useDeferredValue(search);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loadingCourses, setLoadingCourses] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
@@ -146,7 +148,7 @@ const Learning = () => {
         const result = await getPaginatedPublicCourses({
           page,
           limit: PAGE_SIZE,
-          search,
+          search: deferredSearch,
           categoryId: selectedCategory,
         });
 
@@ -173,7 +175,7 @@ const Learning = () => {
     return () => {
       active = false;
     };
-  }, [page, search, selectedCategory]);
+  }, [deferredSearch, page, selectedCategory]);
 
   const hasCategories = categories.length > 0;
   const categorySummary = useMemo(() => {
@@ -249,7 +251,9 @@ const Learning = () => {
         <div className="learning-hero-visual" aria-label="GATE course preview">
           <span className="learning-orbit orbit-a" aria-hidden="true" />
           <span className="learning-orbit orbit-b" aria-hidden="true" />
-          <div className="learning-mini-shield" aria-hidden="true">G</div>
+          <div className="learning-mini-shield" aria-hidden="true">
+            <img className="learning-mini-logo" src={homeLogo} alt="" aria-hidden="true" />
+          </div>
           <div className="learning-preview-stack">
             <article>
               <span>{t.common.search}</span>

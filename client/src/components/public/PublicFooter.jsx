@@ -59,9 +59,8 @@ const PublicFooter = ({ className = '' }) => {
   return (
     <footer className={`home-footer public-footer ${className}`.trim()}>
       <div className="footer-brand">
-        <Link className="home-brand" to="/" aria-label="GATE home">
-          <span className="brand-mark" aria-hidden="true">G</span>
-          <span className="brand-name">{platformName}</span>
+        <Link className="home-brand" to="/" aria-label={`${platformName} home`}>
+          <img className="brand-logo" src="/images/logo.png" alt="" aria-hidden="true" />
         </Link>
         <p>{t.footer.description}</p>
         <div className="footer-socials" aria-label="GATE social and contact channels">

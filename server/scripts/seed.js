@@ -34,7 +34,7 @@ const run = async () => {
       arabic_title: 'دورة تجريبية',
       description: 'A starter course for local development and QA.',
       price: 2000,
-      instructor_name: 'Eng. Ahmed Gamal Elghawy',
+      instructor_name: 'Ch. Ahmed Gamal Elghawy',
       instructor_subtitle: '10+ Years Experience',
       is_published: true,
       display_order: 1,

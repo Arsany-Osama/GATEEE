@@ -8,6 +8,7 @@ import {
 } from '../api/notificationsApi';
 import { getApiError } from '../api/client';
 import Button from './Button';
+import { useAppLanguage } from '../context/AppLanguageContext';
 
 const BellIcon = () => (
   <svg viewBox="0 0 28 25" aria-hidden="true" focusable="false">
@@ -26,6 +27,7 @@ const formatTime = (value) => {
 
 const NotificationBell = ({ compact = false }) => {
   const wrapperRef = useRef(null);
+  const { direction, t } = useAppLanguage();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -132,8 +134,8 @@ const NotificationBell = ({ compact = false }) => {
   };
 
   return (
-    <div className={`notification-bell ${compact ? 'notification-bell-compact' : ''}`} ref={wrapperRef}>
-      <button className="notification-trigger" type="button" onClick={toggleOpen} aria-label="Notifications">
+    <div className={`notification-bell ${compact ? 'notification-bell-compact' : ''}`} dir={direction} ref={wrapperRef}>
+      <button className="notification-trigger" type="button" onClick={toggleOpen} aria-label={t.notifications.title}>
         <span className="notification-icon"><BellIcon /></span>
         {unreadCount > 0 ? <strong>{unreadCount > 9 ? '9+' : unreadCount}</strong> : null}
       </button>
@@ -141,17 +143,21 @@ const NotificationBell = ({ compact = false }) => {
         <div className="notification-popover">
           <div className="notification-popover-head">
             <div>
-              <p className="eyebrow">Notifications</p>
-              <h2>{unreadNotifications.length ? `${unreadNotifications.length} unread` : 'All caught up'}</h2>
+              <p className="eyebrow">{t.notifications.title}</p>
+              <h2>
+                {unreadNotifications.length
+                  ? `${unreadNotifications.length} ${t.notifications.unread}`
+                  : t.notifications.allCaughtUp}
+              </h2>
             </div>
             <Button variant="ghost" size="sm" disabled={busy === 'read-all' || unreadCount === 0} onClick={readAll}>
-              {busy === 'read-all' ? 'Saving...' : 'Read all'}
+              {busy === 'read-all' ? t.notifications.saving : t.notifications.readAll}
             </Button>
           </div>
 
           {error ? <div className="notification-error">{error}</div> : null}
-          {loading ? <div className="notification-empty">Loading notifications...</div> : null}
-          {!loading && notifications.length === 0 ? <div className="notification-empty">No notifications yet.</div> : null}
+          {loading ? <div className="notification-empty">{t.notifications.loading}</div> : null}
+          {!loading && notifications.length === 0 ? <div className="notification-empty">{t.notifications.empty}</div> : null}
           {!loading && notifications.length > 0 ? (
             <div className="notification-list">
               {notifications.map((notification) => (
@@ -163,7 +169,7 @@ const NotificationBell = ({ compact = false }) => {
                   </div>
                   {!notification.read_at ? (
                     <button type="button" onClick={() => readOne(notification.id)} disabled={busy === `read-${notification.id}`}>
-                      {busy === `read-${notification.id}` ? 'Saving' : 'Read'}
+                      {busy === `read-${notification.id}` ? t.notifications.saving : t.notifications.read}
                     </button>
                   ) : null}
                 </article>
@@ -171,7 +177,7 @@ const NotificationBell = ({ compact = false }) => {
             </div>
           ) : null}
           <Link className="notification-page-link" to="/notifications" onClick={() => setOpen(false)}>
-            View all notifications
+            {t.notifications.viewAll}
           </Link>
         </div>
       ) : null}

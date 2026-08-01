@@ -37,7 +37,7 @@ DELIMITER ;
 
 CALL add_column_if_missing('courses', 'arabic_title', 'VARCHAR(255) NULL');
 CALL add_column_if_missing('courses', 'price', 'DECIMAL(10,2) NOT NULL DEFAULT 2000.00');
-CALL add_column_if_missing('courses', 'instructor_name', 'VARCHAR(255) NOT NULL DEFAULT ''Eng. Ahmed Gamal Elghawy''');
+CALL add_column_if_missing('courses', 'instructor_name', 'VARCHAR(255) NOT NULL DEFAULT ''Ch. Ahmed Gamal Elghawy''');
 CALL add_column_if_missing('courses', 'instructor_subtitle', 'VARCHAR(255) NOT NULL DEFAULT ''10+ Years Experience''');
 CALL add_column_if_missing('courses', 'is_published', 'BOOLEAN NOT NULL DEFAULT TRUE');
 CALL add_column_if_missing('courses', 'display_order', 'INT NOT NULL DEFAULT 0');

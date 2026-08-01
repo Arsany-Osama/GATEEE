@@ -21,6 +21,7 @@ import ErrorMessage from '../../components/ErrorMessage';
 import Input from '../../components/Input';
 import Loader from '../../components/Loader';
 import PageBackLink from '../../components/PageBackLink';
+import { useAdminLanguage } from '../../context/AdminLanguageContext';
 
 const fallbackImage = '/images/cover of course.png';
 
@@ -31,8 +32,8 @@ const blankCourse = {
   thumbnail_url: '',
   thumbnail_public_id: '',
   category_id: '',
-  instructor_id: '',
-  instructor_name: 'Eng. Ahmed Gamal Elghawy',
+  instructor_id: '', Ch.
+    instructor_name: 'Eng. Ahmed Gamal Elghawy',
   instructor_subtitle: '10+ Years Experience',
   price: '2000',
   discount_price: '',
@@ -42,11 +43,220 @@ const blankCourse = {
 };
 
 const imageChoices = [
-  { label: 'OSHA course cover', value: '/images/osha-course-cover.png' },
-  { label: 'IOSH course cover', value: '/images/iosh-course-cover.png' },
-  { label: 'General safety cover', value: '/images/cover of course.png' },
-  { label: 'Industrial safety background', value: '/images/safety-industrial-bg.png' },
+  { arLabel: 'غلاف كورس OSHA', enLabel: 'OSHA course cover', value: '/images/osha-course-cover.png' },
+  { arLabel: 'غلاف كورس IOSH', enLabel: 'IOSH course cover', value: '/images/iosh-course-cover.png' },
+  { arLabel: 'غلاف عام للسلامة', enLabel: 'General safety cover', value: '/images/cover of course.png' },
+  { arLabel: 'خلفية السلامة الصناعية', enLabel: 'Industrial safety background', value: '/images/safety-industrial-bg.png' },
 ];
+
+const copy = {
+  ar: {
+    back: 'العودة للوحة التحكم',
+    eyebrow: 'إدارة المحتوى',
+    title: 'الكورسات',
+    description: 'إدارة الكورسات الحالية، حالة النشر، الصورة، السعر، وبيانات العرض باستخدام نفس APIs الموجودة.',
+    addCourse: 'إضافة كورس',
+    searchLabel: 'بحث عن كورس',
+    searchPlaceholder: 'اسم الكورس أو المدرس',
+    categoryFilter: 'فلترة بالقسم',
+    statusFilter: 'فلترة بالحالة',
+    allCategories: 'كل الأقسام',
+    allStatuses: 'كل الحالات',
+    published: 'منشور',
+    draft: 'غير منشور',
+    noMatchTitle: 'لا توجد كورسات مطابقة',
+    noMatchMessage: 'جرّب تغيير البحث أو الفلاتر.',
+    columns: {
+      course: 'الكورس',
+      category: 'القسم',
+      instructor: 'المدرس',
+      price: 'السعر',
+      status: 'الحالة',
+      createdAt: 'تاريخ الإنشاء',
+      actions: 'الإجراءات',
+    },
+    deletedTitle: 'الكورسات المحذوفة',
+    deletedEmpty: 'لا توجد كورسات محذوفة.',
+    show: 'عرض',
+    edit: 'تعديل',
+    disable: 'تعطيل',
+    enable: 'تفعيل',
+    delete: 'حذف',
+    restoring: 'جاري...', Ch.
+      loading: 'جاري تحميل الكورسات...',
+    form: {
+      newCourse: 'كورس جديد',
+      editCourse: 'تعديل كورس',
+      addCourse: 'إضافة كورس',
+      cancel: 'إلغاء',
+      currentImage: 'الصورة الحالية محفوظة كرابط `thumbnail_url`. لا يوجد API حالي لرفع صورة كورس كملف، لذلك سيظل الرابط القديم كما هو إذا لم تغيّره.',
+      title: 'اسم الكورس',
+      arabicTitle: 'العنوان العربي / الوصف المختصر',
+      description: 'وصف الكورس',
+      imageUrl: 'رابط صورة الكورس',
+      imageUrlPlaceholder: '/images/osha-course-cover.png أو https://...',
+      chooseImage: 'اختيار صورة موجودة',
+      chooseImageOption: 'اختر صورة',
+      pricingType: 'نوع التسعير',
+      free: 'مجاني',
+      paid: 'مدفوع',
+      discounted: 'مدفوع مع خصم',
+      originalPrice: 'السعر الأصلي',
+      freeNote: 'الكورس المجاني لا يحتاج إلى سعر.',
+      discountPrice: 'سعر الخصم',
+      uploadImage: 'رفع صورة الكورس',
+      uploadingImage: 'جارٍ رفع الصورة...',
+      category: 'القسم',
+      noCategory: 'لا يوجد قسم',
+      instructorRecord: 'سجل المدرس',
+      manualInstructor: 'استخدام حقول المدرس اليدوية',
+      supportedFieldsTitle: 'حقول الكورس المدعومة حاليًا',
+      supportedFieldsText: 'الصورة كرابط، الاسم، العنوان العربي، الوصف، نوع التسعير، السعر الأصلي، سعر الخصم، المدرس، وصف المدرس، وحالة النشر.',
+      supportedFieldsNote: 'القسم، المستوى، المدة، ورفع صورة كملف غير موجودة في API الكورسات الحالي، لذلك لا يتم إرسال حقول غير مدعومة.',
+      teacher: 'المدرس',
+      teacherSubtitle: 'وصف المدرس / المستوى',
+      courseStatus: 'حالة الكورس',
+      save: 'حفظ التعديلات',
+      saving: 'جاري الحفظ...',
+    },
+    confirm: {
+      title: 'حذف الكورس نهائيًا',
+      message: 'سيتم حذف الكورس والمحتوى المرتبط به نهائيًا. لا يمكن التراجع عن هذا الإجراء.',
+      confirm: 'حذف نهائي',
+      deleting: 'جاري الحذف...',
+    },
+    messages: {
+      saved: 'تم حفظ تعديلات الكورس بنجاح.',
+      created: 'تم إنشاء الكورس بنجاح.',
+      deleted: 'تم نقل الكورس إلى المحذوفات.',
+      permanentlyDeleted: 'تم حذف الكورس نهائيًا.',
+      restored: 'تم استرجاع الكورس.',
+      disabled: 'تم تعطيل الكورس.',
+      enabled: 'تم تفعيل الكورس.',
+      orderSaved: 'تم حفظ ترتيب الكورسات بنجاح.',
+      imageUploaded: 'تم رفع صورة الكورس. احفظ الكورس للاحتفاظ بها.',
+    },
+    errors: {
+      load: 'تعذر تحميل الكورسات.',
+      save: 'تعذر حفظ الكورس.',
+      status: 'تعذر تحديث حالة الكورس.',
+      delete: 'تعذر حذف الكورس.',
+      restore: 'تعذر استرجاع الكورس.',
+      permanent: 'تعذر حذف الكورس نهائيًا.',
+      titleRequired: 'اسم الكورس مطلوب.',
+      paidPrice: 'سعر الكورس المدفوع يجب أن يكون رقمًا موجبًا.',
+      discountPrice: 'سعر الخصم يجب أن يكون رقمًا موجبًا.',
+      discountLower: 'سعر الخصم يجب أن يكون أقل من السعر الأصلي.',
+      invalidImage: 'يجب أن تكون صورة الكورس JPG أو PNG أو WEBP أو GIF.',
+      imageSize: 'يجب ألا يتجاوز حجم صورة الكورس 5 ميجابايت.',
+      upload: 'تعذر رفع صورة الكورس.',
+      uploadError: 'تعذر رفع صورة الكورس.',
+    },
+  },
+  en: {
+    back: 'Back to Dashboard',
+    eyebrow: 'Content management',
+    title: 'Courses',
+    description: 'Manage active courses, publishing state, images, pricing, and display metadata with the same APIs already in use.',
+    addCourse: 'Add Course',
+    searchLabel: 'Search courses',
+    searchPlaceholder: 'Course name or instructor',
+    categoryFilter: 'Filter by category',
+    statusFilter: 'Filter by status',
+    allCategories: 'All categories',
+    allStatuses: 'All statuses',
+    published: 'Published',
+    draft: 'Draft',
+    noMatchTitle: 'No matching courses',
+    noMatchMessage: 'Try changing the search or filters.',
+    columns: {
+      course: 'Course',
+      category: 'Category',
+      instructor: 'Instructor',
+      price: 'Price',
+      status: 'Status',
+      createdAt: 'Created at',
+      actions: 'Actions',
+    },
+    deletedTitle: 'Deleted courses',
+    deletedEmpty: 'No deleted courses.',
+    show: 'Open',
+    edit: 'Edit',
+    disable: 'Disable',
+    enable: 'Enable',
+    delete: 'Delete',
+    restoring: 'Working...',
+    loading: 'Loading courses...',
+    form: {
+      newCourse: 'New course',
+      editCourse: 'Edit course',
+      addCourse: 'Add course',
+      cancel: 'Cancel',
+      currentImage: 'The current image is stored as `thumbnail_url`. There is no file upload API for course images yet, so the existing link stays in place unless you change it.',
+      title: 'Course name',
+      arabicTitle: 'Arabic title / short description',
+      description: 'Course description',
+      imageUrl: 'Course image URL',
+      imageUrlPlaceholder: '/images/osha-course-cover.png or https://...',
+      chooseImage: 'Choose an existing image',
+      chooseImageOption: 'Choose image',
+      pricingType: 'Pricing type',
+      free: 'Free',
+      paid: 'Paid',
+      discounted: 'Paid with discount',
+      originalPrice: 'Original price',
+      freeNote: 'Free courses do not need a price.',
+      discountPrice: 'Discount price',
+      uploadImage: 'Upload course image',
+      uploadingImage: 'Uploading image...',
+      category: 'Category',
+      noCategory: 'No category',
+      instructorRecord: 'Instructor record',
+      manualInstructor: 'Use manual instructor fields',
+      supportedFieldsTitle: 'Supported course fields',
+      supportedFieldsText: 'Image URL, name, Arabic title, description, pricing type, original price, discount price, instructor, instructor subtitle, and publishing state.',
+      supportedFieldsNote: 'Category, level, duration, and file uploads are not exposed by the current course API, so unsupported fields are not sent.',
+      teacher: 'Instructor',
+      teacherSubtitle: 'Instructor subtitle / level',
+      courseStatus: 'Course status',
+      save: 'Save changes',
+      saving: 'Saving...',
+    },
+    confirm: {
+      title: 'Delete course permanently',
+      message: 'This will permanently delete the course and all related content. This action cannot be undone.',
+      confirm: 'Delete permanently',
+      deleting: 'Deleting...',
+    },
+    messages: {
+      saved: 'Course changes saved successfully.',
+      created: 'Course created successfully.',
+      deleted: 'Course moved to deleted items.',
+      permanentlyDeleted: 'Course deleted permanently.',
+      restored: 'Course restored.',
+      disabled: 'Course disabled.',
+      enabled: 'Course enabled.',
+      orderSaved: 'Course order saved successfully.',
+      imageUploaded: 'Course image uploaded. Save the course to keep it.',
+    },
+    errors: {
+      load: 'Could not load courses.',
+      save: 'Could not save the course.',
+      status: 'Could not update course status.',
+      delete: 'Could not delete the course.',
+      restore: 'Could not restore the course.',
+      permanent: 'Could not delete the course permanently.',
+      titleRequired: 'Course name is required.',
+      paidPrice: 'Paid course price must be a positive number.',
+      discountPrice: 'Discount price must be a positive number.',
+      discountLower: 'Discount price must be lower than the original price.',
+      invalidImage: 'Course image must be JPG, PNG, WEBP, or GIF.',
+      imageSize: 'Course image must be 5 MB or smaller.',
+      upload: 'Could not upload course image.',
+      uploadError: 'Could not upload course image.',
+    },
+  },
+};
 
 const formatDate = (value) => {
   if (!value) return 'غير متاح';
@@ -56,11 +266,19 @@ const formatDate = (value) => {
 
 const isPublished = (course) => !(course?.is_published === false || course?.is_published === 0 || course?.is_published === '0');
 const getCourseStatus = (course) => (isPublished(course) ? 'published' : 'draft');
-const getCourseTitle = (course) => course?.title || course?.arabic_title || 'كورس بدون اسم';
-const getCourseCategory = (course) => course?.category || course?.category_name || course?.section || course?.section_name || 'غير مصنف';
-const getPricingType = (course) => course?.pricing_type || 'paid';
+const getCourseTitle = (course, language = 'ar') => course?.title || course?.arabic_title || (language === 'ar' ? 'كورس بدون اسم' : 'Untitled course');
+const getCourseCategory = (course, language = 'ar') => course?.category || course?.category_name || course?.section || course?.section_name || (language === 'ar' ? 'غير مصنف' : 'Uncategorized');
+const getPricingType = (course) => {
+  const pricingType = String(course?.pricing_type || '').toLowerCase().trim();
+  if (pricingType === 'free' || pricingType === 'paid' || pricingType === 'discounted') return pricingType;
+  const price = Number(course?.price || 0);
+  const discountPrice = Number(course?.discount_price);
+  if (Number.isFinite(discountPrice) && discountPrice > 0 && discountPrice < price) return 'discounted';
+  if (price <= 0) return 'free';
+  return 'paid';
+};
 const isFreeCourse = (course) => getPricingType(course) === 'free' || Number(course?.price || 0) <= 0;
-const hasCourseDiscount = (course) => getPricingType(course) === 'discounted' && course?.discount_price !== null && course?.discount_price !== undefined && String(course.discount_price) !== '';
+const hasCourseDiscount = (course) => getPricingType(course) === 'discounted' && Number(course?.discount_price) > 0;
 const sortCoursesByOrder = (items) => [...items].sort((left, right) => {
   const leftOrder = Number(left?.display_order ?? 0);
   const rightOrder = Number(right?.display_order ?? 0);
@@ -109,6 +327,7 @@ const buildPayload = (form) => ({
 });
 
 const CoursesPage = () => {
+  const { language } = useAdminLanguage();
   const [searchParams] = useSearchParams();
   const [courses, setCourses] = useState([]);
   const [deleted, setDeleted] = useState([]);
@@ -129,6 +348,7 @@ const CoursesPage = () => {
   const [draggedCourseId, setDraggedCourseId] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const text = copy[language] || copy.ar;
 
   const load = async () => {
     setLoading(true);
@@ -145,7 +365,7 @@ const CoursesPage = () => {
       setCategories(Array.isArray(categoryRows) ? categoryRows : []);
       setInstructors(Array.isArray(instructorRows) ? instructorRows : []);
     } catch (err) {
-      setError(getApiError(err, 'تعذر تحميل الكورسات.'));
+      setError(getApiError(err, text.errors.load));
     } finally {
       setLoading(false);
     }
@@ -169,7 +389,7 @@ const CoursesPage = () => {
         setCategories(Array.isArray(categoryRows) ? categoryRows : []);
         setInstructors(Array.isArray(instructorRows) ? instructorRows : []);
       } catch (err) {
-        if (active) setError(getApiError(err, 'تعذر تحميل الكورسات.'));
+        if (active) setError(getApiError(err, text.errors.load));
       } finally {
         if (active) setLoading(false);
       }
@@ -186,15 +406,15 @@ const CoursesPage = () => {
   const orderedCourses = useMemo(() => sortCoursesByOrder(courses), [courses]);
 
   const categoryFilters = useMemo(() => {
-    const values = orderedCourses.map(getCourseCategory).filter(Boolean);
+    const values = orderedCourses.map((course) => getCourseCategory(course, language)).filter(Boolean);
     return [...new Set(values)];
-  }, [orderedCourses]);
+  }, [language, orderedCourses]);
 
   const filteredCourses = useMemo(() => {
     const term = search.trim().toLowerCase();
     return orderedCourses.filter((course) => {
       const status = getCourseStatus(course);
-      const category = getCourseCategory(course);
+      const category = getCourseCategory(course, language);
       const searchable = [
         course.title,
         course.arabic_title,
@@ -208,7 +428,7 @@ const CoursesPage = () => {
         && (categoryFilter === 'all' || category === categoryFilter)
         && (statusFilter === 'all' || status === statusFilter);
     });
-  }, [categoryFilter, orderedCourses, search, statusFilter]);
+  }, [categoryFilter, language, orderedCourses, search, statusFilter]);
 
   const persistCourseOrder = async (nextCourses) => {
     setError('');
@@ -219,9 +439,9 @@ const CoursesPage = () => {
         display_order: index,
       })));
       setCourses(nextCourses.map((course, index) => ({ ...course, display_order: index })));
-      setMessage('تم حفظ ترتيب الكورسات بنجاح.');
+      setMessage(text.messages.orderSaved);
     } catch (err) {
-      setError(getApiError(err, 'تعذر حفظ ترتيب الكورسات.'));
+      setError(getApiError(err, text.errors.save));
       await load();
     } finally {
       setDraggedCourseId('');
@@ -252,11 +472,11 @@ const CoursesPage = () => {
   const handleImageUpload = async (file) => {
     if (!file) return;
     if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
-      setError('Course image must be JPG, PNG, WEBP, or GIF.');
+      setError(text.errors.invalidImage);
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('Course image must be 5 MB or smaller.');
+      setError(text.errors.imageSize);
       return;
     }
     setUploadingImage(true);
@@ -268,9 +488,9 @@ const CoursesPage = () => {
         thumbnail_url: uploaded.url || '',
         thumbnail_public_id: uploaded.public_id || '',
       }));
-      setMessage('Course image uploaded. Save the course to keep it.');
+      setMessage(text.messages.imageUploaded);
     } catch (err) {
-      setError(getApiError(err, 'Could not upload course image.'));
+      setError(getApiError(err, text.errors.upload));
     } finally {
       setUploadingImage(false);
     }
@@ -302,22 +522,22 @@ const CoursesPage = () => {
   const saveCourse = async (event) => {
     event.preventDefault();
     if (!form.title.trim()) {
-      setError('اسم الكورس مطلوب.');
+      setError(text.errors.titleRequired);
       return;
     }
     const price = Number(form.price);
     if (form.pricing_type !== 'free' && (!Number.isFinite(price) || price <= 0)) {
-      setError('سعر الكورس المدفوع يجب أن يكون رقمًا موجبًا.');
+      setError(text.errors.paidPrice);
       return;
     }
     if (form.pricing_type === 'discounted') {
       const discountPrice = Number(form.discount_price);
       if (!Number.isFinite(discountPrice) || discountPrice <= 0) {
-        setError('سعر الخصم يجب أن يكون رقمًا موجبًا.');
+        setError(text.errors.discountPrice);
         return;
       }
       if (discountPrice >= price) {
-        setError('سعر الخصم يجب أن يكون أقل من السعر الأصلي.');
+        setError(text.errors.discountLower);
         return;
       }
     }
@@ -329,15 +549,15 @@ const CoursesPage = () => {
       const payload = buildPayload(form);
       if (panelMode === 'edit' && editingCourse?.id) {
         await updateCourse(editingCourse.id, payload);
-        setMessage('تم حفظ تعديلات الكورس بنجاح.');
+        setMessage(text.messages.saved);
       } else {
         await createCourse(payload);
-        setMessage('تم إنشاء الكورس بنجاح.');
+        setMessage(text.messages.created);
       }
       await load();
       closePanel();
     } catch (err) {
-      setError(getApiError(err, 'تعذر حفظ الكورس.'));
+      setError(getApiError(err, text.errors.save));
     } finally {
       setSaving(false);
     }
@@ -352,10 +572,10 @@ const CoursesPage = () => {
         ...buildPayload(toForm(course)),
         is_published: !isPublished(course),
       });
-      setMessage(isPublished(course) ? 'تم تعطيل الكورس.' : 'تم تفعيل الكورس.');
+      setMessage(isPublished(course) ? text.messages.disabled : text.messages.enabled);
       await load();
     } catch (err) {
-      setError(getApiError(err, 'تعذر تحديث حالة الكورس.'));
+      setError(getApiError(err, text.errors.status));
     } finally {
       setBusyId('');
     }
@@ -367,10 +587,10 @@ const CoursesPage = () => {
     setMessage('');
     try {
       await deleteCourse(id);
-      setMessage('تم نقل الكورس إلى المحذوفات.');
+      setMessage(text.messages.deleted);
       await load();
     } catch (err) {
-      setError(getApiError(err, 'تعذر حذف الكورس.'));
+      setError(getApiError(err, text.errors.delete));
     } finally {
       setBusyId('');
     }
@@ -382,10 +602,10 @@ const CoursesPage = () => {
     setMessage('');
     try {
       await restoreCourse(id);
-      setMessage('تم استرجاع الكورس.');
+      setMessage(text.messages.restored);
       await load();
     } catch (err) {
-      setError(getApiError(err, 'تعذر استرجاع الكورس.'));
+      setError(getApiError(err, text.errors.restore));
     } finally {
       setBusyId('');
     }
@@ -397,11 +617,11 @@ const CoursesPage = () => {
     setMessage('');
     try {
       await permanentlyDeleteCourse(confirmId);
-      setMessage('تم حذف الكورس نهائيًا.');
+      setMessage(text.messages.permanentlyDeleted);
       setConfirmId(null);
       await load();
     } catch (err) {
-      setError(getApiError(err, 'تعذر حذف الكورس نهائيًا.'));
+      setError(getApiError(err, text.errors.permanent));
     } finally {
       setBusyId('');
     }
@@ -409,15 +629,15 @@ const CoursesPage = () => {
 
   return (
     <main className="admin-page admin-courses-page">
-      <div className="admin-page-toolbar"><PageBackLink to="/admin">العودة للوحة التحكم</PageBackLink></div>
+      <div className="admin-page-toolbar"><PageBackLink to="/admin">{text.back}</PageBackLink></div>
 
       <section className="page-head admin-courses-head">
         <div>
-          <p className="eyebrow">إدارة المحتوى</p>
-          <h1>الكورسات</h1>
-          <p>إدارة الكورسات الحالية، حالة النشر، الصورة، السعر، وبيانات العرض باستخدام نفس APIs الموجودة.</p>
+          <p className="eyebrow">{text.eyebrow}</p>
+          <h1>{text.title}</h1>
+          <p>{text.description}</p>
         </div>
-        <Button onClick={openCreatePanel}>إضافة كورس</Button>
+        <Button onClick={openCreatePanel}>{text.addCourse}</Button>
       </section>
 
       <ErrorMessage message={error} />
@@ -425,44 +645,44 @@ const CoursesPage = () => {
 
       <section className="panel admin-course-filters" aria-label="فلاتر الكورسات">
         <Input
-          label="بحث عن كورس"
+          label={text.searchLabel}
           type="search"
           value={search}
           onChange={(event) => setSearchState({ source: searchParamValue, value: event.target.value })}
-          placeholder="اسم الكورس أو المدرس"
+          placeholder={text.searchPlaceholder}
         />
         <label className="field">
-          <span>فلترة بالقسم</span>
+          <span>{text.categoryFilter}</span>
           <select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
-            <option value="all">كل الأقسام</option>
+            <option value="all">{text.allCategories}</option>
             {categoryFilters.map((category) => <option key={category} value={category}>{category}</option>)}
           </select>
         </label>
         <label className="field">
-          <span>فلترة بالحالة</span>
+          <span>{text.statusFilter}</span>
           <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-            <option value="all">كل الحالات</option>
-            <option value="published">منشور</option>
-            <option value="draft">غير منشور</option>
+            <option value="all">{text.allStatuses}</option>
+            <option value="published">{text.published}</option>
+            <option value="draft">{text.draft}</option>
           </select>
         </label>
       </section>
 
-      {loading ? <Loader label="جاري تحميل الكورسات..." /> : null}
-      {!loading && filteredCourses.length === 0 ? <EmptyState title="لا توجد كورسات مطابقة" message="جرّب تغيير البحث أو الفلاتر." /> : null}
+      {loading ? <Loader label={text.loading} /> : null}
+      {!loading && filteredCourses.length === 0 ? <EmptyState title={text.noMatchTitle} message={text.noMatchMessage} /> : null}
 
       {!loading && filteredCourses.length > 0 ? (
         <section className="table-card admin-courses-table-card">
           <table className="admin-courses-table">
             <thead>
               <tr>
-                <th>الكورس</th>
-                <th>القسم</th>
-                <th>المدرس</th>
-                <th>السعر</th>
-                <th>الحالة</th>
-                <th>تاريخ الإنشاء</th>
-                <th>الإجراءات</th>
+                <th>{text.columns.course}</th>
+                <th>{text.columns.category}</th>
+                <th>{text.columns.instructor}</th>
+                <th>{text.columns.price}</th>
+                <th>{text.columns.status}</th>
+                <th>{text.columns.createdAt}</th>
+                <th>{text.columns.actions}</th>
               </tr>
             </thead>
             <tbody>
@@ -487,16 +707,16 @@ const CoursesPage = () => {
                           onError={(event) => { event.currentTarget.src = fallbackImage; }}
                         />
                         <div>
-                          <strong>{getCourseTitle(course)}</strong>
+                          <strong>{getCourseTitle(course, language)}</strong>
                           {course.arabic_title ? <span>{course.arabic_title}</span> : null}
                         </div>
                       </div>
                     </td>
-                    <td>{getCourseCategory(course)}</td>
-                    <td>{course.instructor_name || 'غير محدد'}</td>
+                    <td>{getCourseCategory(course, language)}</td>
+                    <td>{course.instructor_name || (language === 'ar' ? 'غير محدد' : 'Unspecified')}</td>
                     <td>
                       {isFreeCourse(course) ? (
-                        <span className="admin-course-price-pill is-free">مجاني</span>
+                        <span className="admin-course-price-pill is-free">{text.form.free}</span>
                       ) : hasCourseDiscount(course) ? (
                         <span className="admin-course-price-stack">
                           <del>{formatPrice(course.price)}</del>
@@ -506,17 +726,17 @@ const CoursesPage = () => {
                         <strong>{formatPrice(course.price)}</strong>
                       )}
                     </td>
-                    <td><Badge tone={published ? 'green' : 'amber'}>{published ? 'منشور' : 'غير منشور'}</Badge></td>
+                    <td><Badge tone={published ? 'green' : 'amber'}>{published ? text.published : text.draft}</Badge></td>
                     <td>{formatDate(course.created_at)}</td>
                     <td>
                       <div className="table-actions">
-                        <Link className="btn btn-secondary btn-sm" to={`/admin/courses/${course.id}/edit`}>عرض</Link>
-                        <Button size="sm" variant="ghost" onClick={() => openEditPanel(course)}>تعديل</Button>
+                        <Link className="btn btn-secondary btn-sm" to={`/admin/courses/${course.id}/edit`}>{text.show}</Link>
+                        <Button size="sm" variant="ghost" onClick={() => openEditPanel(course)}>{text.edit}</Button>
                         <Button size="sm" variant={published ? 'ghost' : 'secondary'} disabled={busyId === `status-${course.id}`} onClick={() => toggleCourseStatus(course)}>
-                          {busyId === `status-${course.id}` ? 'جاري...' : published ? 'تعطيل' : 'تفعيل'}
+                          {busyId === `status-${course.id}` ? text.restoring : published ? text.disable : text.enable}
                         </Button>
                         <Button size="sm" variant="danger" disabled={busyId === `delete-${course.id}`} onClick={() => softDelete(course.id)}>
-                          {busyId === `delete-${course.id}` ? 'جاري...' : 'حذف'}
+                          {busyId === `delete-${course.id}` ? text.restoring : text.delete}
                         </Button>
                       </div>
                     </td>
@@ -529,20 +749,20 @@ const CoursesPage = () => {
       ) : null}
 
       <section className="table-card admin-deleted-courses">
-        <h2>الكورسات المحذوفة</h2>
-        {deleted.length === 0 ? <p className="muted">لا توجد كورسات محذوفة.</p> : (
+        <h2>{text.deletedTitle}</h2>
+        {deleted.length === 0 ? <p className="muted">{text.deletedEmpty}</p> : (
           <table>
-            <thead><tr><th>الكورس</th><th>تاريخ الحذف</th><th>الإجراءات</th></tr></thead>
+            <thead><tr><th>{text.columns.course}</th><th>{language === 'ar' ? 'تاريخ الحذف' : 'Deleted at'}</th><th>{text.columns.actions}</th></tr></thead>
             <tbody>
               {deleted.map((course) => (
                 <tr key={course.id}>
-                  <td>{getCourseTitle(course)}</td>
+                  <td>{getCourseTitle(course, language)}</td>
                   <td>{formatDate(course.deleted_at)}</td>
                   <td className="table-actions">
                     <Button size="sm" variant="ghost" disabled={busyId === `restore-${course.id}`} onClick={() => restore(course.id)}>
-                      {busyId === `restore-${course.id}` ? 'جاري...' : 'استرجاع'}
+                      {busyId === `restore-${course.id}` ? text.restoring : (language === 'ar' ? 'استرجاع' : 'Restore')}
                     </Button>
-                    <Button size="sm" variant="danger" onClick={() => setConfirmId(course.id)}>حذف نهائي</Button>
+                    <Button size="sm" variant="danger" onClick={() => setConfirmId(course.id)}>{language === 'ar' ? 'حذف نهائي' : 'Delete permanently'}</Button>
                   </td>
                 </tr>
               ))}
@@ -556,38 +776,38 @@ const CoursesPage = () => {
           <aside className="admin-course-sheet" role="dialog" aria-modal="true" aria-labelledby="course-sheet-title">
             <div className="admin-sheet-head">
               <div>
-                <p className="eyebrow">{panelMode === 'edit' ? `Course ID #${editingCourse?.id}` : 'كورس جديد'}</p>
-                <h2 id="course-sheet-title">{panelMode === 'edit' ? 'تعديل كورس' : 'إضافة كورس'}</h2>
+                <p className="eyebrow">{panelMode === 'edit' ? `${language === 'ar' ? 'كورس رقم' : 'Course ID'} #${editingCourse?.id}` : text.form.newCourse}</p>
+                <h2 id="course-sheet-title">{panelMode === 'edit' ? text.form.editCourse : text.form.addCourse}</h2>
               </div>
-              <Button variant="ghost" onClick={closePanel} disabled={saving}>إلغاء</Button>
+              <Button variant="ghost" onClick={closePanel} disabled={saving}>{text.form.cancel}</Button>
             </div>
 
             <form className="admin-course-sheet-form" onSubmit={saveCourse}>
               <div className="admin-course-current-image">
                 <img
                   src={form.thumbnail_url || fallbackImage}
-                  alt="صورة الكورس الحالية"
+                  alt={language === 'ar' ? 'صورة الكورس الحالية' : 'Current course image'}
                   onError={(event) => { event.currentTarget.src = fallbackImage; }}
                 />
-                <p>الصورة الحالية محفوظة كرابط `thumbnail_url`. لا يوجد API حالي لرفع صورة كورس كملف، لذلك سيظل الرابط القديم كما هو إذا لم تغيّره.</p>
+                <p>{text.form.currentImage}</p>
               </div>
 
-              <Input label="اسم الكورس" value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
-              <Input label="العنوان العربي / الوصف المختصر" value={form.arabic_title} onChange={(event) => setForm({ ...form, arabic_title: event.target.value })} />
+              <Input label={text.form.title} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
+              <Input label={text.form.arabicTitle} value={form.arabic_title} onChange={(event) => setForm({ ...form, arabic_title: event.target.value })} />
               <label className="field admin-field-wide">
-                <span>وصف الكورس</span>
+                <span>{text.form.description}</span>
                 <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} rows="4" />
               </label>
-              <Input label="رابط صورة الكورس" value={form.thumbnail_url} onChange={(event) => setForm({ ...form, thumbnail_url: event.target.value })} placeholder="/images/osha-course-cover.png أو https://..." />
+              <Input label={text.form.imageUrl} value={form.thumbnail_url} onChange={(event) => setForm({ ...form, thumbnail_url: event.target.value })} placeholder={text.form.imageUrlPlaceholder} />
               <label className="field">
-                <span>اختيار صورة موجودة</span>
+                <span>{text.form.chooseImage}</span>
                 <select value="" onChange={(event) => event.target.value && setForm({ ...form, thumbnail_url: event.target.value })}>
-                  <option value="">اختر صورة</option>
-                  {imageChoices.map((choice) => <option key={choice.value} value={choice.value}>{choice.label}</option>)}
+                  <option value="">{text.form.chooseImageOption}</option>
+                  {imageChoices.map((choice) => <option key={choice.value} value={choice.value}>{language === 'ar' ? choice.arLabel : choice.enLabel}</option>)}
                 </select>
               </label>
               <label className="field">
-                <span>نوع التسعير</span>
+                <span>{text.form.pricingType}</span>
                 <select
                   value={form.pricing_type}
                   onChange={(event) => setForm((current) => ({
@@ -597,14 +817,14 @@ const CoursesPage = () => {
                     discount_price: event.target.value === 'discounted' ? current.discount_price : '',
                   }))}
                 >
-                  <option value="free">مجاني</option>
-                  <option value="paid">مدفوع</option>
-                  <option value="discounted">مدفوع مع خصم</option>
+                  <option value="free">{text.form.free}</option>
+                  <option value="paid">{text.form.paid}</option>
+                  <option value="discounted">{text.form.discounted}</option>
                 </select>
               </label>
               {form.pricing_type !== 'free' ? (
                 <Input
-                  label="السعر الأصلي"
+                  label={text.form.originalPrice}
                   type="number"
                   min="0"
                   step="0.01"
@@ -612,11 +832,11 @@ const CoursesPage = () => {
                   onChange={(event) => setForm({ ...form, price: event.target.value })}
                 />
               ) : (
-                <div className="admin-course-free-note">الكورس المجاني لا يحتاج إلى سعر.</div>
+                <div className="admin-course-free-note">{text.form.freeNote}</div>
               )}
               {form.pricing_type === 'discounted' ? (
                 <Input
-                  label="سعر الخصم"
+                  label={text.form.discountPrice}
                   type="number"
                   min="0"
                   step="0.01"
@@ -625,7 +845,7 @@ const CoursesPage = () => {
                 />
               ) : null}
               <label className="btn btn-secondary file-btn admin-upload-button">
-                {uploadingImage ? 'Uploading image...' : 'Upload course image'}
+                {uploadingImage ? text.form.uploadingImage : text.form.uploadImage}
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif"
@@ -634,14 +854,14 @@ const CoursesPage = () => {
                 />
               </label>
               <label className="field">
-                <span>Category</span>
+                <span>{text.form.category}</span>
                 <select value={form.category_id} onChange={(event) => setForm({ ...form, category_id: event.target.value })}>
-                  <option value="">No category</option>
-                  {categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}
+                  <option value="">{text.form.noCategory}</option>
+                  {categories.map((category) => <option key={category.id} value={category.id}>{language === 'ar' ? (category.arabic_name || category.name) : category.name}</option>)}
                 </select>
               </label>
               <label className="field">
-                <span>Instructor record</span>
+                <span>{text.form.instructorRecord}</span>
                 <select value={form.instructor_id} onChange={(event) => {
                   const selected = instructors.find((item) => String(item.id) === event.target.value);
                   setForm({
@@ -651,28 +871,28 @@ const CoursesPage = () => {
                     instructor_subtitle: selected?.subtitle || form.instructor_subtitle,
                   });
                 }}>
-                  <option value="">Use manual instructor fields</option>
-                  {instructors.map((instructor) => <option key={instructor.id} value={instructor.id}>{instructor.name}</option>)}
+                  <option value="">{text.form.manualInstructor}</option>
+                  {instructors.map((instructor) => <option key={instructor.id} value={instructor.id}>{language === 'ar' ? (instructor.arabic_name || instructor.name) : instructor.name}</option>)}
                 </select>
               </label>
               <div className="admin-field-wide admin-api-note">
-                <strong>حقول الكورس المدعومة حاليا</strong>
-                <p>الصورة كرابط، الاسم، العنوان العربي، الوصف، نوع التسعير، السعر الأصلي، سعر الخصم، المدرس، وصف المدرس، وحالة النشر.</p>
-                <p>القسم، المستوى، المدة، ورفع صورة كملف غير موجودة في API الكورسات الحالي، لذلك لا يتم إرسال حقول غير مدعومة.</p>
+                <strong>{text.form.supportedFieldsTitle}</strong>
+                <p>{text.form.supportedFieldsText}</p>
+                <p>{text.form.supportedFieldsNote}</p>
               </div>
-              <Input label="المدرس" value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
-              <Input label="وصف المدرس / المستوى" value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />
+              <Input label={text.form.teacher} value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
+              <Input label={text.form.teacherSubtitle} value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />
               <label className="field admin-checkbox-field">
-                <span>حالة الكورس</span>
+                <span>{text.form.courseStatus}</span>
                 <select value={form.is_published ? 'published' : 'draft'} onChange={(event) => setForm({ ...form, is_published: event.target.value === 'published' })}>
-                  <option value="published">منشور</option>
-                  <option value="draft">غير منشور</option>
+                  <option value="published">{text.published}</option>
+                  <option value="draft">{text.draft}</option>
                 </select>
               </label>
 
               <div className="admin-sheet-actions">
-                <Button type="submit" disabled={saving}>{saving ? 'جاري الحفظ...' : 'حفظ التعديلات'}</Button>
-                <Button variant="ghost" onClick={closePanel} disabled={saving}>إلغاء</Button>
+                <Button type="submit" disabled={saving}>{saving ? text.form.saving : text.form.save}</Button>
+                <Button variant="ghost" onClick={closePanel} disabled={saving}>{text.form.cancel}</Button>
               </div>
             </form>
           </aside>
@@ -681,10 +901,10 @@ const CoursesPage = () => {
 
       <ConfirmDialog
         open={Boolean(confirmId)}
-        title="حذف الكورس نهائيًا"
-        message="سيتم حذف الكورس والمحتوى المرتبط به نهائيًا. لا يمكن التراجع عن هذا الإجراء."
+        title={text.confirm.title}
+        message={text.confirm.message}
         danger
-        confirmLabel={busyId === `permanent-${confirmId}` ? 'جاري الحذف...' : 'حذف نهائي'}
+        confirmLabel={busyId === `permanent-${confirmId}` ? text.confirm.deleting : text.confirm.confirm}
         onCancel={() => setConfirmId(null)}
         onConfirm={permanentDelete}
       />
