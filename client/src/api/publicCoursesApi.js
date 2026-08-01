@@ -33,7 +33,7 @@ const buildPricingDetails = (course) => {
   const hasExplicitPricingType = Boolean(course.pricing_type);
   const hasDiscount = originalPrice > 0 && discountPrice !== null && discountPrice >= 0 && discountPrice < originalPrice;
   const pricingType = hasExplicitPricingType
-    ? normalizePricingType(course.pricing_type)
+    ? (normalizePricingType(course.pricing_type) === 'paid' && hasDiscount ? 'discounted' : normalizePricingType(course.pricing_type))
     : (originalPrice <= 0 ? 'free' : hasDiscount ? 'discounted' : 'paid');
   const isFree = pricingType === 'free' || (!hasExplicitPricingType && originalPrice <= 0);
   const displayPriceValue = isFree ? 0 : (hasDiscount ? discountPrice : originalPrice);

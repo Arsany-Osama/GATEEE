@@ -270,10 +270,12 @@ const getCourseTitle = (course, language = 'ar') => course?.title || course?.ara
 const getCourseCategory = (course, language = 'ar') => course?.category || course?.category_name || course?.section || course?.section_name || (language === 'ar' ? 'غير مصنف' : 'Uncategorized');
 const getPricingType = (course) => {
   const pricingType = String(course?.pricing_type || '').toLowerCase().trim();
-  if (pricingType === 'free' || pricingType === 'paid' || pricingType === 'discounted') return pricingType;
   const price = Number(course?.price || 0);
   const discountPrice = Number(course?.discount_price);
-  if (Number.isFinite(discountPrice) && discountPrice > 0 && discountPrice < price) return 'discounted';
+  if (pricingType === 'free') return 'free';
+  if (pricingType === 'discounted') return 'discounted';
+  if (pricingType === 'paid' && Number.isFinite(discountPrice) && discountPrice > 0 && discountPrice < price) return 'discounted';
+  if (pricingType === 'paid') return 'paid';
   if (price <= 0) return 'free';
   return 'paid';
 };

@@ -1267,8 +1267,8 @@
 }
 
 .admin-shell .notification-trigger strong {
-  inset-inline-end: -4px;
-  inset-block-start: -5px;
+  inset-inline-end: auto;
+  inset-block-start: auto;
 }
 
 .admin-shell .notification-popover {

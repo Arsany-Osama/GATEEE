@@ -11,7 +11,7 @@ const settingSections = [
     title: 'Payment Settings',
     eyebrow: 'Manual payment',
     description: 'Control the values students see while submitting manual payment requests.',
-    keys: ['instapay_number', 'instapay_name', 'payment_instructions_title', 'payment_instructions_body', 'payment_receipt_help_text'],
+    keys: ['vodafone_cash_number', 'instapay_number', 'instapay_name', 'payment_instructions_title', 'payment_instructions_body', 'payment_receipt_help_text'],
   },
   {
     title: 'Contact Settings',

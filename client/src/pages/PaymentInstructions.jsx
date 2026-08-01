@@ -22,10 +22,11 @@ const maxReceiptSize = 5 * 1024 * 1024;
 const fallbackPaymentSettings = {
   whatsapp_number: contactInfo.whatsappNumber,
   whatsapp_display: contactInfo.phoneDisplay,
-  instapay_number: contactInfo.instapayDisplay,
-  instapay_name: 'GATE',
+  vodafone_cash_number: '01065200731',
+  instapay_number: '01224378275',
+  instapay_name: 'Instapay',
   payment_instructions_title: 'Complete Manual Course Payment',
-  payment_instructions_body: 'Transfer the course amount using InstaPay, then send the payment screenshot to the instructor so your course access can be reviewed and activated manually.',
+  payment_instructions_body: 'Transfer the course amount using Vodafone Cash or InstaPay, then send the payment screenshot to the instructor so your course access can be reviewed and activated manually.',
   payment_success_note: 'Course access is not activated automatically. The instructor/admin will review the payment screenshot and manually open the course for your account.',
   payment_receipt_help_text: 'JPG, PNG, or WebP up to 5MB.',
 };
@@ -161,10 +162,11 @@ const PaymentInstructions = () => {
   }, [course, publicSettings.whatsapp_number]);
 
   const contactDisplay = publicSettings.whatsapp_display || publicSettings.whatsapp_number || contactInfo.phoneDisplay;
-  const instapayDisplay = publicSettings.instapay_number || contactInfo.instapayDisplay;
-  const instapayName = publicSettings.instapay_name || 'GATE';
+  const vodafoneCashDisplay = publicSettings.vodafone_cash_number || '01065200731';
+  const instapayDisplay = publicSettings.instapay_number || '01224378275';
+  const instapayName = publicSettings.instapay_name || 'Instapay';
   const paymentSteps = [
-    `Transfer the course amount using InstaPay to ${instapayDisplay}.`,
+    `Transfer the course amount using Vodafone Cash to ${vodafoneCashDisplay} or InstaPay to ${instapayDisplay}.`,
     'Take a screenshot of the payment confirmation.',
     `Send the screenshot to admin on WhatsApp at ${contactDisplay}.`,
     'Your request will be reviewed.',
@@ -347,14 +349,14 @@ const PaymentInstructions = () => {
         <article className="payment-details-card">
           <div>
             <p className="eyebrow">Payment details</p>
-            <h2>Transfer with InstaPay</h2>
+            <h2>Transfer with Vodafone Cash or InstaPay</h2>
           </div>
 
           <div className="payment-number-row">
-            <span>Contact number</span>
-            <strong>{contactDisplay}</strong>
-            <Button variant="ghost" onClick={() => copyValue('contact', contactDisplay)}>
-              {copied === 'contact' ? 'Copied' : 'Copy contact number'}
+            <span>Vodafone Cash</span>
+            <strong>{vodafoneCashDisplay}</strong>
+            <Button variant="ghost" onClick={() => copyValue('vodafone', vodafoneCashDisplay)}>
+              {copied === 'vodafone' ? 'Copied' : 'Copy number'}
             </Button>
           </div>
 
