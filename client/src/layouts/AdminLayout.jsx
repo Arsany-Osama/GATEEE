@@ -42,7 +42,7 @@ const AdminLayoutInner = () => {
           <Link className="admin-brand" to="/" aria-label="GATE home">
             <img className="brand-logo" src="/images/logo.png" alt="" aria-hidden="true" />
           </Link>
-          <div>
+          <div className="admin-brand-copy">
             <strong>{t.brandTitle}</strong>
             <span>{t.brandSubtitle}</span>
           </div>

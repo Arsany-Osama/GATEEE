@@ -68,17 +68,25 @@ const parseFiniteNumber = (value) => {
     return Number.isFinite(number) ? number : null;
 };
 
+const resolvePricingType = (requestedPricingType, priceInput, discountPriceInput) => {
+    if (requestedPricingType === 'free') return 'free';
+
+    const price = Number.isFinite(priceInput) ? priceInput : 2000;
+    const hasValidDiscount = Number.isFinite(discountPriceInput) && discountPriceInput > 0 && discountPriceInput < price;
+
+    if (hasValidDiscount || requestedPricingType === 'discounted') {
+        return 'discounted';
+    }
+
+    return 'paid';
+};
+
 const normalizeCoursePayload = (body, support = {}) => {
     const requestedPricingType = normalizePricingType(body.pricing_type);
     const priceInput = parseFiniteNumber(body.price);
     const discountPriceInput = parseFiniteNumber(body.discount_price);
     const price = requestedPricingType === 'free' ? 0 : (priceInput ?? 2000);
-    const hasValidDiscount = Number.isFinite(discountPriceInput) && discountPriceInput !== null && discountPriceInput > 0 && discountPriceInput < price;
-    const pricingType = requestedPricingType === 'free'
-        ? 'free'
-        : hasValidDiscount
-            ? 'discounted'
-            : requestedPricingType;
+    const pricingType = resolvePricingType(requestedPricingType, priceInput, discountPriceInput);
 
     if (!Number.isFinite(price) || price < 0) {
         throw new Error('Course price must be a valid non-negative number.');

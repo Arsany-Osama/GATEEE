@@ -294,6 +294,22 @@ const formatPrice = (value) => {
   return Number.isInteger(number) ? String(number) : number.toFixed(2);
 };
 
+const resolvePricingType = (form) => {
+  const requestedType = String(form?.pricing_type || '').toLowerCase().trim();
+  const price = Number(form?.price || 0);
+  const discountPrice = Number(form?.discount_price);
+  const hasValidDiscount = requestedType !== 'free'
+    && Number.isFinite(price)
+    && price > 0
+    && Number.isFinite(discountPrice)
+    && discountPrice > 0
+    && discountPrice < price;
+
+  if (requestedType === 'free') return 'free';
+  if (hasValidDiscount || requestedType === 'discounted') return 'discounted';
+  return 'paid';
+};
+
 const toForm = (course = {}) => ({
   title: course.title || '',
   arabic_title: course.arabic_title || '',
@@ -322,8 +338,8 @@ const buildPayload = (form) => ({
   instructor_name: form.instructor_name.trim(),
   instructor_subtitle: form.instructor_subtitle.trim(),
   price: Number(form.price),
-  discount_price: form.pricing_type === 'discounted' ? Number(form.discount_price) : null,
-  pricing_type: form.pricing_type,
+  discount_price: resolvePricingType(form) === 'discounted' ? Number(form.discount_price) : null,
+  pricing_type: resolvePricingType(form),
   is_published: Boolean(form.is_published),
   display_order: Number(form.display_order) || 0,
 });
@@ -528,11 +544,12 @@ const CoursesPage = () => {
       return;
     }
     const price = Number(form.price);
-    if (form.pricing_type !== 'free' && (!Number.isFinite(price) || price <= 0)) {
+    const pricingType = resolvePricingType(form);
+    if (pricingType !== 'free' && (!Number.isFinite(price) || price <= 0)) {
       setError(text.errors.paidPrice);
       return;
     }
-    if (form.pricing_type === 'discounted') {
+    if (pricingType === 'discounted') {
       const discountPrice = Number(form.discount_price);
       if (!Number.isFinite(discountPrice) || discountPrice <= 0) {
         setError(text.errors.discountPrice);
