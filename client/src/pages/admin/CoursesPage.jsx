@@ -294,6 +294,26 @@ const formatPrice = (value) => {
   return Number.isInteger(number) ? String(number) : number.toFixed(2);
 };
 
+const readCourseFormValues = (formElement) => {
+  const formData = new FormData(formElement);
+  return {
+    title: String(formData.get('title') || ''),
+    arabic_title: String(formData.get('arabic_title') || ''),
+    description: String(formData.get('description') || ''),
+    thumbnail_url: String(formData.get('thumbnail_url') || ''),
+    thumbnail_public_id: String(formData.get('thumbnail_public_id') || ''),
+    category_id: String(formData.get('category_id') || ''),
+    instructor_id: String(formData.get('instructor_id') || ''),
+    instructor_name: String(formData.get('instructor_name') || ''),
+    instructor_subtitle: String(formData.get('instructor_subtitle') || ''),
+    price: String(formData.get('price') || ''),
+    discount_price: String(formData.get('discount_price') || ''),
+    pricing_type: String(formData.get('pricing_type') || 'paid'),
+    is_published: String(formData.get('is_published') || 'published') === 'published',
+    display_order: String(formData.get('display_order') || '0'),
+  };
+};
+
 const resolvePricingType = (form) => {
   const requestedType = String(form?.pricing_type || '').toLowerCase().trim();
   const price = Number(form?.price || 0);
@@ -539,18 +559,19 @@ const CoursesPage = () => {
 
   const saveCourse = async (event) => {
     event.preventDefault();
-    if (!form.title.trim()) {
+    const submitted = readCourseFormValues(event.currentTarget);
+    if (!submitted.title.trim()) {
       setError(text.errors.titleRequired);
       return;
     }
-    const price = Number(form.price);
-    const pricingType = resolvePricingType(form);
+    const price = Number(submitted.price);
+    const pricingType = resolvePricingType(submitted);
     if (pricingType !== 'free' && (!Number.isFinite(price) || price <= 0)) {
       setError(text.errors.paidPrice);
       return;
     }
     if (pricingType === 'discounted') {
-      const discountPrice = Number(form.discount_price);
+      const discountPrice = Number(submitted.discount_price);
       if (!Number.isFinite(discountPrice) || discountPrice <= 0) {
         setError(text.errors.discountPrice);
         return;
@@ -565,7 +586,7 @@ const CoursesPage = () => {
     setError('');
     setMessage('');
     try {
-      const payload = buildPayload(form);
+      const payload = buildPayload(submitted);
       if (panelMode === 'edit' && editingCourse?.id) {
         await updateCourse(editingCourse.id, payload);
         setMessage(text.messages.saved);
@@ -811,13 +832,15 @@ const CoursesPage = () => {
                 <p>{text.form.currentImage}</p>
               </div>
 
-              <Input label={text.form.title} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
-              <Input label={text.form.arabicTitle} value={form.arabic_title} onChange={(event) => setForm({ ...form, arabic_title: event.target.value })} />
+              <Input name="title" label={text.form.title} value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
+              <Input name="arabic_title" label={text.form.arabicTitle} value={form.arabic_title} onChange={(event) => setForm({ ...form, arabic_title: event.target.value })} />
               <label className="field admin-field-wide">
                 <span>{text.form.description}</span>
-                <textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} rows="4" />
+                <textarea name="description" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} rows="4" />
               </label>
-              <Input label={text.form.imageUrl} value={form.thumbnail_url} onChange={(event) => setForm({ ...form, thumbnail_url: event.target.value })} placeholder={text.form.imageUrlPlaceholder} />
+              <Input name="thumbnail_url" label={text.form.imageUrl} value={form.thumbnail_url} onChange={(event) => setForm({ ...form, thumbnail_url: event.target.value })} placeholder={text.form.imageUrlPlaceholder} />
+              <input type="hidden" name="thumbnail_public_id" value={form.thumbnail_public_id} />
+              <input type="hidden" name="display_order" value={form.display_order} />
               <label className="field">
                 <span>{text.form.chooseImage}</span>
                 <select value="" onChange={(event) => event.target.value && setForm({ ...form, thumbnail_url: event.target.value })}>
@@ -828,6 +851,7 @@ const CoursesPage = () => {
               <label className="field">
                 <span>{text.form.pricingType}</span>
                 <select
+                  name="pricing_type"
                   value={form.pricing_type}
                   onChange={(event) => setForm((current) => ({
                     ...current,
@@ -843,6 +867,7 @@ const CoursesPage = () => {
               </label>
               {form.pricing_type !== 'free' ? (
                 <Input
+                  name="price"
                   label={text.form.originalPrice}
                   type="number"
                   min="0"
@@ -855,6 +880,7 @@ const CoursesPage = () => {
               )}
               {form.pricing_type === 'discounted' ? (
                 <Input
+                  name="discount_price"
                   label={text.form.discountPrice}
                   type="number"
                   min="0"
@@ -874,14 +900,14 @@ const CoursesPage = () => {
               </label>
               <label className="field">
                 <span>{text.form.category}</span>
-                <select value={form.category_id} onChange={(event) => setForm({ ...form, category_id: event.target.value })}>
+                <select name="category_id" value={form.category_id} onChange={(event) => setForm({ ...form, category_id: event.target.value })}>
                   <option value="">{text.form.noCategory}</option>
                   {categories.map((category) => <option key={category.id} value={category.id}>{language === 'ar' ? (category.arabic_name || category.name) : category.name}</option>)}
                 </select>
               </label>
               <label className="field">
                 <span>{text.form.instructorRecord}</span>
-                <select value={form.instructor_id} onChange={(event) => {
+                <select name="instructor_id" value={form.instructor_id} onChange={(event) => {
                   const selected = instructors.find((item) => String(item.id) === event.target.value);
                   setForm({
                     ...form,
@@ -899,11 +925,11 @@ const CoursesPage = () => {
                 <p>{text.form.supportedFieldsText}</p>
                 <p>{text.form.supportedFieldsNote}</p>
               </div>
-              <Input label={text.form.teacher} value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
-              <Input label={text.form.teacherSubtitle} value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />
+              <Input name="instructor_name" label={text.form.teacher} value={form.instructor_name} onChange={(event) => setForm({ ...form, instructor_name: event.target.value })} />
+              <Input name="instructor_subtitle" label={text.form.teacherSubtitle} value={form.instructor_subtitle} onChange={(event) => setForm({ ...form, instructor_subtitle: event.target.value })} />
               <label className="field admin-checkbox-field">
                 <span>{text.form.courseStatus}</span>
-                <select value={form.is_published ? 'published' : 'draft'} onChange={(event) => setForm({ ...form, is_published: event.target.value === 'published' })}>
+                <select name="is_published" value={form.is_published ? 'published' : 'draft'} onChange={(event) => setForm({ ...form, is_published: event.target.value === 'published' })}>
                   <option value="published">{text.published}</option>
                   <option value="draft">{text.draft}</option>
                 </select>
