@@ -10,6 +10,13 @@ import { getApiError } from '../api/client';
 import Button from './Button';
 import { useAppLanguage } from '../context/AppLanguageContext';
 
+const BellIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M12 3.5a4.5 4.5 0 0 0-4.5 4.5V10c0 1.2-.3 2.3-.8 3.3l-.7 1.2c-.4.7.1 1.5.9 1.5h10.2c.8 0 1.3-.8.9-1.5l-.7-1.2c-.5-1-.8-2.1-.8-3.3V8A4.5 4.5 0 0 0 12 3.5Z" />
+    <path d="M9.5 17.5a2.5 2.5 0 0 0 5 0" />
+  </svg>
+);
+
 const formatTime = (value) => {
   if (!value) return '';
   const date = new Date(value);
@@ -127,7 +134,7 @@ const NotificationBell = ({ compact = false }) => {
   return (
     <div className={`notification-bell ${compact ? 'notification-bell-compact' : ''}`} dir={direction} ref={wrapperRef}>
       <button className="notification-trigger" type="button" onClick={toggleOpen} aria-label={t.notifications.title}>
-        <span className="notification-trigger-label">{t.notifications.title}</span>
+        <span className="notification-trigger-icon" aria-hidden="true"><BellIcon /></span>
         {unreadCount > 0 ? <strong>{unreadCount > 9 ? '9+' : unreadCount}</strong> : null}
       </button>
       {open ? (

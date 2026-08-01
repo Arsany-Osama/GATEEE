@@ -29,39 +29,26 @@ const adminCourseFields = [
     'updated_at'
 ];
 
-let courseSchemaSupportPromise = null;
-let courseSchemaSupportCache = null;
-
 const courseSchemaSupport = async () => {
-    if (courseSchemaSupportCache) return courseSchemaSupportCache;
-    if (!courseSchemaSupportPromise) {
-        courseSchemaSupportPromise = Promise.all([
-            db.schema.hasTable('categories'),
-            db.schema.hasTable('instructors'),
-            db.schema.hasColumn('courses', 'thumbnail_public_id'),
-            db.schema.hasColumn('courses', 'category_id'),
-            db.schema.hasColumn('courses', 'instructor_id'),
-            db.schema.hasColumn('courses', 'pricing_type'),
-            db.schema.hasColumn('courses', 'discount_price')
-        ])
-            .then(([categoriesTable, instructorsTable, thumbnail_public_id, category_id, instructor_id, pricing_type, discount_price]) => {
-                courseSchemaSupportCache = {
-                    categoriesTable,
-                    instructorsTable,
-                    thumbnail_public_id,
-                    category_id,
-                    instructor_id,
-                    pricing_type,
-                    discount_price
-                };
-                return courseSchemaSupportCache;
-            })
-            .finally(() => {
-                courseSchemaSupportPromise = null;
-            });
-    }
+    const [categoriesTable, instructorsTable, thumbnail_public_id, category_id, instructor_id, pricing_type, discount_price] = await Promise.all([
+        db.schema.hasTable('categories'),
+        db.schema.hasTable('instructors'),
+        db.schema.hasColumn('courses', 'thumbnail_public_id'),
+        db.schema.hasColumn('courses', 'category_id'),
+        db.schema.hasColumn('courses', 'instructor_id'),
+        db.schema.hasColumn('courses', 'pricing_type'),
+        db.schema.hasColumn('courses', 'discount_price')
+    ]);
 
-    return courseSchemaSupportPromise;
+    return {
+        categoriesTable,
+        instructorsTable,
+        thumbnail_public_id,
+        category_id,
+        instructor_id,
+        pricing_type,
+        discount_price
+    };
 };
 
 const requireAdminForAdminMount = (req, res, next) => {

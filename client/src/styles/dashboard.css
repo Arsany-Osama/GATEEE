@@ -1323,16 +1323,15 @@
 
 .notification-trigger {
   position: relative;
-  width: auto;
-  min-width: 0;
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 14px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  flex: 0 0 42px;
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
   border: 1px solid rgba(56, 189, 248, .28);
-  border-radius: 999px;
+  border-radius: 16px;
   background:
     linear-gradient(145deg, rgba(8, 15, 29, .9), rgba(10, 26, 49, .8)),
     radial-gradient(circle at 30% 0, rgba(34, 211, 238, .12), transparent 38%);
@@ -1350,25 +1349,42 @@
   box-shadow: 0 16px 36px rgba(0, 0, 0, .32), 0 0 24px rgba(34, 211, 238, .18), inset 0 1px 0 rgba(255, 255, 255, .14);
 }
 
-.notification-trigger-label {
+.notification-trigger-icon,
+.notification-trigger-icon svg {
   display: block;
-  font-size: .9rem;
-  font-weight: 900;
-  letter-spacing: .01em;
+}
+
+.notification-trigger-icon {
+  width: 18px;
+  height: 18px;
+  line-height: 1;
+}
+
+.notification-trigger-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.95;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, .12));
 }
 
 .notification-trigger strong {
-  position: static;
-  min-width: 24px;
-  height: 24px;
+  position: absolute;
+  inset-block-start: -5px;
+  inset-inline-end: -5px;
+  min-width: 18px;
+  height: 18px;
   display: grid;
   place-items: center;
-  padding: 0 7px;
+  padding: 0 5px;
   border: 1px solid rgba(255, 255, 255, .45);
   border-radius: 999px;
   background: linear-gradient(135deg, #06b6d4, #2563eb 58%, #8b5cf6);
   color: #fff;
-  font-size: .75rem;
+  font-size: .68rem;
   font-weight: 950;
   line-height: 1;
   box-shadow: 0 0 18px rgba(34, 211, 238, .32);
