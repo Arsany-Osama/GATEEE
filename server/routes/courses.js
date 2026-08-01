@@ -96,14 +96,14 @@ const parseBoolean = (value, fallback = false) => {
 };
 
 const resolvePricingType = (requestedPricingType, priceInput, discountPriceInput) => {
-    if (requestedPricingType === 'free' || requestedPricingType === 'paid' || requestedPricingType === 'discounted') {
-        return requestedPricingType;
-    }
-
     const price = Number.isFinite(priceInput) ? priceInput : 2000;
     const hasValidDiscount = Number.isFinite(discountPriceInput) && discountPriceInput > 0 && discountPriceInput < price;
 
-    return hasValidDiscount ? 'discounted' : 'paid';
+    if (requestedPricingType === 'free') return 'free';
+    if (hasValidDiscount) return 'discounted';
+    if (requestedPricingType === 'discounted') return 'discounted';
+    if (requestedPricingType === 'paid') return 'paid';
+    return 'paid';
 };
 
 const normalizeCoursePayload = (body, support = {}) => {

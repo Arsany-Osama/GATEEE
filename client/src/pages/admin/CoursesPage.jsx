@@ -294,26 +294,6 @@ const formatPrice = (value) => {
   return Number.isInteger(number) ? String(number) : number.toFixed(2);
 };
 
-const readCourseFormValues = (formElement) => {
-  const formData = new FormData(formElement);
-  return {
-    title: String(formData.get('title') || ''),
-    arabic_title: String(formData.get('arabic_title') || ''),
-    description: String(formData.get('description') || ''),
-    thumbnail_url: String(formData.get('thumbnail_url') || ''),
-    thumbnail_public_id: String(formData.get('thumbnail_public_id') || ''),
-    category_id: String(formData.get('category_id') || ''),
-    instructor_id: String(formData.get('instructor_id') || ''),
-    instructor_name: String(formData.get('instructor_name') || ''),
-    instructor_subtitle: String(formData.get('instructor_subtitle') || ''),
-    price: String(formData.get('price') || ''),
-    discount_price: String(formData.get('discount_price') || ''),
-    pricing_type: String(formData.get('pricing_type') || 'paid'),
-    is_published: String(formData.get('is_published') || 'published') === 'published',
-    display_order: String(formData.get('display_order') || '0'),
-  };
-};
-
 const resolvePricingType = (form) => {
   const requestedType = String(form?.pricing_type || '').toLowerCase().trim();
   const price = Number(form?.price || 0);
@@ -326,9 +306,9 @@ const resolvePricingType = (form) => {
     && discountPrice < price;
 
   if (requestedType === 'free') return 'free';
-  if (requestedType === 'paid') return 'paid';
-  if (requestedType === 'discounted') return 'discounted';
   if (hasValidDiscount) return 'discounted';
+  if (requestedType === 'discounted') return 'discounted';
+  if (requestedType === 'paid') return 'paid';
   return 'paid';
 };
 
@@ -569,7 +549,7 @@ const CoursesPage = () => {
 
   const saveCourse = async (event) => {
     event.preventDefault();
-    const submitted = readCourseFormValues(event.currentTarget);
+    const submitted = form;
     if (!submitted.title.trim()) {
       setError(text.errors.titleRequired);
       return;
