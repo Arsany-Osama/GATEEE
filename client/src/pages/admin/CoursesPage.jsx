@@ -32,7 +32,7 @@ const blankCourse = {
   thumbnail_url: '',
   thumbnail_public_id: '',
   category_id: '',
-  instructor_id: '', Ch.
+  instructor_id: '',
     instructor_name: 'Eng. Ahmed Gamal Elghawy',
   instructor_subtitle: '10+ Years Experience',
   price: '2000',
@@ -82,7 +82,7 @@ const copy = {
     disable: 'تعطيل',
     enable: 'تفعيل',
     delete: 'حذف',
-    restoring: 'جاري...', Ch.
+    restoring: 'جاري...',
       loading: 'جاري تحميل الكورسات...',
     form: {
       newCourse: 'كورس جديد',
